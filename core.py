@@ -14,3 +14,13 @@ class Entry:
     def add_author(self, author):
         self.authors.append(author)
 
+class Author:
+    def __init__(self, s):
+        # TODO parse 'von' and 'jr'
+        names = s.split()
+        if len(names) == 1:
+            self.first = None
+            self.last = names[0]
+        else:
+            self.first = names[:-1]
+            self.last = names[-1]

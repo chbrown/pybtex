@@ -2,7 +2,10 @@ from formatters import utils, base
 
 class Formatter(base.Formatter):
     def write_authors(self, authors):
-        self.output(utils.add_period(", ".join(authors)))
+        l = []
+        for author in authors:
+            l.append(author.last)
+        self.output(utils.add_period(", ".join(l)))
 
     def write_title(self, title):
         self.output(utils.add_period(title))
@@ -19,7 +22,6 @@ class Formatter(base.Formatter):
             self.output(", " + utils.add_period(entry['YEAR']))
         except KeyError:
             pass
-        
         
     def write_book(self, entry):
         self.write_authors(entry.authors)
