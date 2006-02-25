@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE bibtex:file PUBLIC
+    "-//BibTeXML//DTD XML for BibTeX v1.0//EN"
+    "bibtexml.dtd" >
+<bibtex:file xmlns:bibtex="http://bibtexml.sf.net/">
+
+<bibtex:entry id="viktorov-metodoj">
+<bibtex:book>
+<bibtex:author>Mихаил Маркович Викторов</bibtex:author>
+<bibtex:title>Методы вычисления физико-химических величин и прикладные расчёты</bibtex:title>
+<bibtex:publisher>Л.: &lt;&lt;Химия&gt;&gt;</bibtex:publisher>
+<bibtex:testo>df</bibtex:testo>
+<bibtex:year>1977</bibtex:year>
+</bibtex:book>
+</bibtex:entry>
+
+<bibtex:entry id="turcxak-osnovy">
+<bibtex:book>
+<bibtex:author>Леонид Иванович Турчак</bibtex:author>
+<bibtex:title>Основы численных методов</bibtex:title>
+<bibtex:publisher>М.: &lt;&lt;Наука&gt;&gt;</bibtex:publisher>
+<bibtex:year>1986</bibtex:year>
+</bibtex:book>
+</bibtex:entry>
+
+<bibtex:entry id="stetter-analiz">
+<bibtex:book>
+<bibtex:author>Ханс Штеттер</bibtex:author>
+<bibtex:title>Анализ методов дискретизации для обыкновенных дифференциальных уравнений</bibtex:title>
+<bibtex:publisher>М.: &lt;&lt;Мир&gt;&gt;</bibtex:publisher>
+<bibtex:year>1978</bibtex:year>
+</bibtex:book>
+</bibtex:entry>
+
+<bibtex:entry id="ruckenstein-diffusion">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>Hongquin Liu</bibtex:person>
+<bibtex:person>Eli Ruckenstein</bibtex:person>
+</bibtex:author>
+<bibtex:title>Predicting the Diffusion Coefficient in Supercritical Fluids</bibtex:title>
+<bibtex:journal>Ind. Eng. Chem. Res.</bibtex:journal>
+<bibtex:volume>36</bibtex:volume>
+<bibtex:pages>888-895</bibtex:pages>
+<bibtex:year>1997</bibtex:year>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="meyer-acetic_acid">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>J. Meyer</bibtex:person>
+<bibtex:person>P. A. Marrone</bibtex:person>
+<bibtex:person>J. W. Tester</bibtex:person>
+</bibtex:author>
+<bibtex:title>Acetic acid oxidation and hydrolysis in supercritical water</bibtex:title>
+<bibtex:journal>AIChE J.</bibtex:journal>
+<bibtex:volume>41</bibtex:volume>
+<bibtex:number>9</bibtex:number>
+<bibtex:pages>2108-2121</bibtex:pages>
+<bibtex:year>1995</bibtex:year>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="sovova-diffusion">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>Helena Sovov&#225;</bibtex:person>
+<bibtex:person>Jaroslav Proch&#225;zka</bibtex:person>
+</bibtex:author>
+<bibtex:title>Calculation of compressed carbon dioxide viscosities</bibtex:title>
+<bibtex:journal>Ind. Eng. Chem. Res.</bibtex:journal>
+<bibtex:volume>32</bibtex:volume>
+<bibtex:pages>3162-3169</bibtex:pages>
+<bibtex:year>1993</bibtex:year>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="anisimov-92">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>M. A. Anisimov</bibtex:person>
+<bibtex:person>S. B. Kiselev</bibtex:person>
+</bibtex:author>
+<bibtex:title>Transport Properties of Critical Dilute Solutions</bibtex:title>
+<bibtex:journal>Int. J. Thermophys.</bibtex:journal>
+<bibtex:year>1992</bibtex:year>
+<bibtex:volume>13</bibtex:volume>
+<bibtex:pages>873-893</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="anisimov-95">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>M. A. Anisimov</bibtex:person>
+<bibtex:person>E. E. Gorodetskii</bibtex:person>
+<bibtex:person>V. D. Kulikov</bibtex:person>
+<bibtex:person>others</bibtex:person>
+</bibtex:author>
+<bibtex:title>General Isomorphism Approach to Thermodynamic and Transport Properties of Binary Fluid Mictures Near Critical Points</bibtex:title>
+<bibtex:journal>Physica A</bibtex:journal>
+<bibtex:year>1995</bibtex:year>
+<bibtex:volume>220</bibtex:volume>
+<bibtex:pages>227-324</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="sun-diffusion">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>C. K. J. Sun</bibtex:person>
+<bibtex:person>S. H. Chen</bibtex:person>
+</bibtex:author>
+<bibtex:title>Tracer diffusion in dense ethanol: a generalized correlation for nonpolar and hydrogen-bonded solvents</bibtex:title>
+<bibtex:journal>AIChE J.</bibtex:journal>
+<bibtex:year>1986</bibtex:year>
+<bibtex:volume>32</bibtex:volume>
+<bibtex:pages>1367-1371</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="chen-diffusion">
+<bibtex:article>
+<bibtex:author>S. H. Chen</bibtex:author>
+<bibtex:title>A rough hard-sphere theory for diffusion in supercritical carbon dioxide</bibtex:title>
+<bibtex:journal>Chem. Eng. Sci.</bibtex:journal>
+<bibtex:year>1983</bibtex:year>
+<bibtex:volume>38</bibtex:volume>
+<bibtex:pages>655-660</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="erkey-diffusion">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>C. Erkey</bibtex:person>
+<bibtex:person>H. Gadalla</bibtex:person>
+<bibtex:person>A. Akgerman</bibtex:person>
+</bibtex:author>
+<bibtex:title>Application of rough hard sphere theory to diffusion in supercritical fluids</bibtex:title>
+<bibtex:journal>J. Supercritical Fluids</bibtex:journal>
+<bibtex:year>1990</bibtex:year>
+<bibtex:volume>3</bibtex:volume>
+<bibtex:pages>180-185</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="catchpole-diffusion">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>O. J. Catchpole</bibtex:person>
+<bibtex:person>M. B. King</bibtex:person>
+</bibtex:author>
+<bibtex:title>Measurement and correlation of binary diffusion coefficients in near critical fluids</bibtex:title>
+<bibtex:journal>Ind. Eng. Chem. Res.</bibtex:journal>
+<bibtex:year>1994</bibtex:year>
+<bibtex:volume>33</bibtex:volume>
+<bibtex:pages>1828-1837</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="dymond-diffusion">
+<bibtex:article>
+<bibtex:author>J. H. Dymond</bibtex:author>
+<bibtex:title>Corrected Enskog theory and the transport coefficients of liquids</bibtex:title>
+<bibtex:journal>J. Chem. Phys.</bibtex:journal>
+<bibtex:year>1974</bibtex:year>
+<bibtex:volume>60</bibtex:volume>
+<bibtex:pages>969-973</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="akgerman-diffusion">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>A. Acgerman</bibtex:person>
+<bibtex:person>C. Erkey</bibtex:person>
+<bibtex:person>M. Orejuela</bibtex:person>
+</bibtex:author>
+<bibtex:title>Limiting diffusion coefficients of heavy molecular weight organic contaminants in supercritical carbon dioxide</bibtex:title>
+<bibtex:journal>Ind. Eng. Chem. Res.</bibtex:journal>
+<bibtex:year>1996</bibtex:year>
+<bibtex:volume>35</bibtex:volume>
+<bibtex:pages>911</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="salim-diffusion">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>P. H. Salim</bibtex:person>
+<bibtex:person>M. A. Trebble</bibtex:person>
+</bibtex:author>
+<bibtex:title>Modified interacting-sphere model for self-diffusion and infinite-dilution mutual-diffusivity of n\nobreakdash-alcanes</bibtex:title>
+<bibtex:journal>J. Chem. Phys.</bibtex:journal>
+<bibtex:year>1995</bibtex:year>
+<bibtex:volume>91</bibtex:volume>
+<bibtex:pages>245-250</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="silva-diffusion">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>Carlos M. Silva</bibtex:person>
+<bibtex:person>Eug\'enia A. Macedo</bibtex:person>
+</bibtex:author>
+<bibtex:title>Diffusion coefficitents of ethers in supercritical carbon dioxide</bibtex:title>
+<bibtex:journal>Ind. Eng. Chem. Res.</bibtex:journal>
+<bibtex:year>1998</bibtex:year>
+<bibtex:volume>37</bibtex:volume>
+<bibtex:pages>1490-1498</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="soave-modified_rk">
+<bibtex:article>
+<bibtex:author>G. Soave</bibtex:author>
+<bibtex:title>Equilibrium constants from a modified RK equation of state</bibtex:title>
+<bibtex:journal>Chem. Eng. Sci.</bibtex:journal>
+<bibtex:year>1972</bibtex:year>
+<bibtex:volume>27</bibtex:volume>
+<bibtex:number>6</bibtex:number>
+<bibtex:pages>1197</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="peng_robinson-new_equation">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>D. Y. Peng</bibtex:person>
+<bibtex:person>D. B. Robinson</bibtex:person>
+</bibtex:author>
+<bibtex:title>A new two constants equation of state</bibtex:title>
+<bibtex:journal>Ind. Eng. Chem. Fundam.</bibtex:journal>
+<bibtex:year>1976</bibtex:year>
+<bibtex:volume>15</bibtex:volume>
+<bibtex:pages>59</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="anikeev-isopropanol_dehydratation">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>В. И. Аникеев</bibtex:person>
+<bibtex:person>Д. Мэнион</bibtex:person>
+<bibtex:person>А. Ермакова</bibtex:person>
+</bibtex:author>
+<bibtex:title>Влияние плотности сверхкритической воды на скорость дегидратации изопропилового спирта</bibtex:title>
+<bibtex:journal>Журнал физической химии</bibtex:journal>
+<bibtex:year>2001</bibtex:year>
+<bibtex:volume>75</bibtex:volume>
+<bibtex:number>8</bibtex:number>
+<bibtex:pages>48-54</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="anikeev-isopropanol_dehydratation2">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>В. И. Аникеев</bibtex:person>
+<bibtex:person>Д. Мэнион</bibtex:person>
+<bibtex:person>А. Ермакова</bibtex:person>
+<bibtex:person>Р. Хью</bibtex:person>
+</bibtex:author>
+<bibtex:title>Кинетика реакции дегидратации 2\nobreakdash-пропанола в сверхкритической воде</bibtex:title>
+<bibtex:journal>Кинетика и катализ</bibtex:journal>
+<bibtex:year>2002</bibtex:year>
+<bibtex:volume>43</bibtex:volume>
+<bibtex:number>2</bibtex:number>
+<bibtex:pages>1-6</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+<bibtex:entry id="mashal-about_kw">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>W. L. Marshal</bibtex:person>
+<bibtex:person>E. U. Frank</bibtex:person>
+</bibtex:author>
+<bibtex:title>"Ion product of water substance 0-1000$^\circ$\;C,</bibtex:title>
+ 1-10000\;bars. {N}ew internatinal formulation and its bacground",
+<bibtex:journal>J. Phys. Chem. Ref. Data</bibtex:journal>
+<bibtex:year>1981</bibtex:year>
+<bibtex:volume>10</bibtex:volume>
+<bibtex:number>2</bibtex:number>
+<bibtex:pages>295</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+ Antal M.J., Carlsson M., Xu X. // Ind. Eng. Chem. Res. 1998, 37. P.3820. 
+<bibtex:entry id="antal-isopropanol">
+<bibtex:article>
+<bibtex:author>
+<bibtex:person>M. J. Anthal</bibtex:person>
+<bibtex:person>M. Carlsson</bibtex:person>
+<bibtex:person>X. Xu</bibtex:person>
+</bibtex:author>
+<bibtex:title>Dehydration of 2\nobreakdash-propanol in supercritical water</bibtex:title>
+<bibtex:journal>Ind. Eng. Chem. Res.</bibtex:journal>
+<bibtex:year>1998</bibtex:year>
+<bibtex:volume>37</bibtex:volume>
+<bibtex:pages>3820</bibtex:pages>
+</bibtex:article>
+</bibtex:entry>
+
+  <!-- manual cleanup may be required... -->
+</bibtex:file>
