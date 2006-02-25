@@ -4,7 +4,7 @@ class Formatter(base.Formatter):
     def write_authors(self, authors):
         l = []
         for author in authors:
-            l.append(author.last)
+            l.append(author.format([['ff'], ['ll']]))
         self.output(utils.add_period(", ".join(l)))
 
     def write_title(self, title):

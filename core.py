@@ -19,8 +19,33 @@ class Author:
         # TODO parse 'von' and 'jr'
         names = s.split()
         if len(names) == 1:
-            self.first = None
-            self.last = names[0]
+            self.first = []
+            self.last = names
         else:
             self.first = names[:-1]
-            self.last = names[-1]
+            self.last = [names[-1]]
+    def get_part(self, type):
+        parts = {'ff' : self.first, 'll' : self.last}
+        return parts[type]
+
+    def format(self, format):
+        """format is like this:
+        [['ff'], [
+        """
+        s = []
+        space = '~'
+        separator = ' '
+        for item in format:
+            if len(item) == 1:
+                type = item[0]
+            elif len(item) == 2:
+                separator, type = item
+            elif len(item) == 3:
+                separator, type, space = item
+            else:
+                # TODO proper error message
+                return "wrong format"
+            part = self.get_part(type)
+            if part:
+                s.append(separator + space.join(part))
+        return "".join(s)
