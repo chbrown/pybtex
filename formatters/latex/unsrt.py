@@ -1,4 +1,5 @@
-from formatters import utils, base
+import utils
+from formatters import base
 
 class Formatter(base.Formatter):
     def write_authors(self, authors):

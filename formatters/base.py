@@ -1,6 +1,6 @@
 import locale
 import codecs
-from formatters import utils
+import utils
 
 class Formatter:
     def __init__(self, entries, encoding = locale.getpreferredencoding()):
