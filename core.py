@@ -1,3 +1,5 @@
+import utils
+
 class Entry:
     def __init__(self, type_, fields = None, authors = []):
         self.type = type_
@@ -25,8 +27,11 @@ class Author:
             self.first = names[:-1]
             self.last = [names[-1]]
     def get_part(self, type):
-        parts = {'ff' : self.first, 'll' : self.last}
-        return parts[type]
+        parts = {'f' : self.first, 'l' : self.last}
+        if len(type) == 1:
+            return [utils.abbreviate(s) for s in parts[type]]
+        else:
+            return parts[type[0]]
 
     def format(self, format):
         """format is like this:
@@ -34,7 +39,7 @@ class Author:
         """
         s = []
         space = '~'
-        separator = ' '
+        separator = ''
         for item in format:
             if len(item) == 1:
                 type = item[0]
@@ -48,4 +53,5 @@ class Author:
             part = self.get_part(type)
             if part:
                 s.append(separator + space.join(part))
+            separator = ' '
         return "".join(s)
