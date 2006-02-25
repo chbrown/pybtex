@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 import sys, aux
 #from filters.input import bibtex
 import filters
