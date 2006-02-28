@@ -1,5 +1,5 @@
 from elementtree import ElementTree as ET
-from core import Entry, Author
+from core import Entry
 bibtexns = '{http://bibtexml.sf.net/}'
 
 def remove_ns(s):
@@ -21,9 +21,9 @@ class Filter:
             persons = author.findall(bibtexns + 'person')
             if persons:
                 for person in persons:
-                    e.add_author(Author(person.text))
+                    e.add_author(person.text)
             else:
-                e.add_author(Author(author.text))
+                e.add_author(author.text)
 
         id_ = entry.get('id')
         item = entry.getchildren()[0]

@@ -6,7 +6,7 @@
 
 import codecs, locale
 from pyparsing import *
-from core import Entry, Author
+from core import Entry
 
 class BibData:
     def __init__(self):
@@ -21,7 +21,7 @@ class BibData:
                 value = field[1][0] % tuple([self.strings[arg] for arg in field[1][1]])
                 if field[0] == 'author':
                     for author in value.split(' and '):
-                        entry.add_author(Author(author))
+                        entry.add_author(author)
                 else:
                     entry.fields[field[0]] = value
             #fields['TYPE'] = i[0]
