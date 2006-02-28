@@ -6,7 +6,7 @@
 
 import codecs, locale
 from pyparsing import *
-from core import Entry
+from core import Entry, Author
 
 class BibData:
     def __init__(self):
@@ -15,12 +15,17 @@ class BibData:
 
     def addRecord(self, s, loc, toks):
         for i in toks:
+            entry = Entry(i[0])
             fields = {}
             for field in i[2]:
-
-                fields[field[0]] = field[1]
+                value = field[1][0] % tuple([self.strings[arg] for arg in field[1][1]])
+                if field[0] == 'author':
+                    for author in value.split(' and '):
+                        entry.add_author(Author(author))
+                else:
+                    entry.fields[field[0]] = field[1]
             #fields['TYPE'] = i[0]
-            self.records[i[1]] = Entry(i[0], fields)
+            self.records[i[1]] = entry
 
     def addString(self, s, loc, toks):
         for i in toks:
