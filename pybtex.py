@@ -13,10 +13,6 @@ def prepare_entries(bib_data, aux_data):
     for key in aux_data.citations:
         print key
         entry = bib_data.records[key]
-        for field in entry.fields.iteritems():
-            if not (isinstance(field[1], unicode) or isinstance(field[1], str)):
-                s = field[1][0] % tuple([bib_data.strings[arg] for arg in field[1][1]])
-                entry.fields[field[0]] = s
         entry.number = n
         entry.key = key
         entries.append(entry)

@@ -23,7 +23,7 @@ class BibData:
                     for author in value.split(' and '):
                         entry.add_author(Author(author))
                 else:
-                    entry.fields[field[0]] = field[1]
+                    entry.fields[field[0]] = value
             #fields['TYPE'] = i[0]
             self.records[i[1]] = entry
 
