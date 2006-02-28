@@ -141,16 +141,3 @@ class Filter:
             print "%s: no encoding specified, using locale default" % filename
             print e
             sys.exit(1)
-
-    def print_tree(self, tree):
-        """prettyprint a tree returned from parseFile"""
-        print 'Total records:', len(tree)
-        for record in tree:
-            print '%s:' % record[0]
-            if record[0] == "STRING":
-                print '\t%s = %s' % (record[1][0], ' # '.join(record[1][1]))
-            else:
-                print '\t%s' % record[1]
-                for field in record[2]:
-                    print '\t%s = %s' % (field[0], ' # '.join(field[1]))
-            print
