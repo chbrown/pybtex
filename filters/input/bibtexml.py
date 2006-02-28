@@ -35,7 +35,7 @@ class Filter:
         type = remove_ns(item.tag)
         e = Entry(type)
         for field in item.getchildren():
-            field_name = remove_ns(field.tag).upper()
+            field_name = remove_ns(field.tag)
             if field_name == 'AUTHOR':
                 process_author(field)
             else:

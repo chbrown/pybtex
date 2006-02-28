@@ -14,13 +14,13 @@ class Formatter(base.Formatter):
     def write_article(self, entry):
         self.write_authors(entry.authors)
         self.newblock()
-        self.write_title(entry['TITLE'])
+        self.write_title(entry['title'])
         self.newblock()
         self.output('{\em ')
-        self.output(entry['JOURNAL'])
+        self.output(entry['title'])
         self.output('}')
         try:
-            self.output(", " + utils.add_period(entry['YEAR']))
+            self.output(", " + utils.add_period(entry['year']))
         except KeyError:
             pass
         
@@ -28,16 +28,16 @@ class Formatter(base.Formatter):
         self.write_authors(entry.authors)
         self.newblock()
         self.output('{\em ')
-        self.write_title(entry['TITLE'])
+        self.write_title(entry['title'])
         self.output('}')
         self.newblock()
         try:
-            self.output(entry['PUBLISHER'])
+            self.output(entry['publisher'])
             self.output(', ')
         except KeyError:
             pass
         try:
-            self.output(utils.add_period(entry['YEAR']))
+            self.output(utils.add_period(entry['year']))
         except KeyError:
             pass
         

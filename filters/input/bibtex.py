@@ -17,6 +17,7 @@ class BibData:
         for i in toks:
             fields = {}
             for field in i[2]:
+
                 fields[field[0]] = field[1]
             #fields['TYPE'] = i[0]
             self.records[i[1]] = Entry(i[0], fields)
@@ -48,8 +49,8 @@ class Filter:
         bibTeXString = quotedString | bracedString
         bibTeXString.setParseAction(self.decode)
 
-        name = Word(alphanums + '!$&*+-./:;<>?[]^_`|').setParseAction(upcaseTokens)
-        value = Group(delimitedList(bibTeXString | Word(alphanums).setParseAction(upcaseTokens) | Word(nums), delim='#'))
+        name = Word(alphanums + '!$&*+-./:;<>?[]^_`|').setParseAction(downcaseTokens)
+        value = Group(delimitedList(bibTeXString | Word(alphanums).setParseAction(downcaseTokens) | Word(nums), delim='#'))
 
         #fields
         field = Group(name + equal + value)
