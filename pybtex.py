@@ -12,7 +12,7 @@ def prepare_entries(bib_data, aux_data):
     entries = []
     for key in aux_data.citations:
         print key
-        entry = bib_data.records[key]
+        entry = bib_data[key]
         entry.number = n
         entry.key = key
         entries.append(entry)

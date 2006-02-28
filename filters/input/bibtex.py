@@ -132,7 +132,7 @@ class Filter:
         try:
             self.BibTeX_BNF.parseString(s)
             #print self.data.records
-            return self.data
+            return self.data.records
         except ParseException, e:
             print "%s: syntax error:" % filename
             print e
