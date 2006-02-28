@@ -14,6 +14,8 @@ class Entry:
         return self.fields[name]
 
     def add_author(self, author):
+        if not isinstance(author, Author):
+            author = Author(author)
         self.authors.append(author)
 
 class Author:
