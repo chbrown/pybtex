@@ -1,0 +1,14 @@
+How to use pybtex? It is not too usable at the moment. You may
+want to examine the test subdirectory and do the following:
+
+$ latex foo.tex # to produce foo.aux file
+
+$ ../pybtex.py foo.bib # to produce foo.bbl file
+
+After that examine foo.bbl file to see what you have just got.
+Than build a dvi:
+
+$ latex foo.tex
+
+If you have any questions or suggestions, please feel free to contact us
+by email (see AUTHORS file).
