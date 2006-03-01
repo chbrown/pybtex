@@ -24,7 +24,9 @@ class Formatter:
     def output_bibliography(self, filename):
         self.f = codecs.open(filename, "w", self.encoding)
         self.output = self.f.write
-        self.output('\\begin{thebibliography}{%s}' % len(self.entries))
+        maxlen = max([len(e.label) for e in self.entries])
+        #FIXME: determine label width proprely
+        self.output('\\begin{thebibliography}{%s}' % ('8' * maxlen))
         index = 1
         for entry in self.entries:
             self.write_item(entry)
