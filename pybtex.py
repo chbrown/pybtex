@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys, aux
-#from filters.input import bibtex
 import filters
+from formatters import sorting
 
 def import_style(name):
     m = __import__('formatters.latex', globals(), locals(), [name])
@@ -17,6 +17,7 @@ def prepare_entries(bib_data, aux_data):
         entry.key = key
         entries.append(entry)
         n += 1
+    #entries.sort(key=sorting.unsorted)
     return entries
 
 def parse_filename(filename):
