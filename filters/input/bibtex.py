@@ -1,5 +1,5 @@
 #!/bin/env python
-"""BibTeX parsing and pretty-printing"""
+"""BibTeX parser"""
 
 #import psyco
 #psyco.full()
