@@ -1,2 +1,2 @@
-default = 'bibtex'
+default = 'bib'
 filetypes = {'bib' : 'bibtex'}
