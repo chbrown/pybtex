@@ -15,5 +15,7 @@ def sc(s):
     return r"\textsc{%s}"
 
 def add_period(s):
-    if is_terminated.match(s) is None:
+    if is_terminated.match(s.split()[-1]) is None:
         return s + "."
+    else:
+        return s
