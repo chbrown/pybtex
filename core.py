@@ -13,7 +13,7 @@ class Entry:
     def __getitem__(self, name):
         try:
             return self.fields[name]
-        except IndexError:
+        except KeyError:
             return ""
 
     def add_author(self, author):
