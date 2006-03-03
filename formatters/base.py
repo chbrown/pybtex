@@ -18,7 +18,7 @@ class Formatter:
 
     def join_with_separators(self, l, default_separator):
         result = []
-        for element in l[1:]:
+        for element in l:
             if isinstance(element, list):
                 if element[0]:
                     part, separator = element
