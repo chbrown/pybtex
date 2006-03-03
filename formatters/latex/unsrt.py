@@ -15,13 +15,11 @@ class Formatter(base.Formatter):
         l = []
         l.append(self.format_authors(e.authors))
         l.append(self.format_title(e['title']))
-        journal = latex.emph(e['journal'])
         if e.has_key('volume'):
-            vp = "".join([', ', e['volume'], utils.format(e['pages'], ':%s')])
+            vp = "".join([e['volume'], utils.format(e['pages'], ':%s')])
         else:
-            vp = utils.format(e['pages'], ', pages %s')
-        year = utils.format(e['year'], ', %s')
-        l.append("".join([journal, vp, year]))
+            vp = utils.format(e['pages'], 'pages %s')
+        l.append([latex.emph(e['journal']), vp, e['year']])
         return l
         
     def format_book(self, entry):
@@ -30,5 +28,5 @@ class Formatter(base.Formatter):
         l.append(latex.emph(self.format_title(entry['title'])))
         p = utils.format(entry['publisher'])
         y = utils.format(entry['year'], ', %s')
-        l.append("%s%s" % (p, y))
+        l.append([entry['publisher'], entry['year']])
         return l
