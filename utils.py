@@ -26,3 +26,9 @@ def abbreviate(s):
             print 'not in'
             return part[0][0].upper() + '.'
     return ''.join(abbr(part) for part in parts(s))
+
+def format(s, format = "%s"):
+    if s and len(s) != 0:
+        return format % s
+    else:
+        return ""
