@@ -15,11 +15,10 @@ class Formatter:
 
     def write_item(self, entry):
         self.output('\n\n\\bibitem{%s}\n' % entry.key)
-        try:
-            f = getattr(self, "write_" + entry.type.lower())
-        except KeyError:
-            pass
-        f(entry)
+        f = getattr(self, "format_" + entry.type.lower())
+        l = f(entry)
+        text = utils.add_period("\n\\newblock ".join(l))
+        self.output(text)
 
     def output_bibliography(self, filename):
         self.f = codecs.open(filename, "w", self.encoding)
