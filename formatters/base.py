@@ -17,17 +17,16 @@ class Formatter:
         self.output('\n')
 
     def join_with_separators(self, l, default_separator):
-        first = True
-        try:
-            result = [l[0]]
-        except IndexError:
-            result = []
+        result = []
         for element in l[1:]:
             if isinstance(element, list):
                 if element[0]:
-                    result.append(element[1] + element[0])
+                    part, separator = element
             elif element:
-                result.append(default_separator + element)
+                    part, separator = element, default_separator
+            if len(result) == 0:
+                separator = ''
+            result.append(separator + part)
         return "".join(result)   
             
         
