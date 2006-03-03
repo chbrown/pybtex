@@ -27,6 +27,6 @@ class Formatter(base.Formatter):
         l.append(self.format_authors(entry.authors))
         l.append(latex.emph(self.format_title(entry['title'])))
         p = utils.format(entry['publisher'])
-        y = utils.format(entry['year'], ', %s')
+        y = utils.format(entry['year'], '%s')
         l.append([entry['publisher'], entry['year']])
         return l
