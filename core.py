@@ -11,7 +11,10 @@ class Entry:
             self.add_author(author)
 
     def __getitem__(self, name):
-        return self.fields[name]
+        try:
+            return self.fields[name]
+        except IndexError:
+            return ""
 
     def add_author(self, author):
         if not isinstance(author, Author):
