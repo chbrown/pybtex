@@ -1,6 +1,7 @@
 import locale
 import codecs
 import utils
+import latex
 
 class Formatter:
     def __init__(self, entries, encoding = locale.getpreferredencoding()):
@@ -17,7 +18,7 @@ class Formatter:
         self.output('\n\n\\bibitem{%s}\n' % entry.key)
         f = getattr(self, "format_" + entry.type.lower())
         l = f(entry)
-        text = utils.add_period("\n\\newblock ".join(l))
+        text = latex.add_period("\n\\newblock ".join(l))
         self.output(text)
 
     def output_bibliography(self, filename):
