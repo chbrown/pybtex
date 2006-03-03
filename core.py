@@ -6,6 +6,7 @@ class Entry:
         if fields == None:
             fields = {}
         self.fields = fields
+        self.has_key = self.fields.has_key
 	self.authors = []
 	for author in authors:
             self.add_author(author)
