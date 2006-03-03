@@ -20,10 +20,8 @@ def abbreviate(s):
         yield s[start:length], ""
     def abbr(part):
         if is_terminator(part[1]):
-            print 'in', part
             return part[0][0].upper() + part[1]
         else:
-            print 'not in'
             return part[0][0].upper() + '.'
     return ''.join(abbr(part) for part in parts(s))
 
