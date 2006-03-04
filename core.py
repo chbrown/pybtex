@@ -17,14 +17,17 @@ class Entry:
             return ""
 
     def add_author(self, author):
-        if not isinstance(author, Person):
-            author = Person(author)
-        self.authors.append(author)
+        self.add_person(author, 'author')
 
     def add_editor(self, editor):
-        if not isinstance(editor, Person):
-            editor = Person(editor)
-        self.editors.append(editor)
+        self.add_person(editor, 'editor')
+    
+    def add_person(self, person, role):
+        if not isinstance(person, Person):
+            person = Person(person)
+        list = getattr(self, '%ss' % role)
+        list.append(person)
+                
 
 class Person:
     def __init__(self, s):
