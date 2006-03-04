@@ -1,6 +1,7 @@
 import utils
 
 class Entry:
+    valid_roles = ['author', 'editor']
     def __init__(self, type_, fields = None):
         self.type = type_
         if fields == None:
@@ -16,12 +17,6 @@ class Entry:
         except KeyError:
             return ""
 
-    def add_author(self, author):
-        self.add_person(author, 'author')
-
-    def add_editor(self, editor):
-        self.add_person(editor, 'editor')
-    
     def add_person(self, person, role):
         if not isinstance(person, Person):
             person = Person(person)
