@@ -6,7 +6,7 @@ from formatters import label
 __version__ = 0.1
 
 def import_style(name):
-    m = __import__('formatters.latex', globals(), locals(), [name])
+    m = __import__('pybtex.formatters.latex', globals(), locals(), [name])
     return getattr(m, name)
 
 def prepare_entries(bib_data, aux_data):

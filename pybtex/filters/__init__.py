@@ -9,6 +9,7 @@ def find_filter(type, name = None):
 	   return getattr(m, s)
 	except AttributeError:
 	   raise ImportError('s')
+
     if name is None:
         name = import_('default')
     try:

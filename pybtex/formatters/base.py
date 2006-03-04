@@ -1,6 +1,6 @@
 import locale
 import codecs
-import utils
+from pybtex import utils
 import latex
 
 class Formatter:

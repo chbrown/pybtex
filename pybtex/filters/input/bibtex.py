@@ -6,7 +6,7 @@
 
 import codecs, locale
 from pyparsing import *
-from core import Entry
+from pybtex.core import Entry
 
 class BibData:
     def __init__(self):

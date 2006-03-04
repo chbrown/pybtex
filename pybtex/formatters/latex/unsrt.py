@@ -1,5 +1,5 @@
-import utils
-from formatters import base, latex
+from pybtex import utils
+from pybtex.formatters import base, latex
 
 class Formatter(base.Formatter):
     def format_authors(self, authors):

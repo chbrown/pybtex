@@ -1,5 +1,5 @@
 from elementtree import ElementTree as ET
-from core import Entry
+from pybtex.core import Entry
 bibtexns = '{http://bibtexml.sf.net/}'
 
 def remove_ns(s):

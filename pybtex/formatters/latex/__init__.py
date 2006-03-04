@@ -1,5 +1,5 @@
 import re
-import utils
+from pybtex import utils
 
 is_terminated = re.compile(r'.*[.?!][{}\s]*$')
 dash_re = re.compile(r'-')

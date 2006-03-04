@@ -1,3 +1,23 @@
 #!/usr/bin/env python
 
-print 1
+import sys
+import pybtex
+from os import path
+
+def main():
+    filename, ext = path.splitext(sys.argv[1])
+    ext = ext.lstrip('.')
+
+    bib_parser = pybtex.filters.find_filter('input', ext)
+    aux_data = pybtex.aux.parse_file(filename + ".aux")
+    bib_data = bib_parser.parse_file('%s.%s' % (aux_data.data, ext))
+    
+    entries = pybtex.prepare_entries(bib_data, aux_data)
+    del bib_data
+    #from formatters.latex import unsorted
+    style = pybtex.import_style(aux_data.style)
+    style.Formatter(entries).output_bibliography(filename + ".bbl")
+
+
+if __name__ == '__main__':
+    main()
