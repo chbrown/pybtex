@@ -58,10 +58,28 @@ data_files = [
 
 setup(name=progname,
     version=version,
-    description='Bibliography processor in Python',
+    description='Bibtex-compatible bibliography processor in Python',
+    long_description='''Pybtex is just another bibliography processor.
+As the name suggests, pybtex is designed much after BibTeX and written
+in Python. Please note that the correct spelling is just pybtex, without
+that TeX-like camel-casing, which we considered too boring to type.''',
     author='Andrey Golovizin',
     author_email='golovizin@gorodok.net',
     url='http://pybtex.sourceforge.net/',
+    license='GPL-2',
+    platforms=['platform-independent'],
+    classifiers=[
+        'License :: OSI-Approved Open Source :: GNU General Public License (GPL)',
+        'Intended Audience :: by End-User Class :: End Users/Desktop',
+        'Development Status :: 3 - Alpha',
+        'Topic :: Formats and Protocols :: Data Formats :: TeX/LaTeX',
+        'Topic :: Formats and Protocols :: Data Formats :: XML',
+        'Topic :: Scientific/Engineering',
+        'Topic :: Text Editors :: Text Processing',
+        'Programming Language :: Python',
+        'Operating System :: Grouping and Descriptive Categories :: OS Independent',
+        'User Interface :: Textual :: Command-line'
+    ],
     packages=list_modules(),
     scripts=[os.path.join('scripts', progname)],
     data_files=data_files,
