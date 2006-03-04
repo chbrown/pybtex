@@ -3,6 +3,8 @@ import sys, aux
 import filters
 from formatters import label
 
+__version__ = 0.1
+
 def import_style(name):
     m = __import__('formatters.latex', globals(), locals(), [name])
     return getattr(m, name)
@@ -30,19 +32,3 @@ def parse_filename(filename):
     else:
         return (filename[:dot], filename[dot + 1:])
 
-def main():
-    filename, ext = parse_filename(sys.argv[1])
-
-    bib_parser = filters.find_filter('input', ext)
-    aux_data = aux.parse_file(filename + ".aux")
-    bib_data = bib_parser.parse_file('%s.%s' % (aux_data.data, ext))
-    
-    entries = prepare_entries(bib_data, aux_data)
-    del bib_data
-    #from formatters.latex import unsorted
-    style = import_style(aux_data.style)
-    style.Formatter(entries).output_bibliography(filename + ".bbl")
-
-
-if __name__ == '__main__':
-    main()
