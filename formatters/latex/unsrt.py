@@ -6,7 +6,7 @@ class Formatter(base.Formatter):
         l = []
         for author in authors:
             l.append(author.format([['f'], ['ll']]))
-        return utils.add_period(", ".join(l))
+        return l
 
     def format_title(self, title):
         return utils.add_period(title)
@@ -27,7 +27,9 @@ class Formatter(base.Formatter):
         if e.authors:
             l.append(self.format_authors(e.authors))
         else:
-            l.append(utils.format(self.format_authors(e.editors), '%s, editor'))
+            editors = self.format_authors(e.editors)
+            editors.append('editor')
+            l.append(editors)
         l.append(latex.emph(self.format_title(e['title'])))
         p = utils.format(e['publisher'])
         y = utils.format(e['year'], '%s')
