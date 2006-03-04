@@ -2,6 +2,9 @@ import re
 import utils
 
 is_terminated = re.compile(r'.*[.?!][{}\s]*$')
+dash_re = re.compile(r'-')
+ndash = '--'
+
 def emph(s):
     return r"\emph{%s}" % s
 
@@ -19,3 +22,6 @@ def add_period(s):
         return s + "."
     else:
         return s
+
+def dashify(s):
+    return ndash.join(dash_re.split(s))

@@ -15,10 +15,11 @@ class Formatter(base.Formatter):
         l = []
         l.append(self.format_authors(e.authors))
         l.append(self.format_title(e['title']))
+        pages = latex.dashify(e['pages'])
         if e.has_key('volume'):
-            vp = "".join([e['volume'], utils.format(e['pages'], ':%s')])
+            vp = "".join([e['volume'], utils.format(pages, ':%s')])
         else:
-            vp = utils.format(e['pages'], 'pages %s')
+            vp = utils.format(pages, 'pages %s')
         l.append([latex.emph(e['journal']), vp, e['year']])
         return l
         
