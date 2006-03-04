@@ -1,15 +1,14 @@
 import utils
 
 class Entry:
-    def __init__(self, type_, fields = None, authors = []):
+    def __init__(self, type_, fields = None):
         self.type = type_
         if fields == None:
             fields = {}
         self.fields = fields
         self.has_key = self.fields.has_key
-	self.authors = []
-	for author in authors:
-            self.add_author(author)
+        self.authors = []
+        self.editors = []
 
     def __getitem__(self, name):
         try:
@@ -18,11 +17,16 @@ class Entry:
             return ""
 
     def add_author(self, author):
-        if not isinstance(author, Author):
-            author = Author(author)
+        if not isinstance(author, Person):
+            author = Person(author)
         self.authors.append(author)
 
-class Author:
+    def add_editor(self, editor):
+        if not isinstance(editor, Person):
+            editor = Person(editor)
+        self.editors.append(editor)
+
+class Person:
     def __init__(self, s):
         # TODO parse 'von' and 'jr'
         names = s.split()

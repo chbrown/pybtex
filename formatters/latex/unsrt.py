@@ -22,11 +22,14 @@ class Formatter(base.Formatter):
         l.append([latex.emph(e['journal']), vp, e['year']])
         return l
         
-    def format_book(self, entry):
+    def format_book(self, e):
         l = []
-        l.append(self.format_authors(entry.authors))
-        l.append(latex.emph(self.format_title(entry['title'])))
-        p = utils.format(entry['publisher'])
-        y = utils.format(entry['year'], '%s')
-        l.append([entry['publisher'], entry['year']])
+        if e.authors:
+            l.append(self.format_authors(e.authors))
+        else:
+            l.append(utils.format(self.format_authors(e.editors), '%s, editor'))
+        l.append(latex.emph(self.format_title(e['title'])))
+        p = utils.format(e['publisher'])
+        y = utils.format(e['year'], '%s')
+        l.append([e['publisher'], e['year']])
         return l

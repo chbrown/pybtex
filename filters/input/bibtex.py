@@ -22,6 +22,9 @@ class BibData:
                 if field[0] == 'author':
                     for author in value.split(' and '):
                         entry.add_author(author)
+                elif field[0] == 'editor':
+                    for editor in value.split(' and '):
+                        entry.add_editor(editor)
                 else:
                     entry.fields[field[0]] = value
             #fields['TYPE'] = i[0]
