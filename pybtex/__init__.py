@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import filters
-import aux
+import auxfile
 from formatters import label
 
 __version__ = 0.1

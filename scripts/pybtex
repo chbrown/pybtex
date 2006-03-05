@@ -9,7 +9,7 @@ def main():
     ext = ext.lstrip('.')
 
     bib_parser = pybtex.filters.find_filter('input', ext)
-    aux_data = pybtex.aux.parse_file(filename + ".aux")
+    aux_data = pybtex.auxfile.parse_file(filename + ".aux")
     bib_data = bib_parser.parse_file('%s.%s' % (aux_data.data, ext))
     
     entries = pybtex.prepare_entries(bib_data, aux_data)
