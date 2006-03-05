@@ -16,37 +16,11 @@ class Formatter:
     def newline(self):
         self.output('\n')
 
-    def join_with_separators(self, l, default_separator):
-        result = []
-        for element in l:
-            if isinstance(element, list):
-                if element[0]:
-                    part, separator = element
-            elif element:
-                    part, separator = element, default_separator
-            if len(result) == 0:
-                separator = ''
-            result.append(separator + part)
-        return "".join(result)   
-            
-        
-    def format_sentense(self, sentense):
-        if isinstance(sentense, list):
-            text = self.join_with_separators(sentense, self.word_separator)
-        else:
-            text = sentense 
-
-        return text
-
-            
     def write_item(self, entry):
         self.output('\n\n\\bibitem{%s}\n' % entry.key)
         f = getattr(self, "format_" + entry.type.lower())
-        sentenses = []
-        for sentense in f(entry):
-            sentenses.append(latex.add_period(self.format_sentense(sentense)))
-        text = self.join_with_separators(sentenses, self.separator)
-        self.output(text)
+        text = f(entry)
+        self.output(unicode(text))
 
     def output_bibliography(self, filename):
         self.f = codecs.open(filename, "w", self.encoding)
