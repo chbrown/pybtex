@@ -44,6 +44,7 @@ class Pack:
         self.last_sep = getarg('last_sep', self.sep)
         self.sep2 = getarg('sep2', self.last_sep)
         self.add_period = getarg('add_period', False)
+        self.add_periods = getarg('add_periods', False)
         self.sep_after = None
         self.parts = []
         for text in args:
@@ -52,12 +53,14 @@ class Pack:
     def append(self, text, sep_before=None, sep_after=None):
         if text is not None:
             text = unicode(text)
-            if self.sep_after is not None:
-                sep_before = self.sep_after
-                self.sep_after = None
-            if sep_after is not None:
-                self.sep_after = sep_after
             if text:
+                if self.add_periods:
+                    text = add_period(text)
+                if self.sep_after is not None:
+                    sep_before = self.sep_after
+                    self.sep_after = None
+                if sep_after is not None:
+                    self.sep_after = sep_after
                 self.parts.append((text, sep_before))
 
     def __unicode__(self):
