@@ -32,7 +32,7 @@ def format(s, format = "%s"):
     else:
         return ""
 
-class Packer:
+class Pack:
     def __init__(self, *args, **kwargs):
         def getarg(key, default=None):
             try:
