@@ -5,7 +5,8 @@ def is_terminator(s):
 
 def add_period(s):
     if not is_terminator(s[-1]):
-        return s + '.'
+        s += '.'
+    return s
 
 def abbreviate(s):
     def parts(s):
