@@ -43,7 +43,7 @@ class Pack:
         self.sep = getarg('sep', ', ')
         self.last_sep = getarg('last_sep', self.sep)
         self.sep2 = getarg('sep2', self.last_sep)
-        self.add_period = getarg(add_period, False)
+        self.add_period = getarg('add_period', False)
         self.sep_after = None
         self.parts = []
         for text in args:
