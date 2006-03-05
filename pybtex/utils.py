@@ -33,17 +33,20 @@ def format(s, format = "%s"):
         return ""
 
 class Packer:
-    def __init__(self, text=None, sep=', ', sep2=None, last_sep=None, add_period=False):
+    def __init__(self, *args, **kwargs):
+        def getarg(key, default=None):
+            try:
+                return kwargs[key]
+            except KeyError:
+                return default
+
         self.parts = []
-        self.append(text)
-        self.sep = sep
-        if last_sep is None:
-            last_sep = sep
-        self.last_sep = last_sep
-        if sep2 is None:
-            sep2 = last_sep
-        self.sep2 = sep2
-        self.add_period = add_period
+        for text in args:
+            self.append(text)
+        self.sep = getarg('sep', ', ')
+        self.last_sep = getarg('last_sep', self.sep)
+        self.sep2 = getarg('sep2', self.last_sep)
+        self.add_period = getarg(add_period, False)
         self.sep_after = None
 
     def append(self, text, sep_before=None, sep_after=None):
