@@ -40,18 +40,18 @@ class Pack:
             except KeyError:
                 return default
 
-        self.parts = []
-        for text in args:
-            self.append(text)
         self.sep = getarg('sep', ', ')
         self.last_sep = getarg('last_sep', self.sep)
         self.sep2 = getarg('sep2', self.last_sep)
         self.add_period = getarg(add_period, False)
         self.sep_after = None
+        self.parts = []
+        for text in args:
+            self.append(text)
 
     def append(self, text, sep_before=None, sep_after=None):
         if text is not None:
-            text = str(text)
+            text = unicode(text)
             if self.sep_after is not None:
                 sep_before = self.sep_after
                 self.sep_after = None
@@ -60,14 +60,17 @@ class Pack:
             if text:
                 self.parts.append((text, sep_before))
 
-    def __str__(self):
+    def __unicode__(self):
         def output_part(part, sep):
             if part[1] is not None:
                 sep = part[1]
             tmp.append(sep + part[0])
 
         if len(self.parts) == 2:
-            text = self.sep2.join(self.parts)
+            sep = self.parts[1][1]
+            if sep is None:
+                sep = self.sep2
+            text = self.sep2.join([part[0] for part in self.parts])
         else:
             tmp = []
             output_part(self.parts[0], sep='')
