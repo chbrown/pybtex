@@ -29,7 +29,10 @@ class Formatter(base.Formatter):
             l.append(self.format_authors(e.authors))
         else:
             editors = self.format_authors(e.editors)
-            editors.append('editor')
+            if e.editors.count > 1:
+                editors.append('editors')
+            else:
+                editors.append('editor')
             l.append(editors)
         l.append(latex.emph(self.format_title(e['title'])))
         p = utils.format(e['publisher'])
