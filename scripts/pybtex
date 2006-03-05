@@ -1,11 +1,22 @@
 #!/usr/bin/env python
 
 import sys
+import optparse
 import pybtex
 from os import path
 
 def main():
-    filename, ext = path.splitext(sys.argv[1])
+    opt_parser = optparse.OptionParser(prog='pybtex', usage='%prog auxfile[.aux] [options]', version='%%prog-%s' % pybtex.__version__)
+    opt_parser.add_option('-o', '--output', action='store', type='string', dest='output')
+    opt_parser.add_option('-f', '--bibliography-format', action='store', type='string', dest='bib_type', default='bibtex')
+    opt_parser.add_option('--input-charset', action='store', type='string', dest='input_charset')
+    (options, args) = opt_parser.parse_args()
+
+    if not args:
+        opt_parser.print_help()
+        sys.exit(1)
+
+    filename, ext = path.splitext(args[0])
     ext = ext.lstrip('.')
 
     bib_parser = pybtex.filters.find_filter('input', ext)
@@ -17,7 +28,6 @@ def main():
     #from formatters.latex import unsorted
     style = pybtex.import_style(aux_data.style)
     style.Formatter(entries).output_bibliography(filename + ".bbl")
-
 
 if __name__ == '__main__':
     main()
