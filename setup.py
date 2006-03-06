@@ -52,12 +52,7 @@ class InstallData(install_data):
 
         return data_files
 
-docpath = os.path.join('share', 'doc', '%s-%s' % (progname, version))
-data_files = [
-    (docpath, ('README', 'COPYING', 'NEWS')),
-    (os.path.join(docpath, 'examples'), [os.path.join('examples', 'foo.' + ext) for ext in 'tex', 'bib', 'bibtexml'])
-]
-
+data_files=[]
 setup(name=progname,
     version=version,
     description='Bibtex-compatible bibliography processor in Python',
