@@ -1,10 +1,13 @@
 terminators = '.?!'
 
-def is_terminator(s):
-    return (bool(s) and s in terminators)
+def is_terminated(s):
+    try:
+        return s.is_terminated()
+    except AttributeError:
+        return (bool(s) and s[-1] in terminators)
 
 def add_period(s):
-    if not is_terminator(s[-1]):
+    if not is_terminated(s):
         s += '.'
     return s
 
@@ -20,7 +23,7 @@ def abbreviate(s):
                 length = 0
         yield s[start:length], ""
     def abbr(part):
-        if is_terminator(part[1]):
+        if is_terminated(part[1]):
             return part[0][0].upper() + part[1]
         else:
             return part[0][0].upper() + '.'
@@ -50,7 +53,7 @@ class Pack:
         for text in args:
             self.append(text)
 
-    def append(self, text, sep_before=None, sep_after=None):
+    def append(self, text, sep_before=None, sep_after=None, format=None):
         if text is not None:
             text = unicode(text)
             if text:
@@ -61,8 +64,20 @@ class Pack:
                     self.sep_after = None
                 if sep_after is not None:
                     self.sep_after = sep_after
-                self.parts.append((text, sep_before))
 
+                if format is not None:
+                    self.parts.append((format(text), sep_before, text))
+                else:
+                    self.parts.append((text, sep_before))
+
+    def is_terminated(self):
+        last = self.parts[-1]
+        try:
+            plain_text = last[2]
+        except IndexError:
+            plain_text = last[0]
+        return (plain_text in terminators)
+        
     def __unicode__(self):
         def output_part(part, sep):
             if part[1] is not None:

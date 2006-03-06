@@ -21,7 +21,11 @@ class Formatter(base.Formatter):
             vp = "".join([e['volume'], utils.format(pages, ':%s')])
         else:
             vp = utils.format(pages, 'pages %s')
-        p.append(Pack(latex.emph(e['journal']), vp, e['year']))
+        p2 = Pack()
+        p2.append(e['journal'], format=latex.emph)
+        p2.append(vp)
+        p2.append(e['year'])
+        p.append(p2)
         return p
         
     def format_book(self, e):
@@ -35,6 +39,6 @@ class Formatter(base.Formatter):
             else:
                 editors.append('editor')
             p.append(editors)
-        p.append(latex.emph(self.format_title(e['title'])))
+        p.append(self.format_title(e['title']), format=latex.emph)
         p.append(Pack(e['publisher'], e['year'], add_period=True))
         return p
