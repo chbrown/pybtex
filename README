@@ -1,14 +1,26 @@
-How to use pybtex? It is not too usable at the moment. You may
-want to examine the test subdirectory and do the following:
+Pybtex is a bibliography processor similar to BibTeX and written in Python.
 
-$ latex foo.tex # to produce foo.aux file
 
-$ ../pybtex.py foo.bib # to produce foo.bbl file
-
-After that examine foo.bbl file to see what you have just got.
-Than build a dvi:
-
+1. Synopsis
+$ latex foo.tex
+$ pybtex foo.aux
+$ latex foo.tex
 $ latex foo.tex
 
-If you have any questions or suggestions, please feel free to contact us
-by email (see AUTHORS file).
+2. Description
+Pybtex reads citation information from a file and
+produces a formatted bibliography. In case of LaTeX the
+citaton information is read from .aux file and the
+bibliography is written to .bbl file.
+
+3. Requirements
+- Python-2.3.2 or later (http://python.org)
+- pyparsing-1.4 or later is required for reading .bib
+  files (http://pyparsing.sourceforge.net)
+- elementtree is required for reading BibTeXML
+  (http://effbot.org/zone/element-index.htm)
+
+4. Installation
+Run the following:
+$ python setup.py install
+(you may need to be root for that).
