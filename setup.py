@@ -52,8 +52,10 @@ class InstallData(install_data):
 
         return data_files
 
+docpath = os.path.join('share', 'doc', '%s-%s' % (progname, version))
 data_files = [
-    (os.path.join('share', 'doc', '%s-%s' % (progname, version)) , ('README', 'COPYING', 'NEWS'))
+    (docpath, ('README', 'COPYING', 'NEWS')),
+    (os.path.join(docpath, 'examples'), [os.path.join('examples', 'foo.' + ext) for ext in 'tex', 'bib', 'bibtexml'])
 ]
 
 setup(name=progname,

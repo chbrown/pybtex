@@ -1,4 +1,4 @@
-include test/foo.bib test/foo.bibtexml test/foo.tex
+include examples/foo.bib examples/foo.bibtexml examples/foo.tex
 include COPYING NEWS
 include langadmin.py
 recursive-include po *.po *.pot
