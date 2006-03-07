@@ -1,9 +1,24 @@
 #!/usr/bin/env python
+
+from os import path
 import filters
 import auxfile
 from formatters import label
 
 __version__ = "0.1"
+
+def make_bibliography(aux_filename, bib_format='bib'):
+    filename = path.splitext(aux_filename)[0]
+    aux_data = auxfile.parse_file(aux_filename)
+
+    bib_parser = filters.find_filter('input', bib_format)
+    bib_data = bib_parser.parse_file(path.extsep.join([aux_data.data, bib_parser.extension]))
+    
+    entries = prepare_entries(bib_data, aux_data)
+    del bib_data
+
+    style = import_style(aux_data.style)
+    style.Formatter(entries).output_bibliography(path.extsep.join([filename, 'bbl']))
 
 def import_style(name):
     m = __import__('pybtex.formatters.latex', globals(), locals(), [name])

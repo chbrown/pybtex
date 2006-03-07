@@ -33,6 +33,7 @@ class BibData:
             self.strings[i[0]] = s
 
 class Filter:
+    extension = 'bib'
     def __init__(self):
         self.setEncoding(locale.getpreferredencoding())
         self.data = BibData()
