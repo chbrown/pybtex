@@ -84,7 +84,11 @@ class Pack:
                 sep = part[1]
             tmp.append(sep + part[0])
 
-        if len(self.parts) == 2:
+        if not self.parts:
+            return ""
+        elif len(self.parts) == 1:
+            text = self.parts[0][0]
+        elif len(self.parts) == 2:
             sep = self.parts[1][1]
             if sep is None:
                 sep = self.sep2
