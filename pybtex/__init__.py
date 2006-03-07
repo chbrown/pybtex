@@ -7,11 +7,17 @@ from formatters import label
 
 __version__ = "0.1"
 
-def make_bibliography(aux_filename, bib_format='bib'):
+def make_bibliography(aux_filename, bib_format='bib', input_encoding=None):
     filename = path.splitext(aux_filename)[0]
     aux_data = auxfile.parse_file(aux_filename)
 
     bib_parser = filters.find_filter('input', bib_format)
+    if input_encoding is not None:
+        try:
+            bib_parser.set_encoding(input_encoding)
+        except AttributeError:
+            pass
+
     bib_data = bib_parser.parse_file(path.extsep.join([aux_data.data, bib_parser.extension]))
     
     entries = prepare_entries(bib_data, aux_data)

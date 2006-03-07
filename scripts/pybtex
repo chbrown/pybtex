@@ -8,7 +8,7 @@ from os import path
 def main():
     opt_parser = optparse.OptionParser(prog='pybtex', usage='%prog auxfile[.aux] [options]', version='%%prog-%s' % pybtex.__version__)
     opt_parser.add_option('-f', '--bibliography-format', action='store', type='string', dest='bib_format', default='bibtex')
-    opt_parser.add_option('--input-charset', action='store', type='string', dest='input_charset')
+    opt_parser.add_option('--input-encoding', action='store', type='string', dest='input_encoding')
     (options, args) = opt_parser.parse_args()
 
     if not args:
@@ -19,7 +19,8 @@ def main():
     if not ext:
         ext = path.extsep + 'aux'
     pybtex.make_bibliography(filename + ext,
-            bib_format=options.bib_format
+            bib_format=options.bib_format,
+            input_encoding=options.input_encoding
     )
 
 if __name__ == '__main__':

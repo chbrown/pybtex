@@ -35,7 +35,7 @@ class BibData:
 class Filter:
     extension = 'bib'
     def __init__(self):
-        self.setEncoding(locale.getpreferredencoding())
+        self.set_encoding(locale.getpreferredencoding())
         self.data = BibData()
 
         lparenth = Literal('(').suppress()
@@ -92,8 +92,8 @@ class Filter:
 
         self.BibTeX_BNF = ZeroOrMore(meta | comment | raw_text | Suppress(string) | Suppress(record)) + StringEnd()
 
-    def setEncoding(self, e):
-        self._decode = codecs.getdecoder(e)
+    def set_encoding(self, s):
+        self._decode = codecs.getdecoder(s)
 
     def decode(self, s, loc, toks):
         return map(lambda x:self._decode(x)[0], toks)
@@ -136,9 +136,5 @@ class Filter:
             return self.data.records
         except ParseException, e:
             print "%s: syntax error:" % filename
-            print e
-            sys.exit(1)
-        except UnicodeDecodeError, e:
-            print "%s: no encoding specified, using locale default" % filename
             print e
             sys.exit(1)
