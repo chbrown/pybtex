@@ -4,6 +4,7 @@ from os import path
 import filters
 import auxfile
 from formatters import label
+from formatters.backends import latex
 
 __version__ = "0.1"
 
@@ -23,8 +24,10 @@ def make_bibliography(aux_filename, bib_format='bib', input_encoding=None):
     entries = prepare_entries(bib_data, aux_data)
     del bib_data
 
-    style = import_style(aux_data.style)
-    style.Formatter(entries).output_bibliography(path.extsep.join([filename, 'bbl']))
+    backend = latex.Backend()
+    style = import_style(aux_data.style).Formatter(backend)
+    formatted_entries = style.format_entries(entries)
+    backend.output_bibliography(formatted_entries, path.extsep.join([filename, 'bbl']))
 
 def import_style(name):
     m = __import__('pybtex.formatters.styles', globals(), locals(), [name])
