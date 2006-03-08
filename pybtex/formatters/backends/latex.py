@@ -1,9 +1,7 @@
-import re
 from pybtex import utils
 from pybtex.formatters.backends import BackendBase
 import codecs
 
-dash_re = re.compile(r'-')
 ndash = '--'
 
 def emph(s): return r"\emph{%s}" % s
@@ -16,9 +14,6 @@ def bf(s):
 
 def sc(s):
     return r"\textsc{%s}"
-
-def dashify(s):
-    return ndash.join(dash_re.split(s))
 
 class Writer(BackendBase):
     def newblock(self):

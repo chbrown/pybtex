@@ -1,4 +1,7 @@
+import re
+
 terminators = '.?!'
+dash_re = re.compile(r'-')
 
 def set_backend(b):
     global backend
@@ -34,7 +37,8 @@ def abbreviate(s):
     return ''.join(abbr(part) for part in parts(s))
 
 def dashify(s):
-    backend.dashify(s)
+    return backend.ndash.join(dash_re.split(s))
+
 def format(s, format = "%s"):
     if s and len(s) != 0:
         return format % s
