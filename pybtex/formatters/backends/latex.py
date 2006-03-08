@@ -6,7 +6,21 @@ import codecs
 dash_re = re.compile(r'-')
 ndash = '--'
 
-class Backend(BackendBase):
+def emph(s): return r"\emph{%s}" % s
+
+def it(s):
+    return r"\textit{%s}" %s
+
+def bf(s):
+    return r"\textbf{%s}"
+
+def sc(s):
+    return r"\textsc{%s}"
+
+def dashify(s):
+    return ndash.join(dash_re.split(s))
+
+class Writer(BackendBase):
     def newblock(self):
         self.output('\n\\newblock\n')
     
@@ -17,7 +31,7 @@ class Backend(BackendBase):
         self.output('\n\n\\bibitem{%s}\n' % entry[0])
         self.output(entry[1])
 
-    def output_bibliography(self, entries, filename):
+    def write_bibliography(self, entries, filename):
         self.f = codecs.open(filename, "w", self.encoding)
         self.output = self.f.write
         maxlen = max([len(e[2]) for e in entries])
@@ -28,18 +42,3 @@ class Backend(BackendBase):
         self.output('\n\\end{thebibliography}\n')
         self.f.close()
         del self.f
-
-    def emph(self, s):
-        return r"\emph{%s}" % s
-
-    def it(self, s):
-        return r"\textit{%s}" %s
-
-    def bf(self, s):
-        return r"\textbf{%s}"
-
-    def sc(self, s):
-        return r"\textsc{%s}"
-
-    def dashify(self, s):
-        return ndash.join(dash_re.split(s))
