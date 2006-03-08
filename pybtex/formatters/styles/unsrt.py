@@ -1,8 +1,9 @@
 from pybtex import utils
 from pybtex.utils import Pack
-from pybtex.formatters import base, latex
+from pybtex.formatters.backends import latex
+from pybtex.formatters.styles import FormatterBase
 
-class Formatter(base.Formatter):
+class Formatter(FormatterBase):
     def format_authors(self, authors):
         p = Pack()
         for author in authors:

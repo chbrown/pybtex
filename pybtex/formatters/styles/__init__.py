@@ -1,9 +1,9 @@
 import locale
 import codecs
 from pybtex import utils
-import latex
+from pybtex.formatters.backends import latex
 
-class Formatter:
+class FormatterBase:
     def __init__(self, entries, encoding = locale.getpreferredencoding()):
         self.separator = '\n\\newblock\n'
         self.word_separator = ', '
