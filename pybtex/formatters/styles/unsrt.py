@@ -16,13 +16,13 @@ class Formatter(FormatterBase):
         p = Pack(sep=' ', add_period=True, add_periods=True)
         p.append(self.format_authors(e.authors))
         p.append(self.format_title(e['title']))
-        pages = self.b.dashify(e['pages'])
+        pages = utils.dashify(e['pages'])
         if e.has_key('volume'):
             vp = "".join([e['volume'], utils.format(pages, ':%s')])
         else:
             vp = utils.format(pages, 'pages %s')
         p2 = Pack()
-        p2.append(e['journal'], format=self.b.emph)
+        p2.append(e['journal'], format='emph')
         p2.append(vp)
         p2.append(e['year'])
         p.append(p2)
@@ -39,6 +39,6 @@ class Formatter(FormatterBase):
             else:
                 editors.append('editor')
             p.append(editors)
-        p.append(self.format_title(e['title']), format=self.b.emph)
+        p.append(self.format_title(e['title']), format='emph')
         p.append(Pack(e['publisher'], e['year'], add_period=True))
         return p

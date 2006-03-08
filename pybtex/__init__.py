@@ -3,6 +3,7 @@
 from os import path
 import filters
 import auxfile
+import utils
 from formatters import label
 from formatters.backends import latex
 
@@ -25,8 +26,9 @@ def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_e
     del bib_data
 
     backend = latex
-    style = import_style(aux_data.style).Formatter(backend)
-    formatted_entries = style.format_entries(entries)
+    utils.set_backend(backend)
+    formatter = import_style(aux_data.style).Formatter()
+    formatted_entries = formatter.format_entries(entries)
     del entries
     backend.Writer(latex_encoding).write_bibliography(formatted_entries, path.extsep.join([filename, 'bbl']))
 

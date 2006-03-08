@@ -1,5 +1,9 @@
 terminators = '.?!'
 
+def set_backend(b):
+    global backend
+    backend = b
+
 def is_terminated(s):
     try:
         return s.is_terminated()
@@ -29,6 +33,8 @@ def abbreviate(s):
             return part[0][0].upper() + '.'
     return ''.join(abbr(part) for part in parts(s))
 
+def dashify(s):
+    backend.dashify(s)
 def format(s, format = "%s"):
     if s and len(s) != 0:
         return format % s
@@ -66,7 +72,8 @@ class Pack:
                     self.sep_after = sep_after
 
                 if format is not None:
-                    self.parts.append((format(text), sep_before, text))
+                    f = getattr(backend, format)
+                    self.parts.append((f(text), sep_before, text))
                 else:
                     self.parts.append((text, sep_before))
 

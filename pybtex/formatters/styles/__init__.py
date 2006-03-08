@@ -5,9 +5,6 @@ from pybtex.core import FormattedEntry
 from pybtex.formatters.backends import latex
 
 class FormatterBase:
-    def __init__(self, backend):
-        self.b = backend
-
     def format_entries(self, entries):
         l = []
         for entry in entries:
