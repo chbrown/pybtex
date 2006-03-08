@@ -27,6 +27,7 @@ def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_e
     backend = latex
     style = import_style(aux_data.style).Formatter(backend)
     formatted_entries = style.format_entries(entries)
+    del entries
     backend.Writer(latex_encoding).write_bibliography(formatted_entries, path.extsep.join([filename, 'bbl']))
 
 def import_style(name):
