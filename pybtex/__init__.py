@@ -8,7 +8,7 @@ from formatters.backends import latex
 
 __version__ = "0.1"
 
-def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None):
+def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_encoding=None):
     filename = path.splitext(aux_filename)[0]
     aux_data = auxfile.parse_file(aux_filename)
 
@@ -27,7 +27,7 @@ def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None):
     backend = latex
     style = import_style(aux_data.style).Formatter(backend)
     formatted_entries = style.format_entries(entries)
-    backend.Writer().write_bibliography(formatted_entries, path.extsep.join([filename, 'bbl']))
+    backend.Writer(latex_encoding).write_bibliography(formatted_entries, path.extsep.join([filename, 'bbl']))
 
 def import_style(name):
     m = __import__('pybtex.formatters.styles', globals(), locals(), [name])
