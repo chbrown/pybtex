@@ -1,6 +1,7 @@
 import locale
 import codecs
 from pybtex import utils
+from pybtex.core import FormattedEntry
 from pybtex.formatters.backends import latex
 
 class FormatterBase:
@@ -12,5 +13,5 @@ class FormatterBase:
         for entry in entries:
             f = getattr(self, "format_" + entry.type.lower())
             text = f(entry)
-            l.append((entry.key, unicode(text), entry.label))
+            l.append(FormattedEntry(entry.key, unicode(text), entry.label))
         return l

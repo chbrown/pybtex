@@ -1,5 +1,11 @@
 import utils
 
+class FormattedEntry:
+    def __init__(self, key, text, label=None):
+        self.key = key
+        self.text = text
+        self.label = label
+
 class Entry:
     valid_roles = ['author', 'editor']
     def __init__(self, type_, fields = None):

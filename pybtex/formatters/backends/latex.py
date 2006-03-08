@@ -28,13 +28,13 @@ class Writer(BackendBase):
         self.output('\n')
 
     def write_item(self, entry):
-        self.output('\n\n\\bibitem{%s}\n' % entry[0])
-        self.output(entry[1])
+        self.output('\n\n\\bibitem[%s]{%s}\n' % (entry.label, entry.key))
+        self.output(entry.text)
 
     def write_bibliography(self, entries, filename):
         self.f = codecs.open(filename, "w", self.encoding)
         self.output = self.f.write
-        maxlen = max([len(e[2]) for e in entries])
+        maxlen = max([len(e.label) for e in entries])
         #FIXME: determine label width proprely
         self.output('\\begin{thebibliography}{%s}' % ('8' * maxlen))
         for entry in entries:
