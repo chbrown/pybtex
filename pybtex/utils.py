@@ -14,7 +14,7 @@ def is_terminated(s):
         return (bool(s) and s[-1] in terminators)
 
 def add_period(s):
-    if not is_terminated(s):
+    if s and not is_terminated(s):
         s += '.'
     return s
 
