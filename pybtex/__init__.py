@@ -40,7 +40,6 @@ def prepare_entries(bib_data, aux_data):
     n = 1
     entries = []
     for key in aux_data.citations:
-        print key
         entry = bib_data[key]
         entry.number = n
         entry.key = key
