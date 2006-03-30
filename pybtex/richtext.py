@@ -44,7 +44,7 @@ class RichText(list):
         except AttributeError:
             return utils.is_terminated(item)
     def add_period(self):
-        if self.is_terminated():
+        if not self.is_terminated():
             self.append('.')
         return self
 
