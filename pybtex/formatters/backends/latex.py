@@ -2,8 +2,6 @@ from pybtex import utils
 from pybtex.richtext import Tag
 from pybtex.formatters.backends import BackendBase
 
-ndash = '--'
-
 class Writer(BackendBase):
     symbols = {
         'ndash': '--',
