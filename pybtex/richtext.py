@@ -7,16 +7,18 @@ class Tag:
     def is_terminated(self):
         return utils.is_terminated(self.text)
     def render(self, backend):
-        #FIXME
-        return r'\%s{%s}' % (self.name, self.text)
+        try:
+            text = self.text.render(backend)
+        except AttributeError:
+            text = self.text
+        return backend.format_tag(self.name, text)
 
 
 class Character:
     def __init__(self, name):
         self.name = name
     def render(self, backend):
-        #FIXME
-        return '!%s!' % self.name
+        return backend.symbols[self.name]
 
 
 class RichText(list):
