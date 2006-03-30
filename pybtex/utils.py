@@ -1,5 +1,5 @@
 import re
-from pybtex.richtext import RichText
+from pybtex.richtext import RichText, Symbol
 
 terminators = '.?!'
 dash_re = re.compile(r'-')
@@ -45,11 +45,13 @@ def abbreviate(s):
     return ''.join(abbr(part) for part in parts(s))
 
 def dashify(s):
-    return backend.ndash.join(dash_re.split(s))
+    return Phrase(dash_re.split(s), sep=Symbol('ndash')).rich_text()
 
 def try_format(s, format = "%s"):
-    if s and len(s) != 0:
-        return format % s
+    if s:
+        tmp = format.split('%s')
+        tmp.insert(1, s)
+        return RichText(*tmp)
     else:
         return ""
 
@@ -68,8 +70,13 @@ class Phrase:
         self.periods = getarg('add_periods', False)
         self.sep_after = None
         self.parts = []
+
         for text in args:
-            self.append(text)
+            if isinstance(text, list):
+                for i in text:
+                    self.append(i)
+            else:
+                self.append(text)
 
         self.__str__ = self.parts.__str__
         self.__repr__ = self.parts.__repr__

@@ -4,15 +4,17 @@ from os import path
 import filters
 import auxfile
 import utils
-from formatters import label
+from formatters import label, find_plugin
 from formatters.backends import latex
 
 __version__ = "0.1"
 
-def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_encoding=None):
+def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_encoding=None,
+        output_backend='latex'):
     filename = path.splitext(aux_filename)[0]
     aux_data = auxfile.parse_file(aux_filename)
 
+    backend = find_plugin('backends', output_backend)
     bib_parser = filters.find_filter('input', bib_format)
     if bib_encoding is not None:
         try:
@@ -25,8 +27,7 @@ def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_e
     entries = prepare_entries(bib_data, aux_data)
     del bib_data
 
-    backend = latex
-    utils.set_backend(backend)
+    #utils.set_backend(output_backend)
     formatter = import_style(aux_data.style).Formatter()
     formatted_entries = formatter.format_entries(entries)
     del entries

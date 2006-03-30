@@ -28,6 +28,9 @@ class RichText(list):
         list.__init__(self)
         for i in args:
             self.append(i)
+    def append(self, item):
+        if item:
+            list.append(self, item)
     def render(self, backend):
         text = []
         for item in self:
