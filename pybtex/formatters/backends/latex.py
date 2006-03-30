@@ -1,4 +1,5 @@
 from pybtex import utils
+from pybtex.richtext import Tag, Character
 from pybtex.formatters.backends import BackendBase
 import codecs
 
@@ -22,9 +23,21 @@ class Writer(BackendBase):
     def newline(self):
         self.output('\n')
 
+    def write_text(self, text):
+        for part in text:
+            if isinstance(part, Tag):
+                self.write_tag(part)
+            else:
+                self.output(part)
+
+    def write_tag(self, tag):
+        self.output(r'\%s{' % tag.name)
+        self.write_text(tag.text)
+        self.output('}')
+
     def write_item(self, entry):
         self.output('\n\n\\bibitem[%s]{%s}\n' % (entry.label, entry.key))
-        self.output(entry.text)
+        self.write_text(entry.text)
 
     def write_bibliography(self, entries, filename):
         self.f = codecs.open(filename, "w", self.encoding)

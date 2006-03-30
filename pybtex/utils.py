@@ -1,4 +1,5 @@
 import re
+from pybtex.richtext import RichText
 
 terminators = '.?!'
 dash_re = re.compile(r'-')
@@ -14,9 +15,16 @@ def is_terminated(s):
         return (bool(s) and s[-1] in terminators)
 
 def add_period(s):
-    if s and not is_terminated(s):
-        s += '.'
-    return s
+    try:
+        return s.add_period()
+    except AttributeError:
+        try:
+            s = s.rich_text()
+        except AttributeError:
+            pass
+        if s and not is_terminated(s):
+            s += '.'
+        return s
 
 def abbreviate(s):
     def parts(s):
@@ -45,7 +53,7 @@ def format(s, format = "%s"):
     else:
         return ""
 
-class Pack:
+class Phrase:
     def __init__(self, *args, **kwargs):
         def getarg(key, default=None):
             try:
@@ -56,61 +64,68 @@ class Pack:
         self.sep = getarg('sep', ', ')
         self.last_sep = getarg('last_sep', self.sep)
         self.sep2 = getarg('sep2', self.last_sep)
-        self.add_period = getarg('add_period', False)
-        self.add_periods = getarg('add_periods', False)
+        self.period = getarg('add_period', False)
+        self.periods = getarg('add_periods', False)
         self.sep_after = None
         self.parts = []
         for text in args:
             self.append(text)
 
-    def append(self, text, sep_before=None, sep_after=None, format=None):
-        if text is not None:
-            text = unicode(text)
-            if text:
-                if self.add_periods:
-                    text = add_period(text)
-                if self.sep_after is not None:
-                    sep_before = self.sep_after
-                    self.sep_after = None
-                if sep_after is not None:
-                    self.sep_after = sep_after
+        self.__str__ = self.parts.__str__
+        self.__repr__ = self.parts.__repr__
 
-                if format is not None:
-                    f = getattr(backend, format)
-                    self.parts.append((f(text), sep_before, text))
-                else:
-                    self.parts.append((text, sep_before))
-
-    def is_terminated(self):
-        last = self.parts[-1]
+    def append(self, text, sep_before=None, sep_after=None):
         try:
-            plain_text = last[2]
-        except IndexError:
-            plain_text = last[0]
-        return (plain_text in terminators)
-        
-    def __unicode__(self):
+            text = text.rich_text()
+        except AttributeError:
+            pass
+        if text:
+            if self.periods:
+                text = add_period(text)
+
+            if self.sep_after is not None:
+                sep_before = self.sep_after
+                self.sep_after = None
+            if sep_after is not None:
+                self.sep_after = sep_after
+
+            if isinstance(text, list):
+                self.parts.append((text[0], sep_before))
+                for part in text[1:]:
+                    self.parts.append((part, ''))
+            else:
+                self.parts.append((text, sep_before))
+
+    def rich_text(self):
         def output_part(part, sep):
             if part[1] is not None:
                 sep = part[1]
-            tmp.append(sep + part[0])
+            if sep:
+                result.append(sep)
+            result.append(part[0])
 
         if not self.parts:
-            return ""
+            return RichText()
         elif len(self.parts) == 1:
-            text = self.parts[0][0]
+            result = RichText(self.parts[0][0])
         elif len(self.parts) == 2:
             sep = self.parts[1][1]
             if sep is None:
                 sep = self.sep2
-            text = self.sep2.join([part[0] for part in self.parts])
+            result = RichText(self.parts[0][0], sep, self.parts[1][0])
         else:
-            tmp = []
+            result = RichText()
             output_part(self.parts[0], sep='')
             for part in self.parts[1:-1]:
                 output_part(part, self.sep)
             output_part(self.parts[-1], self.last_sep)
-            text = ''.join(tmp)
-        if self.add_period:
-            text = add_period(text)
-        return text
+        if self.period:
+            result = add_period(result)
+        return result
+
+class Word(Phrase):
+    def __init__(self, *args, **kwargs):
+        kwargs['sep'] = ''
+        kwargs['sep2'] = ''
+        kwargs['last_sep'] = ''
+        Phrase.__init__(self, *args, **kwargs)
