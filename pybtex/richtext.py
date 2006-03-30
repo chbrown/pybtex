@@ -12,6 +12,8 @@ class Tag:
         except AttributeError:
             text = self.text
         return backend.format_tag(self.name, text)
+    def add_period(self):
+        return RichText(self).add_period()
 
 
 class Symbol:
