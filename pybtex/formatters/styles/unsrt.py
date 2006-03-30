@@ -1,6 +1,6 @@
 from pybtex import utils
 from pybtex.utils import Phrase, Word, try_format
-from pybtex.richtext import Tag, Character
+from pybtex.richtext import Tag
 from pybtex.formatters.styles import FormatterBase
 
 class Formatter(FormatterBase):
@@ -14,7 +14,7 @@ class Formatter(FormatterBase):
         return utils.add_period(title)
        
     def format_article(self, e):
-        p = Phrase(sep=' ', add_period=True, add_periods=True)
+        p = self.default_phrase()
         p.append(self.format_authors(e.authors))
         p.append(Tag('emph', self.format_title(e['title'])))
         pages = utils.dashify(e['pages'])
@@ -26,7 +26,7 @@ class Formatter(FormatterBase):
         return p
         
     def format_book(self, e):
-        p = Phrase(sep=' ', add_period=True, add_periods=True)
+        p = self.default_phrase()
         if e.authors:
             p.append(self.format_authors(e.authors))
         else:

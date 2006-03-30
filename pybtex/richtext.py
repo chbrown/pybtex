@@ -14,7 +14,7 @@ class Tag:
         return backend.format_tag(self.name, text)
 
 
-class Character:
+class Symbol:
     def __init__(self, name):
         self.name = name
     def render(self, backend):
