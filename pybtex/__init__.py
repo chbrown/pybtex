@@ -22,7 +22,7 @@ def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_e
         except AttributeError:
             pass
 
-    bib_data = bib_parser.parse_file(path.extsep.join([aux_data.data, bib_parser.extension]))
+    bib_data = bib_parser.parse_file(path.extsep.join([aux_data.data, bib_parser.file_extension]))
     
     entries = prepare_entries(bib_data, aux_data)
     del bib_data
@@ -31,7 +31,7 @@ def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_e
     formatter = import_style(aux_data.style).Formatter()
     formatted_entries = formatter.format_entries(entries)
     del entries
-    backend.Writer(latex_encoding).write_bibliography(formatted_entries, path.extsep.join([filename, backend.extension]))
+    backend.Writer(latex_encoding).write_bibliography(formatted_entries, path.extsep.join([filename, backend.file_extension]))
 
 def import_style(name):
     m = __import__('pybtex.formatters.styles', globals(), locals(), [name])

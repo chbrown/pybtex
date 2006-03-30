@@ -2,7 +2,7 @@ from pybtex import utils
 from pybtex.richtext import Tag
 from pybtex.formatters.backends import BackendBase
 
-extension = 'bbl'
+file_extension = 'bbl'
 
 class Writer(BackendBase):
     symbols = {

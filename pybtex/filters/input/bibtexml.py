@@ -7,7 +7,7 @@ def remove_ns(s):
         return s[len(bibtexns):]
 
 class Filter:
-    extension = 'bibtexml'
+    file_extension = 'bibtexml'
     def __init__(self):
         self.entries = {}
 
