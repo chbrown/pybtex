@@ -31,7 +31,7 @@ def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_e
     formatter = import_style(aux_data.style).Formatter()
     formatted_entries = formatter.format_entries(entries)
     del entries
-    backend.Writer(latex_encoding).write_bibliography(formatted_entries, path.extsep.join([filename, 'bbl']))
+    backend.Writer(latex_encoding).write_bibliography(formatted_entries, path.extsep.join([filename, backend.extension]))
 
 def import_style(name):
     m = __import__('pybtex.formatters.styles', globals(), locals(), [name])

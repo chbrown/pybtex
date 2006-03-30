@@ -3,6 +3,8 @@ from pybtex.richtext import Tag
 from pybtex.formatters.backends import BackendBase
 import codecs
 
+extension = 'txt'
+
 class Writer(BackendBase):
     symbols = {
         'ndash': '-',
