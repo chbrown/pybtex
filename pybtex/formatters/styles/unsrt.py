@@ -10,19 +10,14 @@ class Formatter(FormatterBase):
             p.append(author.format([['f'], ['ll']]))
         return p
 
-    def format_title(self, title):
-        return utils.add_period(title)
-       
     def format_article(self, e):
-        p = self.default_phrase()
-        p.append(self.format_authors(e.authors))
-        p.append(Tag('emph', self.format_title(e['title'])))
+        p = self.default_phrase(self.format_authors(e.authors), e['title'])
         pages = utils.dashify(e['pages'])
         if e.has_key('volume'):
             vp = Word(e['volume'], try_format(pages, ':%s'))
         else:
             vp = try_format(pages, 'pages %s')
-        p.append(Phrase(e['journal'], vp, e['year']))
+        p.append(Phrase(Tag('emph', e['journal']), vp, e['year']))
         return p
         
     def format_book(self, e):
@@ -36,6 +31,6 @@ class Formatter(FormatterBase):
             else:
                 editors.append('editor')
             p.append(editors)
-        p.append(Tag('emph', self.format_title(e['title'])))
+        p.append(Tag('emph', e['title']))
         p.append(Phrase(e['publisher'], e['year'], add_period=True))
         return p

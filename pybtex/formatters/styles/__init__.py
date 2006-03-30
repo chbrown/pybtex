@@ -7,8 +7,11 @@ from pybtex.richtext import Symbol
 
 class FormatterBase:
     sep = Symbol('newblock')
-    def default_phrase(self):
-        return utils.Phrase(sep=self.sep, sep2=self.sep, add_period=True, add_periods=True)
+    def default_phrase(self, *args, **kwargs):
+        kwargs['sep'] = self.sep
+        kwargs['add_period'] = True
+        kwargs['add_periods'] = True
+        return utils.Phrase(*args, **kwargs)
     def format_entries(self, entries):
         l = []
         for entry in entries:
