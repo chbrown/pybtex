@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+"""bibliography processor
+"""
+
 from os import path
 import filters
 import auxfile
@@ -11,6 +14,9 @@ __version__ = "0.1"
 
 def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_encoding=None,
         output_backend='latex'):
+    """This functions extracts all nessessary information from .aux file
+    and writes the bibliography.
+    """
     filename = path.splitext(aux_filename)[0]
     aux_data = auxfile.parse_file(aux_filename)
 
