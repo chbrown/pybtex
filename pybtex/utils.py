@@ -129,10 +129,3 @@ class Phrase:
         if self.period:
             result = add_period(result)
         return result
-
-class Word(Phrase):
-    def __init__(self, *args, **kwargs):
-        kwargs['sep'] = ''
-        kwargs['sep2'] = ''
-        kwargs['last_sep'] = ''
-        Phrase.__init__(self, *args, **kwargs)

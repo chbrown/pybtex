@@ -1,6 +1,6 @@
 from pybtex import utils
-from pybtex.utils import Phrase, Word, try_format
-from pybtex.richtext import Tag
+from pybtex.utils import Phrase, try_format
+from pybtex.richtext import Tag, RichText
 from pybtex.formatters.styles import FormatterBase
 
 class Formatter(FormatterBase):
@@ -14,7 +14,7 @@ class Formatter(FormatterBase):
         p = self.default_phrase(self.format_authors(e.authors), e['title'])
         pages = utils.dashify(e['pages'])
         if e.has_key('volume'):
-            vp = Word(e['volume'], try_format(pages, ':%s'))
+            vp = RichText(e['volume'], try_format(pages, ':%s'))
         else:
             vp = try_format(pages, 'pages %s')
         p.append(Phrase(Tag('emph', e['journal']), vp, e['year']))
