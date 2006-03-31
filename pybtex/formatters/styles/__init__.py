@@ -1,8 +1,7 @@
 import locale
 import codecs
-from pybtex import utils
 from pybtex.core import FormattedEntry
-from pybtex.richtext import Symbol
+from pybtex.richtext import Symbol, Phrase
 #from pybtex.formatters.backends import latex
 
 class FormatterBase:
@@ -11,7 +10,7 @@ class FormatterBase:
         kwargs['sep'] = self.sep
         kwargs['add_period'] = True
         kwargs['add_periods'] = True
-        return utils.Phrase(*args, **kwargs)
+        return Phrase(*args, **kwargs)
     def format_entries(self, entries):
         l = []
         for entry in entries:
