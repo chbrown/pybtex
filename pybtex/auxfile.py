@@ -1,4 +1,8 @@
 #!/bin/env python
+
+"""parse latex' aux file
+"""
+
 import sys, re
 
 class AuxData:
@@ -16,6 +20,9 @@ class AuxData:
         self.data = s
 
 def parse_file(filename):
+    """parse a file and return an AuxData object
+    FIXME: add an option to specify aux file encoding in command line
+    """
     command = re.compile(r'\\(citation|bibdata|bibstyle){(.*)}')
     f = open(filename)
     s = f.read()

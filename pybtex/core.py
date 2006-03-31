@@ -1,13 +1,26 @@
+"""pybtex' core datatypes
+"""
+
 import utils
 
 class FormattedEntry:
+    """Formatted bibliography entry. Consists of
+    - key (which is used for sorting);
+    - label (which appears in the resulting bibliography)
+    - text (usually RichText)
+    """
     def __init__(self, key, text, label=None):
         self.key = key
         self.text = text
         self.label = label
 
 class Entry:
-    valid_roles = ['author', 'editor']
+    """Bibliography entry. Important members are:
+    - authors (a list of Person objects)
+    - editors (like authors, but contains editors)
+    - fields (all other information)
+    """
+    valid_roles = ['author', 'editor'] 
     def __init__(self, type_, fields = None):
         self.type = type_
         if fields == None:
@@ -24,6 +37,8 @@ class Entry:
             return ""
 
     def add_person(self, person, role):
+        """Add an author or an editor.
+        """
         if not isinstance(person, Person):
             person = Person(person)
         list = getattr(self, '%ss' % role)
@@ -31,6 +46,8 @@ class Entry:
                 
 
 class Person:
+    """Represents a person (usually human).
+    """
     def __init__(self, s):
         # TODO parse 'von' and 'jr'
         names = s.split()
@@ -48,8 +65,7 @@ class Person:
             return parts[type[0]]
 
     def format(self, format):
-        """format is like this:
-        [['ff'], [
+        """FIXME: create a class for formatting names instead of this
         """
         s = []
         space = '~'

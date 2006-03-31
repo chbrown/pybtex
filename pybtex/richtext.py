@@ -1,14 +1,36 @@
+"""rich text formatting and more
+"""
+
 import utils
 
 class RichText(list):
-    def __init__(self, *args, **kwargs):
+    """Rich text is basically a list of
+    - strings
+    - Tag objects
+    - Symbol object
+    - other RichText objects
+    RichText is used as an internal formatting language of pybtex,
+    being rendered to to HTML or LaTeX markup or whatever in the end.
+    """
+    def __init__(self, *args):
+        """All the non-keyword arguments form the content of the RichText object.
+        E. g. RichText('This ', 'is a', Tag('emph', 'very'), RichText(' rich', ' text.')
+        Note the spaces. After rendering you will probably get something like
+        "This is a \emph{very} rich text". Isn't that simple? =)
+        """
         list.__init__(self)
         for i in args:
             self.append(i)
     def append(self, item):
+        """Appends some text or something.
+        Empty strings and similar things are ignored.
+        """
         if item:
             list.append(self, item)
     def render(self, backend):
+        """Return textual representation of the RichText.
+        The representation is obviously backend-dependent.
+        """
         text = []
         for item in self:
             try:
@@ -17,6 +39,8 @@ class RichText(list):
                 text.append(item)
         return "".join(text)
     def is_terminated(self):
+        """Return true if the text ends with period or something.
+        """
         try:
             item = self[-1]
         except IndexError:
@@ -26,12 +50,18 @@ class RichText(list):
         except AttributeError:
             return utils.is_terminated(item)
     def add_period(self):
+        """Add period if possible
+        """
         if not self.is_terminated():
             self.append('.')
         return self
 
 
 class Tag:
+    """A tag is somethins like <foo>some text</foo> in HTML
+    or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
+    'some text' is tag's text.
+    """
     def __init__(self, name, text):
         self.name = name
         self.text = text
@@ -48,6 +78,10 @@ class Tag:
 
 
 class Symbol:
+    """A symbol is used to represent some special characters.
+    Example: Symbol('ndash') produces '&ndash;' when rendered to HTML
+    and '--' when rendered to LaTeX.
+    """
     def __init__(self, name):
         self.name = name
     def render(self, backend):
@@ -55,7 +89,26 @@ class Symbol:
 
 
 class Phrase:
+    """Phrase is a helper class for easy construction of phrases.
+    Examples:
+        Phrase('One', 'two', 'three', add_period=True) -> 'One, two, three.'
+        Phrase('Her', 'me', sep2=' and ') -> 'Her and me'
+    More complex example:
+        p = Phrase(sep2=' and ', last_sep=', and ', add_period=True)
+        p.append('Her')               # "Her."
+        p.append('her parents')       # "Her and her parents."
+        p.append('her little sister') # "Her, her parents, and her little sister."
+        p.append('me')                # "Her, her parents, her little sister, and me."
+    """
     def __init__(self, *args, **kwargs):
+        """Construct a phrase from all non-keyword arguments.
+        Available keyword arguments are:
+        - sep (default separator);
+        - last_sep (separatos used before the last part of the phrase), defaults to sep;
+        - sep2 (separator used if a phrase consists of exactly two parts), defaults to last_sep;
+        - add_period (add a period at the end of phrase if there is none yet)
+        - add_periods (add a period to every part of the phrase)
+        """
         def getarg(key, default=None):
             try:
                 return kwargs[key]
@@ -103,6 +156,8 @@ class Phrase:
                 self.parts.append((text, sep_before))
 
     def rich_text(self):
+        """Return a RichText representation of the phrase
+        """
         def output_part(part, sep):
             if part[1] is not None:
                 sep = part[1]
