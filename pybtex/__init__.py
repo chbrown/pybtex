@@ -28,14 +28,10 @@ def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_e
     del bib_data
 
     #utils.set_backend(output_backend)
-    formatter = import_style(aux_data.style).Formatter()
+    formatter = find_plugin('styles', aux_data.style).Formatter() #import_style(aux_data.style).Formatter()
     formatted_entries = formatter.format_entries(entries)
     del entries
     backend.Writer(latex_encoding).write_bibliography(formatted_entries, path.extsep.join([filename, backend.file_extension]))
-
-def import_style(name):
-    m = __import__('pybtex.formatters.styles', globals(), locals(), [name])
-    return getattr(m, name)
 
 def prepare_entries(bib_data, aux_data):
     n = 1
@@ -51,11 +47,3 @@ def prepare_entries(bib_data, aux_data):
         return e.label
     entries.sort(key=l)
     return entries
-
-def parse_filename(filename):
-    dot = filename.rfind('.')
-    if dot == -1:
-        return filename, None
-    else:
-        return (filename[:dot], filename[dot + 1:])
-
