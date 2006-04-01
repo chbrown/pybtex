@@ -31,6 +31,7 @@ class RichText(list):
     RichText is used as an internal formatting language of pybtex,
     being rendered to to HTML or LaTeX markup or whatever in the end.
     """
+
     def __init__(self, *args):
         """All the non-keyword arguments form the content of the RichText object.
         E. g. RichText('This ', 'is a', Tag('emph', 'very'), RichText(' rich', ' text.')
@@ -40,12 +41,18 @@ class RichText(list):
         list.__init__(self)
         for i in args:
             self.append(i)
+
     def append(self, item):
         """Appends some text or something.
         Empty strings and similar things are ignored.
         """
         if item:
             list.append(self, item)
+
+    def extend(self, list):
+        for item in list:
+            self.append(item)
+
     def render(self, backend):
         """Return textual representation of the RichText.
         The representation is obviously backend-dependent.
@@ -57,6 +64,7 @@ class RichText(list):
             except AttributeError:
                 text.append(item)
         return "".join(text)
+
     def is_terminated(self):
         """Return true if the text ends with period or something.
         """
@@ -68,6 +76,7 @@ class RichText(list):
             return item.is_terminated()
         except AttributeError:
             return utils.is_terminated(item)
+
     def add_period(self):
         """Add period if possible
         """
@@ -164,6 +173,10 @@ class Phrase:
                 self.sep_after = sep_after
 
             self.parts.append((text, sep_before))
+
+    def extend(self, list):
+        for item in list:
+            self.append(item)
 
     def rich_text(self):
         """Return a RichText representation of the phrase

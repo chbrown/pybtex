@@ -72,8 +72,7 @@ def dashify(s):
     """replace a dash wich Symbol('ndash')
     """
     p = Phrase(sep=Symbol('ndash'))
-    for i in dash_re.split(s):
-        p.append(i)
+    p.extend(dash_re.split(s))
     return p.rich_text()
 
 def try_format(s, format = '%s'):
