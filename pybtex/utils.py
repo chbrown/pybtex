@@ -71,7 +71,10 @@ def abbreviate(s):
 def dashify(s):
     """replace a dash wich Symbol('ndash')
     """
-    return Phrase(dash_re.split(s), sep=Symbol('ndash')).rich_text()
+    p = Phrase(sep=Symbol('ndash'))
+    for i in dash_re.split(s):
+        p.append(i)
+    return p.rich_text()
 
 def try_format(s, format = '%s'):
     """If s is an empty string or something then return "",

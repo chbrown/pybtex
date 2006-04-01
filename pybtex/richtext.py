@@ -143,11 +143,7 @@ class Phrase:
         self.parts = []
 
         for text in args:
-            if isinstance(text, list):
-                for i in text:
-                    self.append(i)
-            else:
-                self.append(text)
+            self.append(text)
 
         self.__str__ = self.parts.__str__
         self.__repr__ = self.parts.__repr__
@@ -167,12 +163,7 @@ class Phrase:
             if sep_after is not None:
                 self.sep_after = sep_after
 
-            if isinstance(text, list):
-                self.parts.append((text[0], sep_before))
-                for part in text[1:]:
-                    self.parts.append((part, ''))
-            else:
-                self.parts.append((text, sep_before))
+            self.parts.append((text, sep_before))
 
     def rich_text(self):
         """Return a RichText representation of the phrase
