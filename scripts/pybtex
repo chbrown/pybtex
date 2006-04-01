@@ -28,6 +28,7 @@ def main():
     opt_parser = optparse.OptionParser(prog='pybtex', usage='%prog auxfile[.aux] [options]', version='%%prog-%s' % pybtex.__version__)
     opt_parser.add_option('-f', '--bibliography-format', action='store', type='string', dest='bib_format', default='bibtex')
     opt_parser.add_option('-b', '--output-backend', action='store', type='string', dest='output_backend', default='latex')
+    opt_parser.add_option('--label-style', action='store', type='string', dest='label_style', default='number')
     encoding = opt_parser.add_option_group('encoding options')
     encoding.add_option('--bibtex-encoding', action='store', type='string', dest='bib_encoding')
     encoding.add_option('--latex-encoding', action='store', type='string', dest='latex_encoding')
@@ -45,6 +46,7 @@ def main():
             bib_format=options.bib_format,
             bib_encoding=options.bib_encoding,
             latex_encoding=options.latex_encoding,
+            label_style=options.label_style,
             output_backend=options.output_backend
     )
 

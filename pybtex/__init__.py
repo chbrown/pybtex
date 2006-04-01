@@ -24,12 +24,15 @@ from os import path
 import filters
 import auxfile
 import utils
-from formatters import label, find_plugin
-from formatters.backends import latex
+from formatters import find_plugin
 
 __version__ = "0.1"
 
-def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_encoding=None,
+def make_bibliography(aux_filename,
+        bib_format='bib',
+        bib_encoding=None,
+        latex_encoding=None,
+        label_style='number',
         output_backend='latex'):
     """This functions extracts all nessessary information from .aux file
     and writes the bibliography.
@@ -47,7 +50,7 @@ def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_e
 
     bib_data = bib_parser.parse_file(path.extsep.join([aux_data.data, bib_parser.file_extension]))
     
-    entries = prepare_entries(bib_data, aux_data)
+    entries = prepare_entries(bib_data, aux_data, label_style)
     del bib_data
 
     #utils.set_backend(output_backend)
@@ -56,16 +59,15 @@ def make_bibliography(aux_filename, bib_format='bib', bib_encoding=None, latex_e
     del entries
     backend.Writer(latex_encoding).write_bibliography(formatted_entries, path.extsep.join([filename, backend.file_extension]))
 
-def prepare_entries(bib_data, aux_data):
-    n = 1
+def prepare_entries(bib_data, aux_data, label_style_name):
+    label_style = find_plugin('labels', label_style_name)
     entries = []
-    for key in aux_data.citations:
+    for number, key in enumerate(aux_data.citations):
         entry = bib_data[key]
-        entry.number = n
+        entry.number = number + 1 # entry numbers start with 1
         entry.key = key
-        entry.label = label.number(entry)
+        entry.label = label_style(entry)
         entries.append(entry)
-        n += 1
     def l(e):
         return e.label
     entries.sort(key=l)
