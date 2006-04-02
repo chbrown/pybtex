@@ -26,7 +26,8 @@ file_extension = 'bbl'
 class Writer(BackendBase):
     symbols = {
         'ndash': '--',
-        'newblock': '\n\\newblock '
+        'newblock': '\n\\newblock ',
+        'nbsp': '~'
     }
     
     def format_tag(self, tag_name, text):

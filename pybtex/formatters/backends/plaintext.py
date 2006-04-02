@@ -27,7 +27,8 @@ file_extension = 'txt'
 class Writer(BackendBase):
     symbols = {
         'ndash': '-',
-        'newblock': ''
+        'newblock': '',
+        'nbsp': ' '
     }
     
     def format_tag(self, tag_name, text):
