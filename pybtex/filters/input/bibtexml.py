@@ -41,9 +41,17 @@ class Filter:
             persons = person_entry.findall(bibtexns + 'person')
             if persons:
                 for person in persons:
-                    e.add_person(Person(person.text), role)
+                    process_person(person, role)
             else:
-                e.add_person(Person(person_entry.text), role)
+                text = person_entry.text.strip()
+                if text:
+                    e.add_person(Person(text), role)
+                else:
+                    names = {}
+                    for name in person_entry.getchildren():
+                        names[remove_ns(name.tag)] = name.text
+                    e.add_person(Person(**names), role)
+                        
 
         id_ = entry.get('id')
         item = entry.getchildren()[0]
