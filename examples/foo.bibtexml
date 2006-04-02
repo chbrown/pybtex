@@ -6,7 +6,12 @@
 
 <bibtex:entry id="viktorov-metodoj">
 <bibtex:book>
-<bibtex:author>Михаил Маркович Викторов</bibtex:author>
+<bibtex:author>
+<bibtex:first>Михаил</bibtex:first>
+<bibtex:middle>Маркович</bibtex:middle>
+<bibtex:prelast>де ля</bibtex:prelast>
+<bibtex:last>Викторов</bibtex:last>
+</bibtex:author>
 <bibtex:title>Методы вычисления физико-химических величин и прикладные расчёты</bibtex:title>
 <bibtex:publisher>Л.: &lt;&lt;Химия&gt;&gt;</bibtex:publisher>
 <bibtex:testo>df</bibtex:testo>
@@ -35,7 +40,10 @@
 <bibtex:entry id="ruckenstein-diffusion">
 <bibtex:article>
 <bibtex:author>
-<bibtex:person>Hongquin Liu</bibtex:person>
+<bibtex:person>
+<bibtex:first>Hongquin</bibtex:first>
+<bibtex:last>Liu</bibtex:last>
+</bibtex:person>
 <bibtex:person>Eli Ruckenstein</bibtex:person>
 </bibtex:author>
 <bibtex:title>Predicting the Diffusion Coefficient in Supercritical Fluids</bibtex:title>
@@ -293,7 +301,11 @@
 <bibtex:entry id="antal-isopropanol">
 <bibtex:article>
 <bibtex:author>
-<bibtex:person>M. J. Anthal</bibtex:person>
+<bibtex:person>
+<bibtex:first>M.</bibtex:first>
+<bibtex:middle>J.</bibtex:middle>
+<bibtex:last>Anthal</bibtex:last>
+</bibtex:person>
 <bibtex:person>M. Carlsson</bibtex:person>
 <bibtex:person>X. Xu</bibtex:person>
 </bibtex:author>
