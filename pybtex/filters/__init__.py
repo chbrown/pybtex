@@ -40,4 +40,4 @@ def find_filter(type, name = None):
         f= import_(newname)
         if f is None:
             raise FindFilterError('input filter for %s not found' % name)
-    return f.Filter()
+    return f

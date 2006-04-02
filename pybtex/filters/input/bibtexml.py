@@ -19,14 +19,15 @@
 
 from elementtree import ElementTree as ET
 from pybtex.core import Entry, Person
+
 bibtexns = '{http://bibtexml.sf.net/}'
+file_extension = 'bibtexml'
 
 def remove_ns(s):
     if s.startswith(bibtexns):
         return s[len(bibtexns):]
 
-class Filter:
-    file_extension = 'bibtexml'
+class Parser:
     def __init__(self):
         self.entries = {}
 

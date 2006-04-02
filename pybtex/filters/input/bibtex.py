@@ -23,6 +23,8 @@ import codecs, locale
 from pyparsing import *
 from pybtex.core import Entry, Person
 
+file_extension = 'bib'
+
 class BibData:
     def __init__(self):
         self.records = {}
@@ -47,8 +49,7 @@ class BibData:
             s = i[1][0] % tuple([self.strings[arg] for arg in i[1][1]])
             self.strings[i[0]] = s
 
-class Filter:
-    file_extension = 'bib'
+class Parser:
     def __init__(self):
         self.set_encoding(locale.getpreferredencoding())
         self.data = BibData()

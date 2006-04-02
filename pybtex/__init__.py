@@ -21,51 +21,52 @@
 """
 
 from os import path
-import filters
 import auxfile
 import utils
+import formatters.backends.latex
+import filters.input.bibtex
 from formatters import find_plugin
 
 __version__ = "0.1"
 
 def make_bibliography(aux_filename,
-        bib_format='bib',
+        bib_format=filters.input.bibtex,
         bib_encoding=None,
         latex_encoding=None,
-        label_style='number',
-        name_style='plain',
-        abbreviate_names=True,
-        output_backend='latex'):
+        label_style=formatters.labels.number,
+        name_style=formatters.names.plain,
+        output_backend=formatters.backends.latex,
+        abbreviate_names=True
+        ):
     """This functions extracts all nessessary information from .aux file
     and writes the bibliography.
     """
+
     filename = path.splitext(aux_filename)[0]
     aux_data = auxfile.parse_file(aux_filename)
 
-    backend = find_plugin('backends', output_backend)
-    bib_parser = filters.find_filter('input', bib_format)
     if bib_encoding is not None:
         try:
-            bib_parser.set_encoding(bib_encoding)
+            bib_format.set_encoding(bib_encoding)
         except AttributeError:
             pass
 
-    bib_data = bib_parser.parse_file(path.extsep.join([aux_data.data, bib_parser.file_extension]))
-    
-    entries = prepare_entries(bib_data, aux_data, label_style, name_style, abbreviate_names)
+    bib_filename = path.extsep.join([aux_data.data, bib_format.file_extension])
+    bib_data = bib_format.Parser().parse_file(bib_filename)
+
+    entries = prepare_entries(bib_data, aux_data.citations, label_style, name_style, abbreviate_names)
     del bib_data
 
-    #utils.set_backend(output_backend)
-    formatter = find_plugin('styles', aux_data.style).Formatter() #import_style(aux_data.style).Formatter()
+    formatter = find_plugin('styles', aux_data.style).Formatter()
     formatted_entries = formatter.format_entries(entries)
     del entries
-    backend.Writer(latex_encoding).write_bibliography(formatted_entries, path.extsep.join([filename, backend.file_extension]))
 
-def prepare_entries(bib_data, aux_data, label_style_name, name_style_name, abbreviate_names):
-    label_style = find_plugin('labels', label_style_name)
-    name_style= find_plugin('names', name_style_name)
+    output_filename = path.extsep.join([filename, output_backend.file_extension])
+    output_backend.Writer(latex_encoding).write_bibliography(formatted_entries, output_filename)
+
+def prepare_entries(bib_data, citations, label_style, name_style, abbreviate_names):
     entries = []
-    for number, key in enumerate(aux_data.citations):
+    for number, key in enumerate(citations):
         entry = bib_data[key]
         entry.number = number + 1 # entry numbers start with 1
         entry.key = key

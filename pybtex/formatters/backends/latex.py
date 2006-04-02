@@ -26,7 +26,7 @@ file_extension = 'bbl'
 class Writer(BackendBase):
     symbols = {
         'ndash': '--',
-        'newblock': '\n\\newblock ',
+        'newblock': '\n\\newblock',
         'nbsp': '~'
     }
     
