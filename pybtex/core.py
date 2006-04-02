@@ -71,13 +71,19 @@ class Person:
     """
     style1_re = re.compile('^(.+),\s*(.+)$')
     style2_re = re.compile('^(.+),\s*(.+),\s*(.+)$')
-    def __init__(self, s):
+    def __init__(self, string="", first="", middle="", prelast="", last="", lineage=""):
         self._first = []
         self._middle = []
         self._prelast = []
         self._last = []
         self._lineage = []
-        self.parse_string(s)
+        if string:
+            self.parse_string(string)
+        self._first.extend(first.split())
+        self._middle.extend(middle.split())
+        self._prelast.extend(prelast.split())
+        self._last.extend(last.split())
+        self._lineage.extend(lineage.split())
 
     def parse_string(self, s):
         """Extract various parts of the name from a string.
