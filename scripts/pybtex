@@ -24,7 +24,6 @@ import optparse
 import pybtex
 from os import path
 from pybtex import find_plugin
-#from pybtex.filters import find_filter
 
 def main():
     opt_parser = optparse.OptionParser(prog='pybtex', usage='%prog auxfile[.aux] [options]', version='%%prog-%s' % pybtex.__version__)

@@ -18,4 +18,3 @@
 # USA
 import labels
 import names
-import formatting
