@@ -78,6 +78,11 @@ class Person:
         self._last = []
         self._lineage = []
         self.parse_string(s)
+        print 'first, prelast, last, lineage'
+        print self._first
+        print self._prelast
+        print self._last
+        print self._lineage
 
     def parse_string(self, s):
         """Extract various parts of the name from a string.
@@ -95,15 +100,15 @@ class Person:
                     self._last.append(part)
         match1 = self.style1_re.match(s)
         match2 = self.style2_re.match(s)
-        if match1: # von Last, First
-            parts = match1.groups()
-            process_von_last(parts[0])
-            self._first.extend(parts[1])
-        elif match2: # von Last, Jr, First
+        if match2: # von Last, Jr, First
             parts = match2.groups()
             process_von_last(parts[0])
-            self._lineage.extend(parts[1])
-            self._first.extend(parts[2])
+            self._lineage.extend(parts[1].split())
+            self._first.extend(parts[2].split())
+        elif match1: # von Last, First
+            parts = match1.groups()
+            process_von_last(parts[0])
+            self._first.extend(parts[1].split())
         else: # First von Last
             parts = reversed(s.split())
             self._last.append(parts.next())
