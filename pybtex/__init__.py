@@ -73,7 +73,4 @@ def prepare_entries(bib_data, aux_data, label_style_name, name_style_name, abbre
         for person in entry.authors + entry.editors:
             person.text = name_style(person, abbreviate_names)
         entries.append(entry)
-    def l(e):
-        return e.label
-    entries.sort(key=l)
     return entries
