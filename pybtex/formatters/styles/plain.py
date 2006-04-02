@@ -19,7 +19,7 @@
 
 from pybtex.utils import try_format, dashify
 from pybtex.richtext import RichText, Phrase, Tag
-from pybtex.formatters.styles import FormatterBase
+from pybtex.formatters.styles import FormatterBase, default_phrase
 
 class Formatter(FormatterBase):
     def format_names(self, persons):
@@ -29,7 +29,7 @@ class Formatter(FormatterBase):
         return p
 
     def format_article(self, e):
-        p = self.default_phrase(self.format_names(e.authors), e.title)
+        p = default_phrase(self.format_names(e.authors), e.title)
         pages = dashify(e.pages)
         if e.has_key('volume'):
             vp = RichText(e.volume, try_format(pages, ':%s'))
@@ -39,7 +39,7 @@ class Formatter(FormatterBase):
         return p
         
     def format_book(self, e):
-        p = self.default_phrase()
+        p = default_phrase()
         if e.authors:
             p.append(self.format_names(e.authors))
         else:
