@@ -78,11 +78,6 @@ class Person:
         self._last = []
         self._lineage = []
         self.parse_string(s)
-        print 'first, prelast, last, lineage'
-        print self._first
-        print self._prelast
-        print self._last
-        print self._lineage
 
     def parse_string(self, s):
         """Extract various parts of the name from a string.
