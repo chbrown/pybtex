@@ -20,7 +20,9 @@
 """pybtex' core datatypes
 """
 
+import re
 import utils
+from richtext import Phrase, Symbol
 
 class FormattedEntry:
     """Formatted bibliography entry. Consists of
@@ -67,40 +69,55 @@ class Entry:
 class Person:
     """Represents a person (usually human).
     """
+    style1_re = re.compile('^(.+),\s*(.+)$')
+    style2_re = re.compile('^(.+),\s*(.+),\s*(.+)$')
     def __init__(self, s):
-        # TODO parse 'von' and 'jr'
-        names = s.split()
-        if len(names) == 1:
-            self.first = []
-            self.last = names
-        else:
-            self.first = names[:-1]
-            self.last = [names[-1]]
-    def get_part(self, type):
-        parts = {'f' : self.first, 'l' : self.last}
-        if len(type) == 1:
-            return [utils.abbreviate(s) for s in parts[type]]
-        else:
-            return parts[type[0]]
+        self._first = []
+        self._middle = []
+        self._prelast = []
+        self._last = []
+        self._lineage = []
+        self.parse_string(s)
 
-    def format(self, format):
-        """FIXME: create a class for formatting names instead of this
+    def parse_string(self, s):
+        """Extract various parts of the name from a string.
+        Supported formats are:
+         - von Last, First
+         - von Last, Jr, First
+         - First von Last
+        (see BibTeX manual for explanation)
         """
-        s = []
-        space = '~'
-        separator = ''
-        for item in format:
-            if len(item) == 1:
-                type = item[0]
-            elif len(item) == 2:
-                separator, type = item
-            elif len(item) == 3:
-                separator, type, space = item
-            else:
-                # TODO proper error message
-                return "wrong format"
-            part = self.get_part(type)
-            if part:
-                s.append(separator + space.join(part))
-            separator = ' '
-        return "".join(s)
+        def process_von_last(s):
+            for part in s.split():
+                if part.islower():
+                    self._prelast.append(part)
+                else:
+                    self._last.append(part)
+        match1 = self.style1_re.match(s)
+        match2 = self.style2_re.match(s)
+        if match1: # von Last, First
+            parts = match1.groups()
+            process_von_last(parts[0])
+            self._first.extend(parts[1])
+        elif match2: # von Last, Jr, First
+            parts = match2.groups()
+            process_von_last(parts[0])
+            self._lineage.extend(parts[1])
+            self._first.extend(parts[2])
+        else: # First von Last
+            parts = reversed(s.split())
+            self._last.append(parts.next())
+            for part in parts:
+                if part.islower():
+                    self._prelast.insert(0, part)
+                else:
+                    self._first.insert(0, part)
+
+    def get_part(self, type):
+        parts = {'f' : self._first, 'l' : self._last}
+        names = parts[type[0]]
+        if len(type) == 1:
+            names = [utils.abbreviate(name) for name in names]
+        p = Phrase(sep=Symbol('nbsp'))
+        p.extend(names)
+        return p

@@ -23,9 +23,12 @@ from pybtex.formatters.styles import FormatterBase
 
 class Formatter(FormatterBase):
     def format_authors(self, authors):
-        p = Phrase()
+        p = Phrase(sep=', ', sep2 = ' and ', last_sep=', and ')
         for author in authors:
-            p.append(author.format([['f'], ['ll']]))
+            a = Phrase(sep = ' ')
+            a.append(author.get_part('f'))
+            a.append(author.get_part('last'))
+            p.append(a)
         return p
 
     def format_article(self, e):
