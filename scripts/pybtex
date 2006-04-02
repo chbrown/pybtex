@@ -29,6 +29,8 @@ def main():
     opt_parser.add_option('-f', '--bibliography-format', action='store', type='string', dest='bib_format', default='bibtex')
     opt_parser.add_option('-b', '--output-backend', action='store', type='string', dest='output_backend', default='latex')
     opt_parser.add_option('--label-style', action='store', type='string', dest='label_style', default='number')
+    opt_parser.add_option('--name-style', action='store', type='string', dest='name_style', default='plain')
+    opt_parser.add_option('--abbreviate-names', action='store_true', dest='abbreviate_names')
     encoding = opt_parser.add_option_group('encoding options')
     encoding.add_option('--bibtex-encoding', action='store', type='string', dest='bib_encoding')
     encoding.add_option('--latex-encoding', action='store', type='string', dest='latex_encoding')
@@ -47,6 +49,8 @@ def main():
             bib_encoding=options.bib_encoding,
             latex_encoding=options.latex_encoding,
             label_style=options.label_style,
+            name_style=options.name_style,
+            abbreviate_names=bool(options.abbreviate_names),
             output_backend=options.output_backend
     )
 
