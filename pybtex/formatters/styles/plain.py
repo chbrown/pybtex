@@ -22,17 +22,14 @@ from pybtex.richtext import RichText, Phrase, Tag
 from pybtex.formatters.styles import FormatterBase
 
 class Formatter(FormatterBase):
-    def format_authors(self, authors):
+    def format_names(self, persons):
         p = Phrase(sep=', ', sep2 = ' and ', last_sep=', and ')
-        for author in authors:
-            a = Phrase(sep = ' ')
-            a.append(author.get_part('f'))
-            a.append(author.get_part('last'))
-            p.append(a)
+        for person in persons:
+            p.append(person.text)
         return p
 
     def format_article(self, e):
-        p = self.default_phrase(self.format_authors(e.authors), e.title)
+        p = self.default_phrase(self.format_names(e.authors), e.title)
         pages = dashify(e.pages)
         if e.has_key('volume'):
             vp = RichText(e.volume, try_format(pages, ':%s'))
@@ -44,9 +41,9 @@ class Formatter(FormatterBase):
     def format_book(self, e):
         p = self.default_phrase()
         if e.authors:
-            p.append(self.format_authors(e.authors))
+            p.append(self.format_names(e.authors))
         else:
-            editors = self.format_authors(e.editors)
+            editors = self.format_names(e.editors)
             if e.editors.count > 1:
                 editors.append('editors')
             else:

@@ -113,11 +113,20 @@ class Person:
                 else:
                     self._first.insert(0, part)
 
-    def get_part(self, type):
-        parts = {'f' : self._first, 'l' : self._last}
-        names = parts[type[0]]
-        if len(type) == 1:
+    def get_part(self, type, abbr=False):
+        names = getattr(self, '_' + type)
+        if abbr:
             names = [utils.abbreviate(name) for name in names]
         p = Phrase(sep=Symbol('nbsp'))
         p.extend(names)
         return p
+    def first(self, abbr=False):
+        return self.get_part('first', abbr)
+    def middle(self, abbr=False):
+        return self.get_part('middle', abbr)
+    def prelast(self, abbr=False):
+        return self.get_part('middle', abbr)
+    def last(self, abbr=False):
+        return self.get_part('last', abbr)
+    def lineage(self, abbr=False):
+        return self.get_part('lineage', abbr)

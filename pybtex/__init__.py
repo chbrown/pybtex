@@ -33,6 +33,8 @@ def make_bibliography(aux_filename,
         bib_encoding=None,
         latex_encoding=None,
         label_style='number',
+        name_style='plain',
+        abbreviate_names=True,
         output_backend='latex'):
     """This functions extracts all nessessary information from .aux file
     and writes the bibliography.
@@ -50,7 +52,7 @@ def make_bibliography(aux_filename,
 
     bib_data = bib_parser.parse_file(path.extsep.join([aux_data.data, bib_parser.file_extension]))
     
-    entries = prepare_entries(bib_data, aux_data, label_style)
+    entries = prepare_entries(bib_data, aux_data, label_style, name_style, abbreviate_names)
     del bib_data
 
     #utils.set_backend(output_backend)
@@ -59,14 +61,17 @@ def make_bibliography(aux_filename,
     del entries
     backend.Writer(latex_encoding).write_bibliography(formatted_entries, path.extsep.join([filename, backend.file_extension]))
 
-def prepare_entries(bib_data, aux_data, label_style_name):
+def prepare_entries(bib_data, aux_data, label_style_name, name_style_name, abbreviate_names):
     label_style = find_plugin('labels', label_style_name)
+    name_style= find_plugin('names', name_style_name)
     entries = []
     for number, key in enumerate(aux_data.citations):
         entry = bib_data[key]
         entry.number = number + 1 # entry numbers start with 1
         entry.key = key
         entry.label = label_style(entry)
+        for person in entry.authors + entry.editors:
+            person.text = name_style(person, abbreviate_names)
         entries.append(entry)
     def l(e):
         return e.label
