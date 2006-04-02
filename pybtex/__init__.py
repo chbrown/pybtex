@@ -22,19 +22,35 @@
 
 from os import path
 import auxfile
-import formatters.backends.latex
-import filters.input.bibtex
-from formatters import find_plugin
+import styles
+import backends.latex
+import database.input.bibtex
 
 __version__ = "0.1"
 
+class FindPluginError(Exception):
+    pass
+
+def find_plugin(type, name):
+    def import_(s):
+        m = __import__(type, globals(), locals(), [s])
+        try:
+            return getattr(m, s)
+        except AttributeError:
+            return None
+
+    f = import_(name)
+    if f is None:
+        raise FindPluginError('plugin %s not found in %s' % (name, type))
+    return f
+
 def make_bibliography(aux_filename,
-        bib_format=filters.input.bibtex,
+        bib_format=database.input.bibtex,
         bib_encoding=None,
         latex_encoding=None,
-        label_style=formatters.labels.number,
-        name_style=formatters.names.plain,
-        output_backend=formatters.backends.latex,
+        label_style=styles.labels.number,
+        name_style=styles.names.plain,
+        output_backend=backends.latex,
         abbreviate_names=True
         ):
     """This functions extracts all nessessary information from .aux file
@@ -56,7 +72,7 @@ def make_bibliography(aux_filename,
     entries = prepare_entries(bib_data, aux_data.citations, label_style, name_style, abbreviate_names)
     del bib_data
 
-    formatter = find_plugin('styles', aux_data.style).Formatter()
+    formatter = find_plugin('styles.formatting', aux_data.style).Formatter()
     formatted_entries = formatter.format_entries(entries)
     del entries
 

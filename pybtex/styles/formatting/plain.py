@@ -19,7 +19,7 @@
 
 from pybtex.utils import try_format, dashify
 from pybtex.richtext import RichText, Phrase, Tag
-from pybtex.formatters.styles import FormatterBase, default_phrase
+from pybtex.styles.formatting import FormatterBase, default_phrase
 
 class Formatter(FormatterBase):
     def format_names(self, persons):
