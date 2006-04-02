@@ -29,13 +29,13 @@ class Formatter(FormatterBase):
         return p
 
     def format_article(self, e):
-        p = self.default_phrase(self.format_authors(e.authors), e['title'])
-        pages = dashify(e['pages'])
+        p = self.default_phrase(self.format_authors(e.authors), e.title)
+        pages = dashify(e.pages)
         if e.has_key('volume'):
-            vp = RichText(e['volume'], try_format(pages, ':%s'))
+            vp = RichText(e.volume, try_format(pages, ':%s'))
         else:
             vp = try_format(pages, 'pages %s')
-        p.append(Phrase(Tag('emph', e['journal']), vp, e['year']))
+        p.append(Phrase(Tag('emph', e.journal), vp, e.year))
         return p
         
     def format_book(self, e):
@@ -49,6 +49,6 @@ class Formatter(FormatterBase):
             else:
                 editors.append('editor')
             p.append(editors)
-        p.append(Tag('emph', e['title']))
-        p.append(Phrase(e['publisher'], e['year'], add_period=True))
+        p.append(Tag('emph', e.title))
+        p.append(Phrase(e.publisher, e.year, add_period=True))
         return p

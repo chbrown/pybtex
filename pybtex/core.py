@@ -49,7 +49,7 @@ class Entry:
         self.authors = []
         self.editors = []
 
-    def __getitem__(self, name):
+    def __getattr__(self, name):
         try:
             return self.fields[name]
         except KeyError:
