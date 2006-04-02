@@ -23,6 +23,8 @@ import sys
 import optparse
 import pybtex
 from os import path
+from pybtex.formatters import find_plugin
+from pybtex.filters import find_filter
 
 def main():
     opt_parser = optparse.OptionParser(prog='pybtex', usage='%prog auxfile[.aux] [options]', version='%%prog-%s' % pybtex.__version__)
@@ -41,18 +43,27 @@ def main():
         opt_parser.print_help()
         sys.exit(1)
 
-    filename, ext = path.splitext(args[0])
+    filename = args[0]
+    _, ext = path.splitext(filename)
     if not ext:
-        ext = path.extsep + 'aux'
-    pybtex.make_bibliography(filename + ext,
-            bib_format=options.bib_format,
-            bib_encoding=options.bib_encoding,
-            latex_encoding=options.latex_encoding,
-            label_style=options.label_style,
-            name_style=options.name_style,
-            abbreviate_names=bool(options.abbreviate_names),
-            output_backend=options.output_backend
-    )
+        filename += path.extsep
+        filename += 'aux'
+
+    kwargs = {}
+    if options.label_style:
+        kwargs['label_style'] = find_plugin('labels', options.label_style)
+    if options.name_style:
+        kwargs['name_style'] = find_plugin('names', options.name_style)
+    if options.output_backend:
+        kwargs['output_backend'] = find_plugin('backends', options.output_backend)
+    if options.bib_format:
+        kwargs['bib_format'] = find_filter('input', options.bib_format)
+    for option in ('bib_encoding', 'latex_encoding', 'abbreviate_names'):
+        value = getattr(options, option)
+        if value:
+            kwargs[option] = getattr(options, option)
+
+    pybtex.make_bibliography(filename, **kwargs)
 
 if __name__ == '__main__':
     main()
