@@ -77,6 +77,7 @@ class Person:
         self._prelast = []
         self._last = []
         self._lineage = []
+        string = string.strip()
         if string:
             self.parse_string(string)
         self._first.extend(first.split())
@@ -131,7 +132,7 @@ class Person:
     def middle(self, abbr=False):
         return self.get_part('middle', abbr)
     def prelast(self, abbr=False):
-        return self.get_part('middle', abbr)
+        return self.get_part('prelast', abbr)
     def last(self, abbr=False):
         return self.get_part('last', abbr)
     def lineage(self, abbr=False):
