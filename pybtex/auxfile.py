@@ -20,7 +20,7 @@
 """parse latex' aux file
 """
 
-import sys, re
+import re
 
 class AuxData:
     def __init__(self):

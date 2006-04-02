@@ -22,7 +22,6 @@
 
 from os import path
 import auxfile
-import utils
 import formatters.backends.latex
 import filters.input.bibtex
 from formatters import find_plugin

@@ -17,8 +17,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from pybtex import utils
-from pybtex.richtext import Tag
 from pybtex.formatters.backends import BackendBase
 
 file_extension = 'bbl'
