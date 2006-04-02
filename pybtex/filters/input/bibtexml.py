@@ -18,7 +18,7 @@
 # USA
 
 from elementtree import ElementTree as ET
-from pybtex.core import Entry
+from pybtex.core import Entry, Person
 bibtexns = '{http://bibtexml.sf.net/}'
 
 def remove_ns(s):
@@ -41,9 +41,9 @@ class Filter:
             persons = person_entry.findall(bibtexns + 'person')
             if persons:
                 for person in persons:
-                    e.add_person(person.text, role)
+                    e.add_person(Person(person.text), role)
             else:
-                e.add_person(person_entry.text, role)
+                e.add_person(Person(person_entry.text), role)
 
         id_ = entry.get('id')
         item = entry.getchildren()[0]

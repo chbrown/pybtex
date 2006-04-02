@@ -60,8 +60,8 @@ class Entry:
     def add_person(self, person, role):
         """Add an author or an editor.
         """
-        if not isinstance(person, Person):
-            person = Person(person)
+        #if not isinstance(person, Person):
+        #    person = Person(person)
         list = getattr(self, '%ss' % role)
         list.append(person)
                 

@@ -21,7 +21,7 @@
 
 import codecs, locale
 from pyparsing import *
-from pybtex.core import Entry
+from pybtex.core import Entry, Person
 
 class BibData:
     def __init__(self):
@@ -35,8 +35,8 @@ class BibData:
             for field in i[2]:
                 value = field[1][0] % tuple([self.strings[arg] for arg in field[1][1]])
                 if field[0] in Entry.valid_roles:
-                    for person in value.split(' and '):
-                        entry.add_person(person, field[0])
+                    for name in value.split(' and '):
+                        entry.add_person(Person(name), field[0])
                 else:
                     entry.fields[field[0]] = value
             #fields['TYPE'] = i[0]
