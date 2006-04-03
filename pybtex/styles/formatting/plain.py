@@ -44,11 +44,11 @@ class Formatter(FormatterBase):
             p.append(self.format_names(e.authors))
         else:
             editors = self.format_names(e.editors)
-            if e.editors.count > 1:
-                editors.append('editors')
+            if len(e.editors) > 1:
+                word = 'editors'
             else:
-                editors.append('editor')
-            p.append(editors)
+                word = 'editor'
+            p.append(Phrase(editors, word))
         p.append(Tag('emph', e.title))
         p.append(Phrase(e.publisher, e.year, add_period=True))
         return p
