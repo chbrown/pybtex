@@ -28,7 +28,20 @@ file_extension = 'bib'
 class BibData:
     def __init__(self):
         self.records = {}
-        self.strings = {}
+        self.strings = {
+            'jan': 'January',
+            'feb': 'February',
+            'mar': 'March',
+            'apr': 'April',
+            'may': 'May',
+            'jun': 'June',
+            'jul': 'July',
+            'aug': 'August',
+            'sep': 'September',
+            'oct': 'October',
+            'nov': 'November',
+            'dec': 'December'
+        }
 
     def addRecord(self, s, loc, toks):
         for i in toks:
