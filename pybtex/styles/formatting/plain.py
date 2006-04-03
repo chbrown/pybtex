@@ -31,7 +31,7 @@ class Formatter(FormatterBase):
     def format_article(self, e):
         p = default_phrase(self.format_names(e.authors), e.title)
         pages = dashify(e.pages)
-        if e.has_key('volume'):
+        if e.volume:
             vp = RichText(e.volume, try_format(pages, ':%s'))
         else:
             vp = try_format(pages, 'pages %s')
