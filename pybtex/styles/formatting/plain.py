@@ -24,8 +24,7 @@ from pybtex.styles.formatting import FormatterBase, default_phrase
 class Formatter(FormatterBase):
     def format_names(self, persons):
         p = Phrase(sep=', ', sep2 = ' and ', last_sep=', and ')
-        for person in persons:
-            p.append(person.text)
+        p.extend(person.text for person in persons)
         return p
 
     def format_article(self, e):
