@@ -28,7 +28,7 @@ def remove_ns(s):
         return s[len(bibtexns):]
 
 class Parser:
-    def __init__(self):
+    def __init__(self, encoding=None):
         self.entries = {}
 
     def parse_file(self, file):

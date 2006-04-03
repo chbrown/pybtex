@@ -26,7 +26,7 @@ import styles
 import backends.latex
 import database.input.bibtex
 
-__version__ = "0.1"
+__version__ = "20060402"
 
 class FindPluginError(Exception):
     pass
@@ -60,14 +60,8 @@ def make_bibliography(aux_filename,
     filename = path.splitext(aux_filename)[0]
     aux_data = auxfile.parse_file(aux_filename)
 
-    if bib_encoding is not None:
-        try:
-            bib_format.set_encoding(bib_encoding)
-        except AttributeError:
-            pass
-
     bib_filename = path.extsep.join([aux_data.data, bib_format.file_extension])
-    bib_data = bib_format.Parser().parse_file(bib_filename)
+    bib_data = bib_format.Parser(bib_encoding).parse_file(bib_filename)
 
     entries = prepare_entries(bib_data, aux_data.citations, label_style, name_style, abbreviate_names)
     del bib_data

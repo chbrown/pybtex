@@ -63,8 +63,10 @@ class BibData:
             self.strings[i[0]] = s
 
 class Parser:
-    def __init__(self):
-        self.set_encoding(locale.getpreferredencoding())
+    def __init__(self, encoding=None):
+        if encoding is None:
+            encoding = locale.getpreferredencoding()
+        self.set_encoding(encoding)
         self.data = BibData()
 
         lparenth = Literal('(').suppress()
