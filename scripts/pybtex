@@ -57,7 +57,8 @@ def main():
         kwargs['output_backend'] = find_plugin('backends', options.output_backend)
     if options.bib_format:
         kwargs['bib_format'] = find_plugin('database.input', options.bib_format)
-    for option in ('bib_encoding', 'latex_encoding', 'abbreviate_names'):
+    kwargs['abbreviate_names'] = bool(options.abbreviate_names)
+    for option in ('bib_encoding', 'latex_encoding'):
         value = getattr(options, option)
         if value:
             kwargs[option] = getattr(options, option)
