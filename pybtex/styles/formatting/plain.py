@@ -25,8 +25,10 @@ class Formatter(FormatterBase):
     def format_names(self, persons):
         p = Phrase(sep=', ', sep2 = ' and ', last_sep=', and ')
         p.extend(person.text for person in persons)
-        return p
 
+    def format_date(self, entry):
+        return Phrase(entry.month, entry.year, sep=' ')
+    
     def format_article(self, e):
         p = default_phrase(self.format_names(e.authors), e.title)
         pages = dashify(e.pages)
@@ -34,7 +36,7 @@ class Formatter(FormatterBase):
             vp = RichText(e.volume, try_format(pages, ':%s'))
         else:
             vp = try_format(pages, 'pages %s')
-        p.append(Phrase(Tag('emph', e.journal), vp, e.year))
+        p.append(Phrase(Tag('emph', e.journal), vp, self.format_date(e)))
         return p
         
     def format_book(self, e):
@@ -49,5 +51,5 @@ class Formatter(FormatterBase):
                 word = 'editor'
             p.append(Phrase(editors, word))
         p.append(Tag('emph', e.title))
-        p.append(Phrase(e.publisher, e.year, add_period=True))
+        p.append(Phrase(e.publisher, self.format_date(e), add_period=True))
         return p
