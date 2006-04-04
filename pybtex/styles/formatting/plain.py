@@ -40,21 +40,51 @@ class Formatter(FormatterBase):
         p.append(Phrase(Tag('emph', e.journal), vp, self.format_date(e)))
         return p
         
-    def format_book(self, e):
-        p = default_phrase()
+    def format_author_or_editor(self, e):
         if e.authors:
-            p.append(self.format_names(e.authors))
+            return self.format_names(e.authors)
         else:
             editors = self.format_names(e.editors)
             if len(e.editors) > 1:
                 word = 'editors'
             else:
                 word = 'editor'
-            p.append(Phrase(editors, word))
+            return Phrase(editors, word)
+    
+    def format_volume_and_series(self, e):
+        p = Phrase(sep=' ')
+        if e.volume:
+            p.append('volume')
+            p.append(e.volume)
+            if e.series:
+                p.append('of')
+                p.append(Tag('emph', e.series))
+
+        # we can not just say e.number here, because
+        # pybtex uses e.number for its own needs
+        elif e.fields.has_key('number'):
+            p.append('number')
+            p.append(e.fields['number'])
+            if e.series:
+                p.append('in')
+                p.append(e.series)
+        elif e.series:
+            p.append(e.series)
+        return p
+    
+    def format_book(self, e):
+        p = default_phrase(self.format_author_or_editor(e))
         p.append(Tag('emph', e.title))
+        p.append(self.format_volume_and_series(e))
         p.append(Phrase(e.publisher, self.format_date(e), add_period=True))
         return p
+
     def format_booklet(self, e):
         p = default_phrase(self.format_names(e.authors), e.title)
         p.append(Phrase(e.howpublished, e.address, self.format_date(e)))
+        return p
+
+    def format_inbook(self, e):
+        p = default_phrase(self.format_author_or_editor(e))
+        p.append(self.format_volume_and_series(e))
         return p
