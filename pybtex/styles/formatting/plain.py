@@ -25,6 +25,7 @@ class Formatter(FormatterBase):
     def format_names(self, persons):
         p = Phrase(sep=', ', sep2 = ' and ', last_sep=', and ')
         p.extend(person.text for person in persons)
+        return p
 
     def format_date(self, entry):
         return Phrase(entry.month, entry.year, sep=' ')
