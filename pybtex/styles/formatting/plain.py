@@ -53,3 +53,7 @@ class Formatter(FormatterBase):
         p.append(Tag('emph', e.title))
         p.append(Phrase(e.publisher, self.format_date(e), add_period=True))
         return p
+    def format_booklet(self, e):
+        p = default_phrase(self.format_names(e.authors), e.title)
+        p.append(Phrase(e.howpublished, e.address, self.format_date(e)))
+        return p
