@@ -18,7 +18,7 @@
 # USA
 
 from pybtex.utils import try_format, dashify
-from pybtex.richtext import RichText, Phrase, Tag
+from pybtex.richtext import RichText, Phrase, Tag, Symbol
 from pybtex.styles.formatting import FormatterBase, default_phrase
 
 class Formatter(FormatterBase):
@@ -54,7 +54,7 @@ class Formatter(FormatterBase):
     def format_volume_and_series(self, e):
         p = Phrase(sep=' ')
         if e.volume:
-            p.append('volume')
+            p.append('Volume')
             p.append(e.volume)
             if e.series:
                 p.append('of')
@@ -63,7 +63,7 @@ class Formatter(FormatterBase):
         # we can not just say e.number here, because
         # pybtex uses e.number for its own needs
         elif e.fields.has_key('number'):
-            p.append('number')
+            p.append('Number')
             p.append(e.fields['number'])
             if e.series:
                 p.append('in')
@@ -85,6 +85,8 @@ class Formatter(FormatterBase):
         return p
 
     def format_inbook(self, e):
-        p = default_phrase(self.format_author_or_editor(e))
-        p.append(self.format_volume_and_series(e))
+        p = default_phrase(self.format_author_or_editor(e), e.title)
+        tmp = Phrase(self.format_volume_and_series(e), e.publisher)
+        tmp.append(try_format(e.edition, '%s edition'))
+        p.append(tmp)
         return p
