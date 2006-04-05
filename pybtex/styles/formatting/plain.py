@@ -17,8 +17,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from pybtex.utils import try_format, dashify
-from pybtex.richtext import RichText, Phrase, Tag, Symbol
+from pybtex.utils import dashify
+from pybtex.richtext import RichText, Phrase, Tag, Symbol, Check
 from pybtex.styles.formatting import FormatterBase, default_phrase
 
 class Formatter(FormatterBase):
@@ -34,9 +34,9 @@ class Formatter(FormatterBase):
         p = default_phrase(self.format_names(e.authors), e.title)
         pages = dashify(e.pages)
         if e.volume:
-            vp = RichText(e.volume, try_format(pages, ':%s'))
+            vp = RichText(e.volume, Check(':', pages))
         else:
-            vp = try_format(pages, 'pages %s')
+            vp = Check(pages, 'pages %s')
         p.append(Phrase(Tag('emph', e.journal), vp, self.format_date(e)))
         return p
         
@@ -87,6 +87,6 @@ class Formatter(FormatterBase):
     def format_inbook(self, e):
         p = default_phrase(self.format_author_or_editor(e), e.title)
         tmp = Phrase(self.format_volume_and_series(e), e.publisher)
-        tmp.append(try_format(e.edition, '%s edition'))
+        tmp.append(Check(e.edition, '%s edition'))
         p.append(tmp)
         return p

@@ -77,14 +77,3 @@ def dashify(s):
     p = Phrase(sep=Symbol('ndash'))
     p.extend(dash_re.split(s))
     return p.rich_text()
-
-def try_format(s, format = '%s'):
-    """If s is an empty string or something then return "",
-    Otherwise return something.
-    """
-    if s:
-        tmp = format.split('%s')
-        tmp.insert(1, s)
-        return RichText(*tmp)
-    else:
-        return ""

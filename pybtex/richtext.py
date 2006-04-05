@@ -84,6 +84,12 @@ class RichText(list):
             self.append('.')
         return self
 
+class Check(RichText):
+    def __init__(self, *args):
+        if False in (bool(arg) for arg in args):
+            args = []
+        RichText.__init__(self, *args)
+
 
 class Tag:
     """A tag is somethins like <foo>some text</foo> in HTML
