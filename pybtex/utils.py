@@ -62,10 +62,13 @@ def abbreviate(s):
                 length = 0
         yield s[start:length], ""
     def abbr(part):
-        if is_terminated(part[1]):
-            return part[0][0].upper() + part[1]
+        if part[0]:
+            if is_terminated(part[1]):
+                return part[0][0].upper() + part[1]
+            else:
+                return part[0][0].upper() + '.'
         else:
-            return part[0][0].upper() + '.'
+            return part[1]
     return ''.join(abbr(part) for part in parts(s))
 
 def dashify(s):
