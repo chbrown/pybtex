@@ -18,7 +18,7 @@
 # USA
 
 from pybtex.utils import dashify
-from pybtex.richtext import RichText, Phrase, Tag, Symbol, Check
+from pybtex.richtext import Text, Phrase, Tag, Symbol, Check
 from pybtex.styles.formatting import FormatterBase, default_phrase
 
 class Formatter(FormatterBase):
@@ -34,7 +34,7 @@ class Formatter(FormatterBase):
         p = default_phrase(self.format_names(e.authors), e.title)
         pages = dashify(e.pages)
         if e.volume:
-            vp = RichText(e.volume, Check(':', pages))
+            vp = Text(e.volume, Check(':', pages))
         else:
             vp = Check(pages, 'pages %s')
         p.append(Phrase(Tag('emph', e.journal), vp, self.format_date(e)))

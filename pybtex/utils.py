@@ -18,7 +18,7 @@
 # USA
 
 import re
-from pybtex.richtext import RichText, Symbol, Phrase
+from pybtex.richtext import Symbol, Phrase
 
 terminators = '.?!'
 dash_re = re.compile(r'-')

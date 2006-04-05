@@ -20,10 +20,10 @@
 import locale
 import codecs
 from pybtex.core import FormattedEntry
-from pybtex.richtext import RichText, Symbol, Phrase
+from pybtex.richtext import Text, Symbol, Phrase
 
 def default_phrase(*args, **kwargs):
-    kwargs['sep'] = RichText(Symbol('newblock'), ' ')
+    kwargs['sep'] = Text(Symbol('newblock'), ' ')
     kwargs['add_period'] = True
     kwargs['add_periods'] = True
     return Phrase(*args, **kwargs)

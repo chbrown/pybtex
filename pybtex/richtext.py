@@ -22,19 +22,19 @@
 
 import utils
 
-class RichText(list):
+class Text(list):
     """Rich text is basically a list of
     - strings
     - Tag objects
     - Symbol object
-    - other RichText objects
-    RichText is used as an internal formatting language of pybtex,
+    - other Text objects
+    Text is used as an internal formatting language of pybtex,
     being rendered to to HTML or LaTeX markup or whatever in the end.
     """
 
     def __init__(self, *args):
-        """All the non-keyword arguments form the content of the RichText object.
-        E. g. RichText('This ', 'is a', Tag('emph', 'very'), RichText(' rich', ' text.')
+        """All the non-keyword arguments form the content of the Text object.
+        E. g. Text('This ', 'is a', Tag('emph', 'very'), Text(' rich', ' text.')
         Note the spaces. After rendering you will probably get something like
         "This is a \emph{very} rich text". Isn't that simple? =)
         """
@@ -54,7 +54,7 @@ class RichText(list):
             self.append(item)
 
     def render(self, backend):
-        """Return textual representation of the RichText.
+        """Return textual representation of the Text.
         The representation is obviously backend-dependent.
         """
         text = []
@@ -84,11 +84,11 @@ class RichText(list):
             self.append('.')
         return self
 
-class Check(RichText):
+class Check(Text):
     def __init__(self, *args):
         if False in (bool(arg) for arg in args):
             args = []
-        RichText.__init__(self, *args)
+        Text.__init__(self, *args)
 
 
 class Tag:
@@ -108,7 +108,7 @@ class Tag:
             text = self.text
         return backend.format_tag(self.name, text)
     def add_period(self):
-        return RichText(self).add_period()
+        return Text(self).add_period()
 
 
 class Symbol:
@@ -185,7 +185,7 @@ class Phrase:
             self.append(item)
 
     def rich_text(self):
-        """Return a RichText representation of the phrase
+        """Return a Text representation of the phrase
         """
         def output_part(part, sep):
             if part[1] is not None:
@@ -195,16 +195,16 @@ class Phrase:
             result.append(part[0])
 
         if not self.parts:
-            return RichText()
+            return Text()
         elif len(self.parts) == 1:
-            result = RichText(self.parts[0][0])
+            result = Text(self.parts[0][0])
         elif len(self.parts) == 2:
             sep = self.parts[1][1]
             if sep is None:
                 sep = self.sep2
-            result = RichText(self.parts[0][0], sep, self.parts[1][0])
+            result = Text(self.parts[0][0], sep, self.parts[1][0])
         else:
-            result = RichText()
+            result = Text()
             output_part(self.parts[0], sep='')
             for part in self.parts[1:-1]:
                 output_part(part, self.sep)
@@ -215,9 +215,9 @@ class Phrase:
 
 
 def main():
-    t = RichText('This is a ', Tag('emph', 'very'), ' rich text.')
+    t = Text('This is a ', Tag('emph', 'very'), ' rich text.')
     t.append(' Another sentense. ')
-    t.append(RichText(' Another text. ', Tag('textbf', 'Some bold text.')))
+    t.append(Text(' Another text. ', Tag('textbf', 'Some bold text.')))
     print t
     print t.render(None) 
     print t.is_terminated()
