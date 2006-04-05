@@ -45,7 +45,7 @@ class BibData:
 
     def addRecord(self, s, loc, toks):
         for i in toks:
-            entry = Entry(i[0])
+            entry = Entry(i[0].lower())
             fields = {}
             for field in i[2]:
                 value = field[1][0] % tuple([self.strings[arg] for arg in field[1][1]])
