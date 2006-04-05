@@ -60,6 +60,7 @@ class Writer:
         bibtex_file = w.start('bibtex:file', attrib={'xmlns:bibtex': 'http://bibtexml.sf.net/'})
         for key, entry in bib_data.iteritems():
             newline()
+            newline()
             w.start('bibtex:entry', id=key)
             newline()
             w.start('bibtex:' + entry.type)
@@ -73,6 +74,8 @@ class Writer:
             newline()
             w.end()
         newline()
+        newline()
+        w.comment('manual cleanup may be required')
         w.close(bibtex_file)
         w.flush()
 
