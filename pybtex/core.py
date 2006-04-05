@@ -120,6 +120,10 @@ class Person:
                 else:
                     self._first.insert(0, part)
 
+    def get_part_as_text(self, type):
+        names = getattr(self, '_' + type)
+        return ' '.join(names)
+
     def get_part(self, type, abbr=False):
         names = getattr(self, '_' + type)
         if abbr:
