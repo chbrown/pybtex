@@ -1,5 +1,7 @@
+from locale import getpreferredencoding
 from elementtree.SimpleXMLWriter import XMLWriter
 
+file_extension = 'bibtexml'
 doctype = """<!DOCTYPE bibtex:file PUBLIC
     "-//BibTeXML//DTD XML for BibTeX v1.0//EN"
         "bibtexml.dtd" >
@@ -7,7 +9,9 @@ doctype = """<!DOCTYPE bibtex:file PUBLIC
 class Writer:
     """Outputs BibTeXML markup"""
 
-    def __init__(self, encoding = 'utf-8'):
+    def __init__(self, encoding = None):
+        if not encoding:
+            encoding = getpreferredencoding()
         self.encoding = encoding
 
     def write(self, bib_data, filename):
