@@ -94,6 +94,12 @@ class Person:
          - First von Last
         (see BibTeX manual for explanation)
         """
+        def process_first_middle(s):
+            try:
+                self._first.append(s[0])
+                self._middle.extend(s[1:])
+            except IndexError:
+                pass
         def process_von_last(s):
             for part in s.split():
                 if part.islower():
@@ -106,19 +112,21 @@ class Person:
             parts = match2.groups()
             process_von_last(parts[0])
             self._lineage.extend(parts[1].split())
-            self._first.extend(parts[2].split())
+            process_first_middle(parts[2].split())
         elif match1: # von Last, First
             parts = match1.groups()
             process_von_last(parts[0])
-            self._first.extend(parts[1].split())
+            process_first_middle(parts[1].split())
         else: # First von Last
             parts = reversed(s.split())
             self._last.append(parts.next())
+            first_middle = []
             for part in parts:
                 if part.islower():
                     self._prelast.insert(0, part)
                 else:
-                    self._first.insert(0, part)
+                    first_middle.append(0, part)
+            process_first_middle(first_middle)
 
     def get_part_as_text(self, type):
         names = getattr(self, '_' + type)
