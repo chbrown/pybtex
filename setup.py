@@ -24,6 +24,7 @@ import os
 from glob import glob1
 from distutils.core import setup
 from distutils.command.install_data import install_data
+from distutils.command.sdist import sdist
 from distutils.dep_util import newer
 from distutils.log import info
 
@@ -41,6 +42,15 @@ def list_modules():
     os.path.walk(progname, add, None)
     return modules
 
+class Sdist(sdist):
+    def run(self):
+        from pybtex.database.convert import convert
+        bibtexml = os.path.join('examples', 'foo.bibtexml')
+        bibtex = os.path.join('examples', 'foo.bibtex')
+        if not os.path.exists(bibtex) or newer(bibtexml, bibtex):
+            convert(bibtexml, 'bibtexml', 'bibtex')
+        sdist.run(self)
+
 class InstallData(install_data):
     def run(self):
         # we don't usually have the tools to compile po files in win32
@@ -48,6 +58,7 @@ class InstallData(install_data):
             self.data_files.extend(self._compile_po_files())
 
         install_data.run(self)
+
 
     def _compile_po_files(self):
         data_files = []
@@ -98,5 +109,5 @@ that TeX-like camel-casing, which we considered too boring to type.''',
     packages=list_modules(),
     scripts=[os.path.join('scripts', progname)],
     data_files=data_files,
-    cmdclass={'install_data': InstallData}
+    cmdclass={'install_data': InstallData, 'sdist' : Sdist}
     )
