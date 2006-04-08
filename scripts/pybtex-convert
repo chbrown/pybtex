@@ -20,9 +20,9 @@
 # USA
 
 import sys
-from os import path
 import optparse
-from pybtex import find_plugin, __version__
+from pybtex import __version__
+from pybtex.database.convert import convert, ConvertError
 
 def main():
     opt_parser = optparse.OptionParser(prog='pybtex-convert', usage='%prog filename -f from_format -t to_format [options]', version='%%prog-%s' % __version__)
@@ -44,29 +44,16 @@ def main():
     
     if not options.to_format:
         opt_parser.error('destination format not specified')
-    
-    input_format = find_plugin('database.input', options.from_format)
-    output_format = find_plugin('database.output', options.to_format)
-    
-    input = args[0]
-    base_filename, ext = path.splitext(input)
-    if not ext:
-        input = path.extsep.join([input, input_format.file_extension])
 
+    try:
+        convert(args[0],
+                options.from_format,
+                options.to_format,
+                output=options.output,
+                input_encoding=options.input_encoding,
+                output_encoding=options.output_encoding)
+    except ConvertError, s:
+        opt_parser.error(s)
 
-    if options.output:
-        output = options.output
-        if not path.splitext(output)[1]:
-            output = path.extsep.join([output, output_format.file_extension])
-    else:
-        output = path.extsep.join([base_filename, output_format.file_extension])
-
-    if input == output:
-        opt_parser.error('input and output file can not be the same')
-
-    bib_data = input_format.Parser(options.input_encoding).parse_file(input)
-    output_format.Writer(options.output_encoding).write(bib_data, output)
-        
-        
 if __name__ == '__main__':
     main()
