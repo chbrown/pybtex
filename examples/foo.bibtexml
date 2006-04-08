@@ -15,9 +15,7 @@
         </bibtex:person>
         <bibtex:person>
           <bibtex:first>Eli</bibtex:first>
-          <bibtex:prelast>de</bibtex:prelast>
           <bibtex:last>Ruckenstein</bibtex:last>
-          <bibtex:lineage>Jr.</bibtex:lineage>
         </bibtex:person>
       </bibtex:author>
     </bibtex:article>
@@ -30,7 +28,8 @@
       <bibtex:title>Методы вычисления физико-химических величин и прикладные расчёты</bibtex:title>
       <bibtex:author>
         <bibtex:person>
-          <bibtex:first>Михаил Маркович</bibtex:first>
+          <bibtex:first>Михаил</bibtex:first>
+          <bibtex:middle>Маркович</bibtex:middle>
           <bibtex:last>Викторов</bibtex:last>
         </bibtex:person>
       </bibtex:author>
@@ -64,11 +63,13 @@
       <bibtex:howpublished>Published by Foo</bibtex:howpublished>
       <bibtex:author>
         <bibtex:person>
-          <bibtex:first>First Middle</bibtex:first>
+          <bibtex:first>First</bibtex:first>
+          <bibtex:middle>Middle</bibtex:middle>
+          <bibtex:prelast>de</bibtex:prelast>
           <bibtex:last>Last</bibtex:last>
+          <bibtex:lineage>Jr.</bibtex:lineage>
         </bibtex:person>
       </bibtex:author>
     </bibtex:booklet>
   </bibtex:entry>
-<!-- manual cleanup may be required -->
 </bibtex:file>
