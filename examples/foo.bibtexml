@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE bibtex:file PUBLIC "-//BibTeXML//DTD XML for BibTeX v1.0//EN" "bibtexml.dtd">
 <bibtex:file xmlns:bibtex="http://bibtexml.sf.net/">
   <bibtex:entry id="ruckenstein-diffusion">
     <bibtex:article>
@@ -16,21 +15,22 @@
         </bibtex:person>
         <bibtex:person>
           <bibtex:first>Eli</bibtex:first>
+          <bibtex:prelast>de</bibtex:prelast>
           <bibtex:last>Ruckenstein</bibtex:last>
+          <bibtex:lineage>Jr.</bibtex:lineage>
         </bibtex:person>
       </bibtex:author>
     </bibtex:article>
   </bibtex:entry>
   <bibtex:entry id="viktorov-metodoj">
     <bibtex:book>
-      <bibtex:language>Russian</bibtex:language>
       <bibtex:publisher>Л.: &lt;&lt;Химия&gt;&gt;</bibtex:publisher>
       <bibtex:year>1977</bibtex:year>
+      <bibtex:language>Russian</bibtex:language>
       <bibtex:title>Методы вычисления физико-химических величин и прикладные расчёты</bibtex:title>
       <bibtex:author>
         <bibtex:person>
-          <bibtex:first>Михаил</bibtex:first>
-	  <bibtex:middle>Маркович</bibtex:middle>
+          <bibtex:first>Михаил Маркович</bibtex:first>
           <bibtex:last>Викторов</bibtex:last>
         </bibtex:person>
       </bibtex:author>
@@ -57,18 +57,18 @@
   <bibtex:entry id="test-booklet">
     <bibtex:booklet>
       <bibtex:language>English</bibtex:language>
-      <bibtex:howpublished>Published by Foo</bibtex:howpublished>
-      <bibtex:address>Moscow</bibtex:address>
+      <bibtex:title>Just a booklet</bibtex:title>
       <bibtex:year>2006</bibtex:year>
       <bibtex:month>January</bibtex:month>
-      <bibtex:title>Just a booklet</bibtex:title>
+      <bibtex:address>Moscow</bibtex:address>
+      <bibtex:howpublished>Published by Foo</bibtex:howpublished>
       <bibtex:author>
         <bibtex:person>
-          <bibtex:first>First</bibtex:first>
-	  <bibtex:middle>Middle</bibtex:middle>
+          <bibtex:first>First Middle</bibtex:first>
           <bibtex:last>Last</bibtex:last>
         </bibtex:person>
       </bibtex:author>
     </bibtex:booklet>
   </bibtex:entry>
+<!-- manual cleanup may be required -->
 </bibtex:file>
