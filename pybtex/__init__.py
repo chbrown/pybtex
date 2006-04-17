@@ -26,7 +26,7 @@ import styles
 import backends.latex
 import database.input.bibtex
 
-__version__ = "20060402"
+__version__ = "20060416"
 
 class FindPluginError(Exception):
     pass
