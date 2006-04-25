@@ -17,7 +17,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from elementtree import ElementTree as ET
+try:
+    import cElementTree as ET
+except ImportError:
+    from elementtree import ElementTree as ET
 from pybtex.core import Entry, Person
 
 bibtexns = '{http://bibtexml.sf.net/}'
