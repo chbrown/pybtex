@@ -18,7 +18,7 @@
 # USA
 
 from pybtex.utils import dashify
-from pybtex.richtext import Text, Phrase, Tag, Symbol, Check
+from pybtex.richtext import Text, Phrase, Tag, Symbol
 from pybtex.styles.formatting import FormatterBase, default_phrase
 
 class Formatter(FormatterBase):
@@ -34,9 +34,9 @@ class Formatter(FormatterBase):
         p = default_phrase(self.format_names(e.authors), e.title)
         pages = dashify(e.pages)
         if e.volume:
-            vp = Text(e.volume, Check(':', pages))
+            vp = Text(e.volume, Text(':', pages, check=True))
         else:
-            vp = Check(pages, 'pages %s')
+            vp = Phrase('pages', pages, check=True, sep=' ')
         p.append(Phrase(Tag('emph', e.journal), vp, self.format_date(e)))
         return p
         
@@ -60,7 +60,7 @@ class Formatter(FormatterBase):
                 p.append('of')
                 p.append(Tag('emph', e.series))
 
-        # we can not just say e.number here, because
+        # we can not just use e.number here, because
         # pybtex uses e.number for its own needs
         elif e.fields.has_key('number'):
             p.append('Number')
@@ -81,12 +81,12 @@ class Formatter(FormatterBase):
 
     def format_booklet(self, e):
         p = default_phrase(self.format_names(e.authors), e.title)
-        p.append(Phrase(e.howpublished, e.address, self.format_date(e)))
+        p.append(Phrase(e.howpublished, e.address, self.format_date(e)), e.note)
         return p
 
     def format_inbook(self, e):
         p = default_phrase(self.format_author_or_editor(e), e.title)
-        tmp = Phrase(self.format_volume_and_series(e), e.publisher)
-        tmp.append(Check(e.edition, '%s edition'))
-        p.append(tmp)
+        p.append(self.format_volume_and_series(e))
+        p.append(Phrase(e.publisher, e.address, Phrase(e.edition, 'edition', sep=' ', check=True), self.format_date(e)))
+        p.append(e.note)
         return p

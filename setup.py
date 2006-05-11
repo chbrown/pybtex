@@ -107,7 +107,7 @@ that TeX-like camel-casing, which we considered too boring to type.''',
         'User Interface :: Textual :: Command-line'
     ],
     packages=list_modules(),
-    scripts=[os.path.join('scripts', progname)],
+    scripts=[os.path.join('scripts', progname), os.path.join('scripts', progname + "-convert")],
     data_files=data_files,
     cmdclass={'install_data': InstallData, 'sdist' : Sdist}
     )

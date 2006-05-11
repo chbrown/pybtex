@@ -32,13 +32,22 @@ class Text(list):
     being rendered to to HTML or LaTeX markup or whatever in the end.
     """
 
-    def __init__(self, *args):
+    def __init__(self, *args, **kwargs):
         """All the non-keyword arguments form the content of the Text object.
         E. g. Text('This ', 'is a', Tag('emph', 'very'), Text(' rich', ' text.')
         Note the spaces. After rendering you will probably get something like
         "This is a \emph{very} rich text". Isn't that simple? =)
         """
+        try:
+            check = kwargs['check']
+        except KeyError:
+            check = False
+
+        if check and False in (bool(arg) for arg in args):
+            args = []
+
         list.__init__(self)
+
         for i in args:
             self.append(i)
 
@@ -83,13 +92,6 @@ class Text(list):
         if not self.is_terminated():
             self.append('.')
         return self
-
-class Check(Text):
-    def __init__(self, *args):
-        if False in (bool(arg) for arg in args):
-            args = []
-        Text.__init__(self, *args)
-
 
 class Tag:
     """A tag is somethins like <foo>some text</foo> in HTML
@@ -156,6 +158,9 @@ class Phrase:
         self.periods = getarg('add_periods', False)
         self.sep_after = None
         self.parts = []
+
+        if getarg('check', False) and False in (bool(arg) for arg in args):
+            args = []
 
         for text in args:
             self.append(text)
