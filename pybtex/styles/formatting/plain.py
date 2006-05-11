@@ -85,7 +85,8 @@ class Formatter(FormatterBase):
         return p
 
     def format_inbook(self, e):
-        p = default_phrase(self.format_author_or_editor(e), e.title)
+        p = default_phrase(self.format_author_or_editor(e))
+        p.append(Tag('emph', e.title))
         p.append(self.format_volume_and_series(e))
         p.append(Phrase(e.publisher, e.address, Phrase(e.edition, 'edition', sep=' ', check=True), self.format_date(e)))
         p.append(e.note)
