@@ -72,6 +72,12 @@ class Formatter(FormatterBase):
             p.append(e.series)
         return p
     
+    def format_chapter_and_pages(self, e):
+        p = Phrase()
+        p.append(Phrase('chapter', e.chapter, sep=' '))
+        p.append(Phrase('pages', dashify(e.pages)))
+        return p
+
     def format_book(self, e):
         p = default_phrase(self.format_author_or_editor(e))
         p.append(Tag('emph', e.title))
@@ -86,8 +92,18 @@ class Formatter(FormatterBase):
 
     def format_inbook(self, e):
         p = default_phrase(self.format_author_or_editor(e))
-        p.append(Tag('emph', e.title))
+        p.append(Phrase(Tag('emph', e.title), self.format_chapter_and_pages(e)))
         p.append(self.format_volume_and_series(e))
         p.append(Phrase(e.publisher, e.address, Phrase(e.edition, 'edition', sep=' ', check=True), self.format_date(e)))
         p.append(e.note)
         return p
+
+    def format_incollection(self, e):
+        p = default_phrase(self.format_names(e.authors), e.title)
+        tmp = Phrase()
+        if e.booktitle:
+            tmp.append('In', sep_after=' ')
+            tmp.append(self.format_names(e.editors))
+            tmp.append(Tag('emph', e.booktitle))
+        tmp.append(self.format_volume_and_series(e))
+        tmp.append
