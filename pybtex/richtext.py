@@ -38,12 +38,8 @@ class Text(list):
         Note the spaces. After rendering you will probably get something like
         "This is a \emph{very} rich text". Isn't that simple? =)
         """
-        try:
-            check = kwargs['check']
-        except KeyError:
-            check = False
 
-        if check and False in (bool(arg) for arg in args):
+        if kwargs.get('check', False) and False in (bool(arg) for arg in args):
             args = []
 
         list.__init__(self)
@@ -145,17 +141,12 @@ class Phrase:
         - add_period (add a period at the end of phrase if there is none yet)
         - add_periods (add a period to every part of the phrase)
         """
-        def getarg(key, default=None):
-            try:
-                return kwargs[key]
-            except KeyError:
-                return default
 
-        self.sep = getarg('sep', ', ')
-        self.last_sep = getarg('last_sep', self.sep)
-        self.sep2 = getarg('sep2', self.last_sep)
-        self.period = getarg('add_period', False)
-        self.periods = getarg('add_periods', False)
+        self.sep = kwargs.get('sep', ', ')
+        self.last_sep = kwargs.get('last_sep', self.sep)
+        self.sep2 = kwargs.get('sep2', self.last_sep)
+        self.period = kwargs.get('add_period', False)
+        self.periods = kwargs.get('add_periods', False)
         self.sep_after = None
         self.parts = []
 
