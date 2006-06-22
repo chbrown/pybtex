@@ -150,7 +150,7 @@ class Phrase:
         self.sep_after = None
         self.parts = []
 
-        if getarg('check', False) and False in (bool(arg) for arg in args):
+        if kwargs.get('check', False) and False in (bool(arg) for arg in args):
             args = []
 
         for text in args:
