@@ -150,6 +150,8 @@ class Phrase(Text):
         self.sep_after = None
         self.parts = []
 
+        self.need_rebuild = True
+        
         if kwargs.get('check', False) and False in (bool(arg) for arg in args):
             args = []
 
@@ -167,6 +169,7 @@ class Phrase(Text):
             if sep_after is not None:
                 self.sep_after = sep_after
 
+            self.need_rebuild = True
             self.parts.append((text, sep_before))
 
     def add_period(self):
@@ -175,6 +178,8 @@ class Phrase(Text):
     def _rebuild(self):
         """Create a Text representation of the phrase
         """
+        if not self.need_rebuild:
+            return
         def output_part(part, sep):
             if part[1] is not None:
                 sep = part[1]
