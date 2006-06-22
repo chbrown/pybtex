@@ -169,15 +169,11 @@ class Phrase(Text):
 
             self.parts.append((text, sep_before))
 
-    def extend(self, list):
-        for item in list:
-            self.append(item)
-
     def add_period(self):
         return Text(self).add_period()
     
     def _rebuild(self):
-        """Return a Text representation of the phrase
+        """Create a Text representation of the phrase
         """
         def output_part(part, sep):
             if part[1] is not None:
@@ -207,6 +203,7 @@ class Phrase(Text):
 
     def __repr__(self):
         return self[:].__repr__()
+
     def _rebuild_and_do(f):
         def my_f(self, *args, **kwargs):
             self._rebuild()
