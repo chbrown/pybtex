@@ -120,7 +120,7 @@ class Symbol:
         return backend.symbols[self.name]
 
 
-class Phrase:
+class Phrase(Text):
     """Phrase is a helper class for easy construction of phrases.
     Examples:
         Phrase('One', 'two', 'three', add_period=True) -> 'One, two, three.'
@@ -156,14 +156,7 @@ class Phrase:
         for text in args:
             self.append(text)
 
-        self.__str__ = self.parts.__str__
-        self.__repr__ = self.parts.__repr__
-
     def append(self, text, sep_before=None, sep_after=None):
-        try:
-            text = text.rich_text()
-        except AttributeError:
-            pass
         if text:
             if self.periods:
                 text = utils.add_period(text)
@@ -180,7 +173,10 @@ class Phrase:
         for item in list:
             self.append(item)
 
-    def rich_text(self):
+    def add_period(self):
+        return Text(self).add_period()
+    
+    def _rebuild(self):
         """Return a Text representation of the phrase
         """
         def output_part(part, sep):
@@ -191,7 +187,7 @@ class Phrase:
             result.append(part[0])
 
         if not self.parts:
-            return Text()
+            result = Text()
         elif len(self.parts) == 1:
             result = Text(self.parts[0][0])
         elif len(self.parts) == 2:
@@ -207,16 +203,25 @@ class Phrase:
             output_part(self.parts[-1], self.last_sep)
         if self.period:
             result.add_period()
-        return result
+        self[:] = result
+
+    def __repr__(self):
+        return self[:].__repr__()
+    def _rebuild_and_do(f):
+        def my_f(self, *args, **kwargs):
+            self._rebuild()
+            return f(self, *args, **kwargs)
+        return my_f
+
+    __len__ = _rebuild_and_do(Text.__len__)
+    __getitem__ = _rebuild_and_do(Text.__getitem__)
+    __getslice__ = _rebuild_and_do(Text.__getslice__)
+    __iter__ = _rebuild_and_do(Text.__iter__)
 
 
 def main():
-    t = Text('This is a ', Tag('emph', 'very'), ' rich text.')
-    t.append(' Another sentense. ')
-    t.append(Text(' Another text. ', Tag('textbf', 'Some bold text.')))
-    print t
-    print t.render(None) 
-    print t.is_terminated()
+    p = Phrase(Phrase('first'), 'second', add_periods=True)
+    print p
 
 if __name__ == '__main__':
     main()

@@ -37,10 +37,6 @@ def add_period(s):
     try:
         return s.add_period()
     except AttributeError:
-        try:
-            s = s.rich_text()
-        except AttributeError:
-            pass
         if s and not is_terminated(s):
             s += '.'
         return s
@@ -76,4 +72,4 @@ def dashify(s):
     """
     p = Phrase(sep=Symbol('ndash'))
     p.extend(dash_re.split(s))
-    return p.rich_text()
+    return p

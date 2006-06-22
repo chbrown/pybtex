@@ -33,6 +33,6 @@ class FormatterBase:
         l = []
         for entry in entries:
             f = getattr(self, "format_" + entry.type.lower())
-            text = f(entry).rich_text()
+            text = f(entry)
             l.append(FormattedEntry(entry.key, text, entry.label))
         return l
