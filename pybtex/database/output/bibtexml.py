@@ -17,6 +17,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
+from pybtex.core imporot Entry
 from locale import getpreferredencoding
 from elementtree.SimpleXMLWriter import XMLWriter
 
@@ -67,7 +68,7 @@ class Writer:
             for field_name, field_value in entry.fields.iteritems():
                 w.data('\n')
                 w.element('bibtex:' + field_name, field_value)
-            for role in ('author', 'editor'):
+            for role in Entry.valid_roles:
                 write_persons(entry, role)
             newline()
             w.end()
