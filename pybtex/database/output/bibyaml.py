@@ -19,17 +19,15 @@
 
 import yaml
 from pybtex.core import Entry
+from pybtex.database.output import WriterBase
 
 file_extension = 'bibtexml'
 doctype = """<!DOCTYPE bibtex:file PUBLIC
     "-//BibTeXML//DTD XML for BibTeX v1.0//EN"
         "bibtexml.dtd" >
 """
-class Writer:
+class Writer(WriterBase):
     """Outputs YAML markup"""
-
-    def __init__(self, encoding):
-        pass
 
     def write(self, bib_data, filename):
         def process_person_roles(entry):

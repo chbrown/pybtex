@@ -18,20 +18,16 @@
 # USA
 
 import codecs
-from locale import getpreferredencoding
+from pybtex.database.output import WriterBase
 
 file_extension = 'bib'
 
-class Writer:
+class Writer(WriterBase):
     """Outputs BibTeX markup"""
-
-    def __init__(self, encoding = None):
-        if not encoding:
-            encoding = getpreferredencoding()
-        self.encoding = encoding
 
     def quote(self, s):
         return '"%s"' % s.replace('"', "''")
+
     def write(self, bib_data, filename):
         def write_field(type, value):
             f.write(',\n    %s = %s' % (type, self.quote(value)))

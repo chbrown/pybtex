@@ -17,8 +17,8 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-from pybtex.core imporot Entry
-from locale import getpreferredencoding
+from pybtex.core import Entry
+from pybtex.database.output import WriterBase
 from elementtree.SimpleXMLWriter import XMLWriter
 
 file_extension = 'bibtexml'
@@ -26,13 +26,8 @@ doctype = """<!DOCTYPE bibtex:file PUBLIC
     "-//BibTeXML//DTD XML for BibTeX v1.0//EN"
         "bibtexml.dtd" >
 """
-class Writer:
+class Writer(WriterBase):
     """Outputs BibTeXML markup"""
-
-    def __init__(self, encoding = None):
-        if not encoding:
-            encoding = getpreferredencoding()
-        self.encoding = encoding
 
     def write(self, bib_data, filename):
         def newline():
