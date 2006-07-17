@@ -36,7 +36,7 @@ class Writer:
             for role in Entry.valid_roles:
                 persons = getattr(entry, role + 's')
                 if persons:
-                    yield role + 's', list(process_persons(persons))
+                    yield role, list(process_persons(persons))
 
         def process_person(person):
             for type in ('first', 'middle', 'prelast', 'last', 'lineage'):
