@@ -18,14 +18,12 @@
 # USA
 
 import yaml
+from pybtex.database.input import ParserBase
 from pybtex.core import Entry, Person
 
 file_extension = 'yaml'
 
-class Parser:
-    def __init__(self, encoding=None):
-        self.entries = {}
-
+class Parser(ParserBase):
     def parse_file(self, filename):
         f = open(filename)
         t = yaml.load(f)

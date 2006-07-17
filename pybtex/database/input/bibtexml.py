@@ -22,6 +22,7 @@ try:
 except ImportError:
     from elementtree import ElementTree as ET
 from pybtex.core import Entry, Person
+from pybtex.database.input import ParserBase
 
 bibtexns = '{http://bibtexml.sf.net/}'
 file_extension = 'bibtexml'
@@ -30,11 +31,9 @@ def remove_ns(s):
     if s.startswith(bibtexns):
         return s[len(bibtexns):]
 
-class Parser:
-    def __init__(self, encoding=None):
-        self.entries = {}
-
+class Parser(ParserBase):
     def parse_file(self, file):
+        self.entries = {}
         t = ET.parse(file)
         for entry in t.findall(bibtexns + 'entry'):
             self.process_entry(entry)

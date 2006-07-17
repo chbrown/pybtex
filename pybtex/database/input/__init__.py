@@ -19,3 +19,7 @@
 
 default = 'bib'
 filetypes = {'bib' : 'bibtex'}
+
+class ParserBase:
+    def __init__(self, encoding=None):
+        self.encoding = encoding
