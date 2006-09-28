@@ -62,8 +62,8 @@ class Entry:
         """
         #if not isinstance(person, Person):
         #    person = Person(person)
-        list = getattr(self, '%ss' % role)
-        list.append(person)
+        l = getattr(self, '%ss' % role)
+        l.append(person)
                 
 
 class Person:

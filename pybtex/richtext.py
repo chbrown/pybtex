@@ -39,7 +39,7 @@ class Text(list):
         "This is a \emph{very} rich text". Isn't that simple? =)
         """
 
-        if kwargs.get('check', False) and False in (bool(arg) for arg in args):
+        if kwargs.get('check', False) and (False in (bool(arg) for arg in args)):
             args = []
 
         list.__init__(self)
@@ -152,7 +152,7 @@ class Phrase(Text):
 
         self.need_rebuild = True
         
-        if kwargs.get('check', False) and False in (bool(arg) for arg in args):
+        if kwargs.get('check', False) and (False in (bool(arg) for arg in args)):
             args = []
 
         for text in args:
