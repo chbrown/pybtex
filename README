@@ -13,6 +13,15 @@ produces a formatted bibliography. In case of LaTeX the
 citaton information is read from .aux file and the
 bibliography is written to .bbl file.
 
+Pybtex currently understands the following bibliography formats:
+- BibTeX
+- BibTeXML
+- YAML-based format
+
+The resulting bibliography may be output in one of the following formats:
+- LaTeX
+- plain text
+
 3. Requirements
 - Python-2.3.2 or later (http://python.org)
 - pyparsing-1.4 or later is required for reading .bib
