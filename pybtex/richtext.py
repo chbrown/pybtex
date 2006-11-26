@@ -93,12 +93,12 @@ class Text(list):
             self.append('.')
         return self
 
-class Tag(Text):
+class Tag(object):
     """A tag is somethins like <foo>some text</foo> in HTML
     or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
     'some text' is tag's text.
     """
-    def __init__(self, name, text):
+    def __init__(self, text, name):
         self.name = name
         self.text = text
     def is_terminated(self):
@@ -111,6 +111,12 @@ class Tag(Text):
         return backend.format_tag(self.name, text)
     def add_period(self):
         return Text(self).add_period()
+    def format(self, entry):
+        try:
+            self.text = self.text.format(entry)
+        except:
+            pass
+        return self
 
 
 class Symbol(Text):
