@@ -19,9 +19,10 @@
 
 """template micro-language
 
->>> entry = {'title': 'Some Title', 'author': 'Some Author'}
+>>> class entry:
+...     fields = {'title': 'Some Title', 'author': 'Some Author'}
 >>> template = AddPeriod(Phrase(Field('author'), Text('Lopata')))
->>> print template.format(entry)
+>>> print template.format(entry())
 ['Some Author', ', ', 'Lopata', '.']
 """
 
@@ -58,7 +59,7 @@ class AddPeriod(TextNode):
 class Field(TextNode):
     def format(self, entry):
         try:
-            return entry[self.data]
+            return Text(entry.fields[self.data])
         except KeyError:
             raise FieldMissing(errors=['%s field missing' % self.data])
 
