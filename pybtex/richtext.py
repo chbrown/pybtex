@@ -69,6 +69,11 @@ class Text(list):
                 text.append(item.render(backend))
         return "".join(text)
 
+    def format(self, data):
+        """This function allows using Text objects as template nodes
+        """
+        return self
+
     def is_terminated(self):
         """Return true if the text ends with period or something.
         """
