@@ -18,6 +18,11 @@
 # USA
 
 """template micro-language
+
+>>> entry = {'title': 'Some Title', 'author': 'Some Author'}
+>>> template = AddPeriod(Phrase(Field('author'), Text('Lopata')))
+>>> print template.format(entry)
+['Some Author', ', ', 'Lopata', '.']
 """
 
 from richtext import Text
@@ -201,12 +206,9 @@ class Phrase(TextNodeList):
 
         return result
 
-if __name__ == '__main__':
-    entry = {'title': 'Some Title', 'author': 'Some Author'}
-    template = AddPeriod(Phrase(Field('author'), Text('Lopata')))
-    try:
-        print template.format(entry)
-    except OptionalElementMissing:
-        pass
-    except TextElementMissing, e:
-        print e.errors
+def _test():
+    import doctest
+    doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
