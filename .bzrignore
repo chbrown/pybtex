@@ -1,0 +1,4 @@
+examples/*.aux
+examples/*.bbl
+examples/*.dvi
+examples/*.log
