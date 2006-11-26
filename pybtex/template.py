@@ -162,7 +162,7 @@ class Phrase(TextNodeList):
         self.sep = kwargs.get('sep', ', ')
         self.last_sep = kwargs.get('last_sep', self.sep)
         self.sep2 = kwargs.get('sep2', self.last_sep)
-        self.period = kwargs.get('add_period', False)
+#        self.period = kwargs.get('add_period', False)
         self.periods = kwargs.get('add_periods', False)
         self.sep_after = None
         
@@ -177,6 +177,8 @@ class Phrase(TextNodeList):
             if sep_after is not None:
                 self.sep_after = sep_after
 
+            if self.periods:
+                text = AddPeriod(text)
             self._list.append((text, sep_before))
 
     def format(self, entry):
