@@ -93,7 +93,7 @@ class Text(list):
             self.append('.')
         return self
 
-class Tag:
+class Tag(Text):
     """A tag is somethins like <foo>some text</foo> in HTML
     or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
     'some text' is tag's text.
@@ -113,7 +113,7 @@ class Tag:
         return Text(self).add_period()
 
 
-class Symbol:
+class Symbol(Text):
     """A symbol is used to represent some special characters.
     Example: Symbol('ndash') produces '&ndash;' when rendered to HTML
     and '--' when rendered to LaTeX.
