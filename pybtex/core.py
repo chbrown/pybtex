@@ -37,34 +37,32 @@ class FormattedEntry:
 
 class Entry:
     """Bibliography entry. Important members are:
-    - authors (a list of Person objects)
-    - editors (like authors, but contains editors)
-    - fields (all other information)
+    - persons (a dict of Person objects)
+    - fields (all dict of string)
     """
     valid_roles = ['author', 'editor'] 
-    def __init__(self, type_, fields = None):
+    def __init__(self, type_, fields = None, persons = None):
         self.type = type_
         if fields == None:
             fields = {}
         self.fields = fields
-        self.has_key = self.fields.has_key
-        self.authors = []
-        self.editors = []
-
-    def __getattr__(self, name):
-        try:
-            return self.fields[name]
-        except KeyError:
-            return ""
+        if persons == None:
+            persons = {}
+        self.persons = persons
 
     def add_person(self, person, role):
-        """Add an author or an editor.
-        """
-        #if not isinstance(person, Person):
-        #    person = Person(person)
-        l = getattr(self, '%ss' % role)
-        l.append(person)
-                
+        try:
+            self.persons[role]
+        except KeyError:
+            self.persons[role] = []
+        self.persons[role].append(person)
+
+#    def __getattr__(self, name):
+#        try:
+#            return self.fields[name]
+#        except KeyError:
+#            return ""
+
 
 class Person:
     """Represents a person (usually human).

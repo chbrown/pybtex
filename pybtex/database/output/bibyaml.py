@@ -31,10 +31,8 @@ class Writer(WriterBase):
 
     def write(self, bib_data, filename):
         def process_person_roles(entry):
-            for role in Entry.valid_roles:
-                persons = getattr(entry, role + 's')
-                if persons:
-                    yield role, list(process_persons(persons))
+            for role, persons in entry.persons.iteritems():
+                yield role, list(process_persons(persons))
 
         def process_person(person):
             for type in ('first', 'middle', 'prelast', 'last', 'lineage'):

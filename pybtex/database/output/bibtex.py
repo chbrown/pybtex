@@ -48,8 +48,8 @@ class Writer(WriterBase):
                 s += ', '
                 s += join([first, middle])
             return s
-        def write_persons(entry, role):
-            persons = getattr(entry, role + 's')
+        def write_persons(persons, role):
+#            persons = getattr(entry, role + 's')
             if persons:
                 write_field(role, ' and '.join([format_name(person) for person in persons]))
 
@@ -58,8 +58,9 @@ class Writer(WriterBase):
             f.write('@%s' % entry.type)
             f.write('{\n')
             f.write('    %s' % key)
-            for role in ('author', 'editor'):
-                write_persons(entry, role)
+#            for role in ('author', 'editor'):
+            for role, persons in entry.persons.iteritems():
+                write_persons(persons, role)
             for type, value in entry.fields.iteritems():
                 write_field(type, value)
             f.write('\n}\n\n')

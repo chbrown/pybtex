@@ -80,7 +80,8 @@ def prepare_entries(bib_data, citations, label_style, name_style, abbreviate_nam
         entry.number = number + 1 # entry numbers start with 1
         entry.key = key
         entry.label = label_style(entry)
-        for person in entry.authors + entry.editors:
-            person.text = name_style(person, abbreviate_names)
+        for persons in entry.persons.itervalues():
+            for person in persons:
+                person.text = name_style(person, abbreviate_names)
         entries.append(entry)
     return entries

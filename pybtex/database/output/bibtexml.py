@@ -32,8 +32,8 @@ class Writer(WriterBase):
     def write(self, bib_data, filename):
         def newline():
             w.data('\n')
-        def write_persons(entry, role):
-            persons = getattr(entry, role + 's')
+        def write_persons(persons, role):
+#            persons = entry.persons[role]
             if persons:
                 newline()
                 w.start('bibtex:' + role)
@@ -63,8 +63,8 @@ class Writer(WriterBase):
             for field_name, field_value in entry.fields.iteritems():
                 w.data('\n')
                 w.element('bibtex:' + field_name, field_value)
-            for role in Entry.valid_roles:
-                write_persons(entry, role)
+            for role, persons in entry.persons.iteritems():
+                write_persons(persons, role)
             newline()
             w.end()
             newline()
