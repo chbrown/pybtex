@@ -27,7 +27,6 @@ class Text(list):
     - strings
     - Tag objects
     - Symbol object
-    - other Text objects
     Text is used as an internal formatting language of pybtex,
     being rendered to to HTML or LaTeX markup or whatever in the end.
     """
@@ -39,9 +38,6 @@ class Text(list):
         "This is a \emph{very} rich text". Isn't that simple? =)
         """
 
-        if kwargs.get('check', False) and (False in (bool(arg) for arg in args)):
-            args = []
-
         list.__init__(self)
 
         for i in args:
@@ -52,7 +48,10 @@ class Text(list):
         Empty strings and similar things are ignored.
         """
         if item:
-            list.append(self, item)
+            if isinstance(item, Text):
+                self.extend(item)
+            else:
+                list.append(self, item)
 
     def extend(self, list):
         for item in list:
@@ -64,10 +63,10 @@ class Text(list):
         """
         text = []
         for item in self:
-            try:
-                text.append(item.render(backend))
-            except AttributeError:
+            if isinstance(item, basestring):
                 text.append(item)
+            else:
+                text.append(item.render(backend))
         return "".join(text)
 
     def is_terminated(self):
