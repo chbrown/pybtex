@@ -41,14 +41,13 @@ class Entry:
     - fields (all dict of string)
     """
     valid_roles = ['author', 'editor'] 
-    def __init__(self, type_, fields = None, persons = None):
+    def __init__(self, type_, fields = {}, persons = {}):
         self.type = type_
-        if fields == None:
-            fields = {}
-        self.fields = fields
-        if persons == None:
-            persons = {}
-        self.persons = persons
+
+        #FIXME should be removed after migration to the new template language
+        self.fields = utils.defaultdict(fields)
+        
+        self.persons = dict(persons)
 
     def add_person(self, person, role):
         try:
