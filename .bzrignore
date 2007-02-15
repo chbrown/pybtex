@@ -1,4 +1,11 @@
+examples/foo.bib
 examples/*.aux
 examples/*.bbl
 examples/*.dvi
 examples/*.log
+examples/*.blg
+build
+dist
+*.e3s
+*.e3t
+MANIFEST
