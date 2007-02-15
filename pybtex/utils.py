@@ -73,3 +73,9 @@ def dashify(s):
     p = Phrase(sep=Symbol('ndash'))
     p.extend(dash_re.split(s))
     return p
+
+class defaultdict(dict):
+    def __init__(self, *args, **kwargs):
+        dict.__init__(self, *args, **kwargs)
+    def __getitem__(self, key):
+        return self.get(key, '')
