@@ -27,25 +27,25 @@ class Formatter(FormatterBase):
         p.extend(person.text for person in persons)
         return p
 
-    def format_date(self, entry):
-        return Phrase(entry.month, entry.year, sep=' ')
+    def format_date(self, e):
+        return Phrase(e.fields['month'], e.fields['year'], sep=' ')
     
     def format_article(self, e):
-        p = default_phrase(self.format_names(e.authors), e.title)
-        pages = dashify(e.pages)
-        if e.volume:
-            vp = Text(e.volume, Text(':', pages, check=True))
+        p = default_phrase(self.format_names(e.persons['author']), e.fields['title'])
+        pages = dashify(e.fields['pages'])
+        if e.fields['volume']:
+            vp = Text(e.fields['volume'], Text(':', pages, check=True))
         else:
             vp = Phrase('pages', pages, check=True, sep=' ')
-        p.append(Phrase(Tag('emph', e.journal), vp, self.format_date(e)))
+        p.append(Phrase(Tag('emph', e.fields['journal']), vp, self.format_date(e)))
         return p
         
     def format_author_or_editor(self, e):
-        if e.authors:
-            return self.format_names(e.authors)
+        if e.persons['author']:
+            return self.format_names(e.persons['author'])
         else:
-            editors = self.format_names(e.editors)
-            if len(e.editors) > 1:
+            editors = self.format_names(e.persons['editors'])
+            if len(editors) > 1:
                 word = 'editors'
             else:
                 word = 'editor'
@@ -53,57 +53,55 @@ class Formatter(FormatterBase):
     
     def format_volume_and_series(self, e):
         p = Phrase(sep=' ')
-        if e.volume:
+        if e.fields['volume']:
             p.append('Volume')
-            p.append(e.volume)
-            if e.series:
+            p.append(e.fields['volume'])
+            if e.fields['series']:
                 p.append('of')
-                p.append(Tag('emph', e.series))
+                p.append(Tag('emph', e.fields['series']))
 
-        # we can not just use e.number here, because
-        # pybtex uses e.number for its own needs
         elif e.fields.has_key('number'):
             p.append('Number')
             p.append(e.fields['number'])
-            if e.series:
+            if e.fields['series']:
                 p.append('in')
-                p.append(e.series)
-        elif e.series:
-            p.append(e.series)
+                p.append(e.fields['series'])
+        elif e.fields['series']:
+            p.append(e.fields['series'])
         return p
     
     def format_chapter_and_pages(self, e):
         p = Phrase()
-        p.append(Phrase('chapter', e.chapter, sep=' '))
-        p.append(Phrase('pages', dashify(e.pages)))
+        p.append(Phrase('chapter', e.fields['chapter'], sep=' '))
+        p.append(Phrase('pages', dashify(e.fields['pages'])))
         return p
 
     def format_book(self, e):
         p = default_phrase(self.format_author_or_editor(e))
-        p.append(Tag('emph', e.title))
+        p.append(Tag('emph', e.fields['title']))
         p.append(self.format_volume_and_series(e))
-        p.append(Phrase(e.publisher, self.format_date(e), add_period=True))
+        p.append(Phrase(e.fields['publisher'], self.format_date(e), add_period=True))
         return p
 
     def format_booklet(self, e):
-        p = default_phrase(self.format_names(e.authors), e.title)
-        p.append(Phrase(e.howpublished, e.address, self.format_date(e)), e.note)
+        p = default_phrase(self.format_names(e.persons['author']), e.fields['title'])
+        p.append(Phrase(e.fields['howpublished'], e.fields['address'], self.format_date(e)), e.fields['note'])
         return p
 
     def format_inbook(self, e):
         p = default_phrase(self.format_author_or_editor(e))
-        p.append(Phrase(Tag('emph', e.title), self.format_chapter_and_pages(e)))
+        p.append(Phrase(Tag('emph', e.fields['title']), self.format_chapter_and_pages(e)))
         p.append(self.format_volume_and_series(e))
-        p.append(Phrase(e.publisher, e.address, Phrase(e.edition, 'edition', sep=' ', check=True), self.format_date(e)))
-        p.append(e.note)
+        p.append(Phrase(e.fields['publisher'], e.fields['address'], Phrase(e.fields['edition'], 'edition', sep=' ', check=True), self.format_date(e)))
+        p.append(e.fields['note'])
         return p
 
     def format_incollection(self, e):
-        p = default_phrase(self.format_names(e.authors), e.title)
+        p = default_phrase(self.format_names(e.persons['author']), e.fields['title'])
         tmp = Phrase()
-        if e.booktitle:
+        if e.fields['booktitle']:
             tmp.append('In', sep_after=' ')
-            tmp.append(self.format_names(e.editors))
-            tmp.append(Tag('emph', e.booktitle))
+            tmp.append(self.format_names(e.persons['editors']))
+            tmp.append(Tag('emph', e.fields['booktitle']))
         tmp.append(self.format_volume_and_series(e))
         tmp.append
