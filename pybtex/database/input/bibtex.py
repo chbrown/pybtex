@@ -23,32 +23,34 @@ import codecs, locale
 from pyparsing import *
 from pybtex.core import Entry, Person
 
+month_names = {
+    'jan': 'January',
+    'feb': 'February',
+    'mar': 'March',
+    'apr': 'April',
+    'may': 'May',
+    'jun': 'June',
+    'jul': 'July',
+    'aug': 'August',
+    'sep': 'September',
+    'oct': 'October',
+    'nov': 'November',
+    'dec': 'December'
+}
+
 file_extension = 'bib'
 
 class BibData:
-    def __init__(self):
+    def __init__(self, macros):
         self.records = {}
-        self.strings = {
-            'jan': 'January',
-            'feb': 'February',
-            'mar': 'March',
-            'apr': 'April',
-            'may': 'May',
-            'jun': 'June',
-            'jul': 'July',
-            'aug': 'August',
-            'sep': 'September',
-            'oct': 'October',
-            'nov': 'November',
-            'dec': 'December'
-        }
+        self.macros = dict(macros)
 
     def addRecord(self, s, loc, toks):
         for i in toks:
             entry = Entry(i[0].lower())
             fields = {}
             for field in i[2]:
-                value = field[1][0] % tuple([self.strings[arg] for arg in field[1][1]])
+                value = field[1][0] % tuple([self.macros[arg] for arg in field[1][1]])
                 if field[0] in Entry.valid_roles:
                     for name in value.split(' and '):
                         entry.add_person(Person(name), field[0])
@@ -57,17 +59,17 @@ class BibData:
             #fields['TYPE'] = i[0]
             self.records[i[1]] = entry
 
-    def addString(self, s, loc, toks):
+    def addMacro(self, s, loc, toks):
         for i in toks:
-            s = i[1][0] % tuple([self.strings[arg] for arg in i[1][1]])
-            self.strings[i[0]] = s
+            s = i[1][0] % tuple([self.macros[arg] for arg in i[1][1]])
+            self.macros[i[0]] = s
 
 class Parser:
-    def __init__(self, encoding=None):
+    def __init__(self, encoding=None, predefined_macros=month_names):
         if encoding is None:
             encoding = locale.getpreferredencoding()
         self.set_encoding(encoding)
-        self.data = BibData()
+        self.data = BibData(predefined_macros)
 
         lparenth = Literal('(').suppress()
         rparenth = Literal(')').suppress()
@@ -94,10 +96,10 @@ class Parser:
         field.setParseAction(self.processField)
         fields = Dict(delimitedList(field))
 
-        #String
+        #String (aka macro)
         string_body = bibtexGroup(fields)#Word(alphanums).setParseAction(upcaseTokens) + equal + value))
         string = at + CaselessLiteral('STRING').suppress() + string_body
-        string.setParseAction(self.data.addString)
+        string.setParseAction(self.data.addMacro)
 
         #Meta
         meta_body = bibtexGroup(fields)#Group(bibtexGroup(Word(alphanums).setParseAction(upcaseTokens) + equal + field_value))
