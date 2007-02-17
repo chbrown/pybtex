@@ -30,7 +30,7 @@ class BibTeX:
     def run(self, aux_filename):
         aux_data = auxfile.parse_file(aux_filename)
         bst_script = bst.parse_file(aux_data.style + '.bst')
-        self.interpreter.run(bst_script, aux_data.citations, aux_data.data, aux_filename + '.bbl')
+        self.interpreter.run(bst_script, aux_data.citations, aux_data.data + '.bib', aux_filename + '.bbl')
 
 
 if __name__ == '__main__':

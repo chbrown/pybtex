@@ -60,8 +60,6 @@ class Function(Variable):
             return 0
     def __repr__(self):
         return repr(self.body)
-    def __str__(self):
-        return str(self)
 
 class Identifier(Variable):
     def __init__(self, value):
@@ -150,11 +148,17 @@ class Interpreter(object):
 
     def command_macro(self):
         name = self.getToken()[0].value
-        value = self.getToken()[0]
+        value = self.getToken()[0].value
         self.macros[name] = value
 
     def command_read(self):
         print 'READ'
+        p = bibtex.Parser()
+        self.bib_data = p.parse_file(filename=self.bib_file, macros=self.macros)
+        for k, v in self.bib_data.iteritems():
+            print k
+            for field, value in v.fields.iteritems():
+                print '\t', field, value
         pass
 
     def command_reverse(self):
