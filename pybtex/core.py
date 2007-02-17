@@ -44,7 +44,8 @@ class Entry:
     def __init__(self, type_, fields = {}, persons = {}):
         self.type = type_
 
-        #FIXME should be removed after migration to the new template language
+        #FIXME: after migration to the new template languate
+        #defaultdict should be removed
         self.fields = utils.defaultdict(fields)
         
         self.persons = dict(persons)
