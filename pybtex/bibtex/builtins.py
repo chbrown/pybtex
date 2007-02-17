@@ -17,6 +17,12 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
+"""Built-in functions for BibTeX interpreter.
+
+CAUTION: functions should PUSH results, not RETURN
+"""
+
+
 class Builtin(object):
     def __init__(self, f):
         self.f = f
@@ -42,6 +48,10 @@ def empty(i):
         i.push(0)
 
 @builtin
+def int_to_str(i):
+    i.push(str(i.pop()))
+
+@builtin
 def preamble(i):
     #FIXME stub
     i.push('')
@@ -53,6 +63,7 @@ def skip(i):
 builtins = {
         ':=': operator_assign,
         'empty$': empty,
+        'int.to.str$': int_to_str,
         'preamble$': preamble,
         'skip$': skip,
 }
