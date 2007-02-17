@@ -191,8 +191,8 @@ def warning(i):
 
 @builtin
 def while_(i):
-    f = i.pop()
     p = i.pop()
+    f = i.pop()
     while True:
         p.execute(i)
         if i.pop() > 0:
