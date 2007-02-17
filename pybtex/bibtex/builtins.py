@@ -154,6 +154,15 @@ def warning(i):
     msg = i.pop()
     print 'WARNING:', msg
 
+@builtin
+def while_(i):
+    f = i.pop()
+    p = i.pop()
+    while True:
+        p.execute(i)
+        if i.pop() > 0:
+            break
+        f.execute(i)
 
 @builtin
 def width(i):
@@ -186,6 +195,7 @@ builtins = {
         'preamble$': preamble,
         'skip$': skip,
         'warning$': warning,
+        'while$': while_,
         'width$': width,
         'write$': write,
 }
