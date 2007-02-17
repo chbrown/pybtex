@@ -92,6 +92,14 @@ def call_type(i):
     i.vars[type].execute(i)
 
 @builtin
+def change_case(i):
+    mode = i.pop()
+    s = i.pop()
+    #FIXME stub
+    i.push(s)
+
+
+@builtin
 def cite(i):
     i.push(i.current_entry_key)
 
@@ -184,6 +192,7 @@ builtins = {
         '*': operator_asterisk,
         ':=': operator_assign,
         'call.type$': call_type,
+        'change.case$': change_case,
         'cite$': cite,
         'duplicate$': duplicate,
         'empty$': empty,
