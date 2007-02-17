@@ -96,6 +96,12 @@ def cite(i):
     i.push(i.current_entry_key)
 
 @builtin
+def duplicate(i):
+    tmp = i.pop()
+    i.push(tmp)
+    i.push(tmp)
+
+@builtin
 def empty(i):
     #FIXME error checking
     s = i.pop()
@@ -154,6 +160,7 @@ builtins = {
         ':=': operator_assign,
         'call.type$': call_type,
         'cite$': cite,
+        'duplicate$': duplicate,
         'empty$': empty,
         'if$': if_,
         'int.to.str$': int_to_str,
