@@ -22,6 +22,7 @@
 CAUTION: functions should PUSH results, not RETURN
 """
 
+import interpreter
 
 class Builtin(object):
     def __init__(self, f):
@@ -139,6 +140,13 @@ def int_to_str(i):
     i.push(str(i.pop()))
 
 @builtin
+def missing(i):
+    if isinstance(i.pop(), interpreter.MissingField):
+        i.push(1)
+    else:
+        i.push(0)
+
+@builtin
 def newline(i):
     # FIXME bibtex does some automatic line breaking
     # needs more investigation
@@ -205,6 +213,7 @@ builtins = {
         'empty$': empty,
         'if$': if_,
         'int.to.str$': int_to_str,
+        'missing$': missing,
         'newline$': newline,
         'num.names$': num_names,
         'pop$': pop,
