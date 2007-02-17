@@ -131,6 +131,11 @@ def newline(i):
     i.output('\n')
 
 @builtin
+def num_names(i):
+    #FIXME stub
+    i.push(1)
+
+@builtin
 def pop(i):
     i.pop()
 
@@ -176,6 +181,7 @@ builtins = {
         'if$': if_,
         'int.to.str$': int_to_str,
         'newline$': newline,
+        'num.names$': num_names,
         'pop$': pop,
         'preamble$': preamble,
         'skip$': skip,
