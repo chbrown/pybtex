@@ -144,6 +144,13 @@ def skip(i):
     pass
 
 @builtin
+def warning(i):
+    #FIXME stub
+    msg = i.pop()
+    print 'WARNING:', msg
+
+
+@builtin
 def width(i):
     #FIXME need to investigate bibtex' source
     s = i.pop()
@@ -172,6 +179,7 @@ builtins = {
         'pop$': pop,
         'preamble$': preamble,
         'skip$': skip,
+        'warning$': warning,
         'width$': width,
         'write$': write,
 }
