@@ -165,6 +165,7 @@ def newline(i):
 @builtin
 def num_names(i):
     #FIXME stub
+    i.pop()
     i.push(1)
 
 @builtin
