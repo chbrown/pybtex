@@ -46,13 +46,16 @@ class EntryVariable(Variable):
     def __init__(self, interpreter, name):
         Variable.__init__(self)
         self.interpreter = interpreter
+        self.name = name
     def set(self, value):
         if value is not None:
             self.validate(value)
             self.interpreter.current_entry.vars[self.name] = value
     def value(self):
-        return self.interpreter.current_entry.vars[self.name]
-
+        try:
+            return self.interpreter.current_entry.vars[self.name]
+        except KeyError:
+            return None
 
 
 class Integer(Variable):
@@ -75,6 +78,13 @@ class EntryString(String, EntryVariable):
     pass
 
 
+class MissingField(object):
+    def __init__(self, name):
+        self.name = name
+    def __repr__(self):
+        return 'MISSING<%s>' % self.name
+
+
 class Field(object):
     def __init__(self, interpreter, name):
         self.interpreter = interpreter
@@ -83,9 +93,15 @@ class Field(object):
     def value(self):
         #FIXME: need to do something with names
         try:
-            return interpreter.current_entry.fields[name]
+            value = interpreter.current_entry.fields[name]
+
+            #FIXME that's because of (ugly) defaultdict never failing
+            if not value:
+                value = None
+            return value
+
         except KeyError:
-            return ''
+            return MissingField
 
 
 class Identifier(Variable):
@@ -171,7 +187,6 @@ class Interpreter(object):
         self.output_file.close()
 
     def command_entry(self):
-        print 'ENTRY'
         for id in self.getToken():
             name = id.value()
             self.add_variable(name, Field(self, name))
@@ -197,8 +212,11 @@ class Interpreter(object):
             self.vars[id.value()] = Integer()
 
     def command_iterate(self):
-        print 'ITERATE'
-        self.getToken()
+        f = self.vars[self.getToken()[0].value()]
+        for entry in self.bib_data.values():
+            self.current_entry = entry
+            f.execute(self)
+        self.currentEntry = None
 
     def command_macro(self):
         name = self.getToken()[0].value()
