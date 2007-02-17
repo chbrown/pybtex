@@ -215,11 +215,11 @@ def warning(i):
 
 @builtin
 def while_(i):
-    p = i.pop()
     f = i.pop()
+    p = i.pop()
     while True:
         p.execute(i)
-        if i.pop() > 0:
+        if i.pop() <= 0:
             break
         f.execute(i)
 
