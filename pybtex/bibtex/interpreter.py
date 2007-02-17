@@ -146,7 +146,7 @@ class Function(object):
     def __init__(self, body = []):
         self.body = body
     def execute(self, interpreter):
-        print 'executing function', self.body
+#        print 'executing function', self.body
         for element in self.body:
             element.execute(interpreter)
     def __repr__(self):
@@ -165,13 +165,13 @@ class Interpreter(object):
         self.macros = {}
 
     def push(self, value):
-        print 'push <%s>' % value
+#        print 'push <%s>' % value
         self.stack.append(value)
-        print 'stack:', self.stack
+#        print 'stack:', self.stack
 
     def pop(self):
         value = self.stack.pop()
-        print 'pop <%s>' % value
+#        print 'pop <%s>' % value
         return value
 
     def getToken(self):
@@ -228,9 +228,9 @@ class Interpreter(object):
 
     def command_iterate(self):
         f = self.vars[self.getToken()[0].value()]
-        for key, entry in self.bib_data.iteritems():
-            self.current_entry = entry
+        for key in self.citations:
             self.current_entry_key = key
+            self.current_entry = self.bib_data[key]
             f.execute(self)
         self.currentEntry = None
 
@@ -240,7 +240,7 @@ class Interpreter(object):
         self.macros[name] = value
 
     def command_read(self):
-        print 'READ'
+#        print 'READ'
         p = bibtex.Parser()
         self.bib_data = p.parse_file(filename=self.bib_file, macros=self.macros)
 #        for k, v in self.bib_data.iteritems():
