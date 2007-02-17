@@ -62,6 +62,12 @@ def operator_equals(i):
         i.push(0)
 
 @builtin
+def operator_asterisk(i):
+    arg1 = i.pop()
+    arg2 = i.pop()
+    i.push(arg2 + arg1)
+
+@builtin
 def operator_assign(i):
     var = i.pop()
     value = i.pop()
@@ -125,6 +131,7 @@ builtins = {
         '=': operator_equals,
         '+': operator_plus,
         '-': operator_minus,
+        '*': operator_asterisk,
         ':=': operator_assign,
         'empty$': empty,
         'if$': if_,
