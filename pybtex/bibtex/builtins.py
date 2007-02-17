@@ -28,6 +28,8 @@ class Builtin(object):
         self.f = f
     def execute(self, interpreter):
         self.f(interpreter)
+    def __repr__(self):
+        return '<builtin %s>' % self.f.__name__
 
 def builtin(f):
     return Builtin(f)
