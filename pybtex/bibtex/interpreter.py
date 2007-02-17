@@ -106,7 +106,7 @@ class Field(object):
 
             #FIXME that's because of (ugly) defaultdict never failing
             if not value:
-                value = None
+                value = MissingField(self.name)
             return value
 
         except KeyError:
