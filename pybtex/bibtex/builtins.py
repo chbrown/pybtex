@@ -180,6 +180,19 @@ def skip(i):
     pass
 
 @builtin
+def substring(i):
+    len = i.pop()
+    start = i.pop()
+    s = i.pop()
+    if start > 0:
+        i.push(s[start - 1:start - 1 + len])
+    elif start < 0:
+        i.push(s[-start - len:-start])
+    else:
+        raise BibTeXError('start=0 passed to substring$')
+
+
+@builtin
 def swap(i):
     tmp1 = i.pop()
     tmp2 = i.pop()
@@ -243,6 +256,7 @@ builtins = {
         'pop$': pop,
         'preamble$': preamble,
         'skip$': skip,
+        'substring$': substring,
         'swap$': swap,
         'text.length$': text_length,
         'warning$': warning,
