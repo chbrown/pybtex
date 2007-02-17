@@ -39,6 +39,12 @@ def operator_assign(i):
     var.set(value)
 
 @builtin
+def operator_plus(i):
+    arg1 = i.pop()
+    arg2 = i.pop()
+    i.push(arg1 + arg2)
+
+@builtin
 def empty(i):
     #FIXME error checking
     s = i.pop()
@@ -61,6 +67,7 @@ def skip(i):
     pass
 
 builtins = {
+        '+': operator_plus,
         ':=': operator_assign,
         'empty$': empty,
         'int.to.str$': int_to_str,
