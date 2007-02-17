@@ -150,7 +150,8 @@ def int_to_str(i):
 
 @builtin
 def missing(i):
-    if isinstance(i.pop(), interpreter.MissingField):
+    f = i.pop()
+    if isinstance(f, interpreter.MissingField):
         i.push(1)
     else:
         i.push(0)
