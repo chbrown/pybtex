@@ -178,6 +178,12 @@ def swap(i):
     i.push(tmp2)
 
 @builtin
+def text_length(i):
+    # FIXME special characters and braces
+    s = i.pop()
+    i.push(len(s))
+
+@builtin
 def warning(i):
     #FIXME stub
     msg = i.pop()
@@ -228,6 +234,7 @@ builtins = {
         'preamble$': preamble,
         'skip$': skip,
         'swap$': swap,
+        'text.length$': text_length,
         'warning$': warning,
         'while$': while_,
         'width$': width,
