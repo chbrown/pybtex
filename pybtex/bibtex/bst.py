@@ -65,7 +65,7 @@ command = commandName + ZeroOrMore(arg)
 bstGrammar = OneOrMore(command) + StringEnd()
 bstGrammar.ignore(comment)
 
-parseFile = bstGrammar.parseFile
+parse_file = bstGrammar.parseFile
 
 
 if __name__ == '__main__':

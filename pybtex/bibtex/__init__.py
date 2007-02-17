@@ -22,15 +22,19 @@
 
 import bst
 from interpreter import Interpreter
+from pybtex import auxfile
 
 class BibTeX:
-    def __init__(self, bstfile, bibfile):
-        script = bst.parseFile(bstfile)
-        self.i = Interpreter(script, bibfile)
+    def __init__(self):
+        self.interpreter = Interpreter()
+    def run(self, aux_filename):
+        aux_data = auxfile.parse_file(aux_filename)
+        bst_script = bst.parse_file(aux_data.style + '.bst')
+        self.interpreter.run(bst_script, aux_data.citations, aux_data.data, aux_filename + '.bbl')
 
 
 if __name__ == '__main__':
     import sys
-    b = BibTeX(sys.argv[1])
-    b.i.run()
+    b = BibTeX()
+    b.run(sys.argv[1])
     print b.i.vars

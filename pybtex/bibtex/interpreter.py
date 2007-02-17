@@ -75,6 +75,7 @@ class Identifier(Variable):
     def __repr__(self):
         return self.value
 
+
 class QuotedVar(Variable):
     def __init__(self, name):
         self.name = name
@@ -87,10 +88,9 @@ class QuotedVar(Variable):
     def __repr__(self):
         return "'%s" % self.name
 
+
 class Interpreter(object):
-    def __init__(self, script, bibfile):
-        self.script = iter(script)
-        self.bibfile = bibfile
+    def __init__(self):
         self.stack = []
         self.vars = dict(builtins)
         self.macros = {}
@@ -106,17 +106,23 @@ class Interpreter(object):
         return value
 
     def getToken(self):
-        return self.script.next()
+        return self.bst_script.next()
 
-    def run(self):
-        for i in self.script:
+    def output(self, string):
+        self.output_file.write(string)
+
+    def run(self, bst_script, citations, bib_file, bbl_file):
+        self.bst_script = iter(bst_script)
+        self.citations = citations
+        self.bib_file = bib_file
+        self.output_file = open(bbl_file, 'w')
+        for i in self.bst_script:
             commandname = 'command_' + i
             if hasattr(self, commandname):
                 getattr(self, commandname)()
             else:
                 print 'Unknown command', commandname
-        id = Identifier('begin.bib')
-        id.execute(self)
+        self.output_file.close()
 
     def command_entry(self):
         print 'ENTRY'
