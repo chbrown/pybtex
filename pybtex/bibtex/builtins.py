@@ -53,6 +53,15 @@ def operator_less(i):
         i.push(0)
 
 @builtin
+def operator_equals(i):
+    arg1 = i.pop()
+    arg2 = i.pop()
+    if arg2 == arg1:
+        i.push(1)
+    else:
+        i.push(0)
+
+@builtin
 def operator_assign(i):
     var = i.pop()
     value = i.pop()
@@ -113,6 +122,7 @@ def width(i):
 builtins = {
         '>': operator_more,
         '<': operator_less,
+        '=': operator_equals,
         '+': operator_plus,
         '-': operator_minus,
         ':=': operator_assign,
