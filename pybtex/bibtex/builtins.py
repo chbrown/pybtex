@@ -126,6 +126,15 @@ def empty(i):
         i.push(1)
 
 @builtin
+def format_name(i):
+    #FIXME stub
+    list = i.pop()
+    n = i.pop()
+    format = i.pop()
+    i.push(list)
+
+
+@builtin
 def if_(i):
     f1 = i.pop()
     f2 = i.pop()
@@ -225,6 +234,7 @@ builtins = {
         'cite$': cite,
         'duplicate$': duplicate,
         'empty$': empty,
+        'format.name$': format_name,
         'if$': if_,
         'int.to.str$': int_to_str,
         'missing$': missing,
