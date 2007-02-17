@@ -87,6 +87,11 @@ def operator_minus(i):
 
 
 @builtin
+def call_type(i):
+    type = i.current_entry.type
+    i.vars[type].execute(i)
+
+@builtin
 def empty(i):
     #FIXME error checking
     s = i.pop()
@@ -143,6 +148,7 @@ builtins = {
         '-': operator_minus,
         '*': operator_asterisk,
         ':=': operator_assign,
+        'call.type$': call_type,
         'empty$': empty,
         'if$': if_,
         'int.to.str$': int_to_str,
