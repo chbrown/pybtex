@@ -41,9 +41,9 @@ month_names = {
 file_extension = 'bib'
 
 class BibData:
-    def __init__(self, macros):
+    def __init__(self):
         self.records = {}
-        self.macros = dict(macros)
+        self.macros = {}
 
     def addRecord(self, s, loc, toks):
         for i in toks:
@@ -64,12 +64,16 @@ class BibData:
             s = i[1][0] % tuple([self.macros[arg] for arg in i[1][1]])
             self.macros[i[0]] = s
 
+    def addMacros(self, macros):
+        self.macros.update(macros)
+
 class Parser:
-    def __init__(self, encoding=None, predefined_macros=month_names):
+    def __init__(self, encoding=None, filename=None):
         if encoding is None:
             encoding = locale.getpreferredencoding()
         self.set_encoding(encoding)
-        self.data = BibData(predefined_macros)
+        self.data = BibData()
+        self.filename = filename
 
         lparenth = Literal('(').suppress()
         rparenth = Literal(')').suppress()
@@ -157,9 +161,11 @@ class Parser:
             result.append((token[0], ("".join(strings), args)))
         return result
 
-
-    def parse_file(self, filename):
+    def parse_file(self, filename=None, macros=month_names):
         """parse BibTeX file and return a tree"""
+        if filename is None:
+            filename = self.filename
+        self.data.addMacros(macros)
         f = open(filename)
         s = f.read()
         f.close()
