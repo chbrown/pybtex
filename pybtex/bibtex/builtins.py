@@ -131,6 +131,10 @@ def newline(i):
     i.output('\n')
 
 @builtin
+def pop(i):
+    i.pop()
+
+@builtin
 def preamble(i):
     #FIXME stub
     i.push('')
@@ -165,6 +169,7 @@ builtins = {
         'if$': if_,
         'int.to.str$': int_to_str,
         'newline$': newline,
+        'pop$': pop,
         'preamble$': preamble,
         'skip$': skip,
         'width$': width,
