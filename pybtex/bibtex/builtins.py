@@ -89,7 +89,7 @@ def operator_minus(i):
 @builtin
 def add_period(i):
     s = i.pop()
-    if s and s.rstrip('}')[-1] in '.?!':
+    if s and not s.rstrip('}')[-1] in '.?!':
         s += '.'
     i.push(s)
 
