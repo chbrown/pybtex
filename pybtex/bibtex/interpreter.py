@@ -20,6 +20,10 @@
 from builtins import builtins
 from pybtex.database.input import bibtex
 
+from pybtex.core import Entry
+valid_roles = Entry.valid_roles
+del Entry
+
 
 class BibTeXError(Exception):
     pass
@@ -95,6 +99,8 @@ class Field(object):
 
     def value(self):
         #FIXME: need to do something with names
+        if self.name in valid_roles:
+            return 'Foo Bar Baz, jr'
         try:
             value = self.interpreter.current_entry.fields[self.name]
 
