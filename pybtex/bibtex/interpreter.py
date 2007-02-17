@@ -135,13 +135,13 @@ class Function(object):
         print 'executing function', self.body
         for element in self.body:
             element.execute(interpreter)
-    def isempty(self):
-        if self.body and not self.body.isspace():
-            return 1
-        else:
-            return 0
     def __repr__(self):
         return repr(self.body)
+
+
+class FunctionLiteral(Function):
+    def execute(self, interpreter):
+        interpreter.push(Function(self.body))
 
 
 class Interpreter(object):

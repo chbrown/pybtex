@@ -23,7 +23,7 @@ from pyparsing import (Literal, Suppress, QuotedString, Word,
         Keyword, Forward, ZeroOrMore, OneOrMore, Group,
         restOfLine, StringEnd, ParserElement, downcaseTokens)
 from pybtex.bibtex.interpreter import (Integer, String, QuotedVar,
-        Identifier, Function, BibTeXError)
+        Identifier, FunctionLiteral, BibTeXError)
 
 #ParserElement.enablePackrat()
 
@@ -45,7 +45,7 @@ def process_identifier(toks):
         return Identifier(name)
 
 def process_function(toks):
-    return Function(toks[0])
+    return FunctionLiteral(toks[0])
 
 comment = '%' + restOfLine
 lbrace = Suppress('{')
