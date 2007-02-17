@@ -43,7 +43,7 @@ class Variable(object):
 
 
 class EntryVariable(Variable):
-    def __init__(self, name, interpreter):
+    def __init__(self, interpreter, name):
         Variable.__init__(self)
         self.interpreter = interpreter
     def set(self, value):
@@ -52,6 +52,7 @@ class EntryVariable(Variable):
             self.interpreter.current_entry.vars[self.name] = value
     def value(self):
         return self.interpreter.current_entry.vars[self.name]
+
 
 
 class Integer(Variable):
@@ -72,6 +73,19 @@ class String(Variable):
 
 class EntryString(String, EntryVariable):
     pass
+
+
+class Field(object):
+    def __init__(self, interpreter, name):
+        self.interpreter = interpreter
+        self.name = name
+
+    def value(self):
+        #FIXME: need to do something with names
+        try:
+            return interpreter.current_entry.fields[name]
+        except KeyError:
+            return ''
 
 
 class Identifier(Variable):
@@ -158,13 +172,13 @@ class Interpreter(object):
 
     def command_entry(self):
         print 'ENTRY'
-        self.getToken()
+        for id in self.getToken():
+            name = id.value()
+            self.add_variable(name, Field(self, name))
         for id in self.getToken():
             name = id.value()
             self.add_variable(name, EntryInteger(self, name))
         for id in self.getToken():
-            print type(id)
-            print id
             name = id.value()
             self.add_variable(name, EntryString(self, name))
 
