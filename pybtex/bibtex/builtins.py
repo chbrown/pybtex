@@ -35,6 +35,24 @@ def builtin(f):
     return Builtin(f)
 
 @builtin
+def operator_more(i):
+    arg1 = i.pop()
+    arg2 = i.pop()
+    if arg2 > arg1:
+        i.push(1)
+    else:
+        i.push(0)
+
+@builtin
+def operator_less(i):
+    arg1 = i.pop()
+    arg2 = i.pop()
+    if arg2 < arg1:
+        i.push(1)
+    else:
+        i.push(0)
+
+@builtin
 def operator_assign(i):
     var = i.pop()
     value = i.pop()
@@ -51,15 +69,6 @@ def operator_minus(i):
     arg1 = i.pop()
     arg2 = i.pop()
     i.push(arg2 - arg1)
-
-@builtin
-def operator_more(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
-    if arg2 > arg1:
-        i.push(1)
-    else:
-        i.push(0)
 
 
 @builtin
@@ -103,6 +112,7 @@ def width(i):
 
 builtins = {
         '>': operator_more,
+        '<': operator_less,
         '+': operator_plus,
         '-': operator_minus,
         ':=': operator_assign,
