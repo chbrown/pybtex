@@ -45,6 +45,16 @@ def operator_plus(i):
     i.push(arg1 + arg2)
 
 @builtin
+def operator_more(i):
+    arg1 = i.pop()
+    arg2 = i.pop()
+    if arg2 > arg1:
+        i.push(1)
+    else:
+        i.push(0)
+
+
+@builtin
 def empty(i):
     #FIXME error checking
     s = i.pop()
@@ -52,6 +62,16 @@ def empty(i):
         i.push(1)
     else:
         i.push(0)
+
+@builtin
+def if_(i):
+    f1 = i.pop()
+    f2 = i.pop()
+    p = i.pop()
+    if p > 0:
+        f1.execute(i)
+    else:
+        f2.execute(i)
 
 @builtin
 def int_to_str(i):
@@ -66,11 +86,21 @@ def preamble(i):
 def skip(i):
     pass
 
+@builtin
+def width(i):
+    #FIXME need to investigate bibtex' source
+    s = i.pop()
+    i.push(len(s))
+
+
 builtins = {
+        '>': operator_more,
         '+': operator_plus,
         ':=': operator_assign,
         'empty$': empty,
+        'if$': if_,
         'int.to.str$': int_to_str,
         'preamble$': preamble,
         'skip$': skip,
+        'width$': width,
 }
