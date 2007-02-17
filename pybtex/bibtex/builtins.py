@@ -110,6 +110,12 @@ def int_to_str(i):
     i.push(str(i.pop()))
 
 @builtin
+def newline(i):
+    # FIXME bibtex does some automatic line breaking
+    # needs more investigation
+    i.output('\n')
+
+@builtin
 def preamble(i):
     #FIXME stub
     i.push('')
@@ -124,6 +130,10 @@ def width(i):
     s = i.pop()
     i.push(len(s))
 
+@builtin
+def write(i):
+    s = i.pop()
+    i.output(s)
 
 builtins = {
         '>': operator_more,
@@ -136,7 +146,9 @@ builtins = {
         'empty$': empty,
         'if$': if_,
         'int.to.str$': int_to_str,
+        'newline$': newline,
         'preamble$': preamble,
         'skip$': skip,
         'width$': width,
+        'write$': write,
 }
