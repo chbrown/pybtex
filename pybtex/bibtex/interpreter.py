@@ -29,16 +29,29 @@ class Variable(object):
     def __init__(self, value = None):
         self.set(value)
     def set(self, value):
-        if isinstance(value, self.value_type) or value is None:
-            self._value = value
-        else:
+        self.validate(value)
+        self._value = value
+    def validate(self, value):
+        if not (isinstance(value, self.value_type) or value is None):
             raise ValueError('Invalid value for BibTeX %s: %s' % (self.__class__.__name__, value))
     def execute(self, interpreter):
-        if self._value is None:
+        if self.value() is None:
             raise ValueError('undefined %s variable' % self.__class__.__name__)
-        interpreter.push(self._value)
+        interpreter.push(self.value())
     def value(self):
         return self._value
+
+
+class EntryVariable(Variable):
+    def __init__(self, name, interpreter):
+        Variable.__init__(self)
+        self.interpreter = interpreter
+    def set(self, value):
+        if value is not None:
+            self.validate(value)
+            self.interpreter.current_entry.vars[self.name] = value
+    def value(self):
+        return self.interpreter.current_entry.vars[self.name]
 
 
 class Integer(Variable):
@@ -47,10 +60,18 @@ class Integer(Variable):
         return str(self.value())
 
 
+class EntryInteger(Integer, EntryVariable):
+    pass
+
+
 class String(Variable):
     value_type = basestring
     def __repr__(self):
         return '"%s"' % self.value()
+
+
+class EntryString(String, EntryVariable):
+    pass
 
 
 class Identifier(Variable):
@@ -112,6 +133,11 @@ class Interpreter(object):
     def getToken(self):
         return self.bst_script.next()
 
+    def add_variable(self, name, value):
+        if name in self.vars:
+            raise BibTeXError('variable %s already declared' % name)
+        self.vars[name] = value
+
     def output(self, string):
         self.output_file.write(string)
 
@@ -133,8 +159,14 @@ class Interpreter(object):
     def command_entry(self):
         print 'ENTRY'
         self.getToken()
-        self.getToken()
-        self.getToken()
+        for id in self.getToken():
+            name = id.value()
+            self.add_variable(name, EntryInteger(self, name))
+        for id in self.getToken():
+            print type(id)
+            print id
+            name = id.value()
+            self.add_variable(name, EntryString(self, name))
 
     def command_execute(self):
 #        print 'EXECUTE'

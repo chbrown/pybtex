@@ -50,6 +50,9 @@ class Entry:
         
         self.persons = dict(persons)
 
+        # for BibTeX interpreter
+        self.vars = {}
+
     def add_person(self, person, role):
         try:
             self.persons[role]
