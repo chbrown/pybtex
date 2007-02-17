@@ -37,4 +37,3 @@ if __name__ == '__main__':
     import sys
     b = BibTeX()
     b.run(sys.argv[1])
-    print b.i.vars
