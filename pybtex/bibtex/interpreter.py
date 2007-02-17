@@ -20,33 +20,64 @@
 from builtins import builtins
 from pybtex.database.input import bibtex
 
+
 class BibTeXError(Exception):
     pass
+
 
 class Variable(object):
     def __init__(self, value = None):
         self.set(value)
     def set(self, value):
         if isinstance(value, self.value_type) or value is None:
-            self.value = value
+            self._value = value
         else:
             raise ValueError('Invalid value for BibTeX %s: %s' % (self.__class__.__name__, value))
     def execute(self, interpreter):
-        if self.value is None:
+        if self._value is None:
             raise ValueError('undefined %s variable' % self.__class__.__name__)
-        interpreter.push(self.value)
+        interpreter.push(self._value)
+    def value(self):
+        return self._value
+
 
 class Integer(Variable):
     value_type = int
     def __repr__(self):
-        return str(self.value)
+        return str(self.value())
+
 
 class String(Variable):
     value_type = basestring
     def __repr__(self):
-        return '"%s"' % self.value
+        return '"%s"' % self.value()
 
-class Function(Variable):
+
+class Identifier(Variable):
+    value_type = basestring
+    def execute(self, interpreter):
+        try:
+            f = interpreter.vars[self.value()]
+        except KeyError:
+            raise BibTeXError('can not execute undefined function %s' % self)
+        f.execute(interpreter)
+    def __repr__(self):
+        return self.value()
+
+
+class QuotedVar(Variable):
+    value_type = basestring
+    def execute(self, interpreter):
+        try:
+            var = interpreter.vars[self.value()]
+        except KeyError:
+            raise BibTeXError('can not push undefined variable %s' % self.value())
+        interpreter.push(var)
+    def __repr__(self):
+        return "'%s" % self.value()
+
+
+class Function(object):
     def __init__(self, body = []):
         self.body = body
     def execute(self, interpreter):
@@ -60,31 +91,6 @@ class Function(Variable):
             return 0
     def __repr__(self):
         return repr(self.body)
-
-class Identifier(Variable):
-    def __init__(self, value):
-        self.value = value
-    def execute(self, interpreter):
-        try:
-            f = interpreter.vars[self.value]
-        except KeyError:
-            raise BibTeXError('can not execute undefined function %s' % self)
-        f.execute(interpreter)
-    def __repr__(self):
-        return self.value
-
-
-class QuotedVar(Variable):
-    def __init__(self, name):
-        self.name = name
-    def execute(self, interpreter):
-        try:
-            var = interpreter.vars[self.name]
-        except KeyError:
-            raise BibTeXError('can not push undefined variable %s' % self.name)
-        interpreter.push(var)
-    def __repr__(self):
-        return "'%s" % self.name
 
 
 class Interpreter(object):
@@ -114,12 +120,14 @@ class Interpreter(object):
         self.citations = citations
         self.bib_file = bib_file
         self.output_file = open(bbl_file, 'w')
+
         for i in self.bst_script:
             commandname = 'command_' + i
             if hasattr(self, commandname):
                 getattr(self, commandname)()
             else:
                 print 'Unknown command', commandname
+
         self.output_file.close()
 
     def command_entry(self):
@@ -133,33 +141,33 @@ class Interpreter(object):
         self.getToken()[0].execute(self)
 
     def command_function(self):
-        name = self.getToken()[0].value
+        name = self.getToken()[0].value()
         body = self.getToken()
         self.vars[name] = Function(body)
 
     def command_integers(self):
 #        print 'INTEGERS'
         for id in self.getToken():
-            self.vars[id.value] = Integer()
+            self.vars[id.value()] = Integer()
 
     def command_iterate(self):
         print 'ITERATE'
         self.getToken()
 
     def command_macro(self):
-        name = self.getToken()[0].value
-        value = self.getToken()[0].value
+        name = self.getToken()[0].value()
+        value = self.getToken()[0].value()
         self.macros[name] = value
 
     def command_read(self):
         print 'READ'
         p = bibtex.Parser()
         self.bib_data = p.parse_file(filename=self.bib_file, macros=self.macros)
-        for k, v in self.bib_data.iteritems():
-            print k
-            for field, value in v.fields.iteritems():
-                print '\t', field, value
-        pass
+#        for k, v in self.bib_data.iteritems():
+#            print k
+#            for field, value in v.fields.iteritems():
+#                print '\t', field, value
+#        pass
 
     def command_reverse(self):
         print 'REVERSE'
@@ -171,4 +179,4 @@ class Interpreter(object):
     def command_strings(self):
         #print 'STRINGS'
         for id in self.getToken():
-            self.vars[id.value] = String()
+            self.vars[id.value()] = String()
