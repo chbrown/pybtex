@@ -199,6 +199,7 @@ class Interpreter(object):
         for id in self.getToken():
             name = id.value()
             self.add_variable(name, Field(self, name))
+        self.add_variable('crossref', Field(self, 'crossref'))
         for id in self.getToken():
             name = id.value()
             self.add_variable(name, EntryInteger(self, name))
