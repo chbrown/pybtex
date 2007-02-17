@@ -128,9 +128,9 @@ def empty(i):
 @builtin
 def format_name(i):
     #FIXME stub
-    list = i.pop()
-    n = i.pop()
     format = i.pop()
+    n = i.pop()
+    list = i.pop()
     i.push(list)
 
 
