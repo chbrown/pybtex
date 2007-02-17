@@ -44,7 +44,13 @@ def operator_assign(i):
 def operator_plus(i):
     arg1 = i.pop()
     arg2 = i.pop()
-    i.push(arg1 + arg2)
+    i.push(arg2 + arg1)
+
+@builtin
+def operator_minus(i):
+    arg1 = i.pop()
+    arg2 = i.pop()
+    i.push(arg2 - arg1)
 
 @builtin
 def operator_more(i):
@@ -98,6 +104,7 @@ def width(i):
 builtins = {
         '>': operator_more,
         '+': operator_plus,
+        '-': operator_minus,
         ':=': operator_assign,
         'empty$': empty,
         'if$': if_,
