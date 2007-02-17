@@ -124,9 +124,9 @@ def if_(i):
     f2 = i.pop()
     p = i.pop()
     if p > 0:
-        f1.execute(i)
-    else:
         f2.execute(i)
+    else:
+        f1.execute(i)
 
 @builtin
 def int_to_str(i):
