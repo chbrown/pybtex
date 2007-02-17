@@ -120,9 +120,9 @@ def empty(i):
     #FIXME error checking
     s = i.pop()
     if s and not s.isspace():
-        i.push(1)
-    else:
         i.push(0)
+    else:
+        i.push(1)
 
 @builtin
 def if_(i):
