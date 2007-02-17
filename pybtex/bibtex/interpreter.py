@@ -90,10 +90,13 @@ class Field(object):
         self.interpreter = interpreter
         self.name = name
 
+    def execute(self, interpreter):
+        self.interpreter.push(self.value())
+
     def value(self):
         #FIXME: need to do something with names
         try:
-            value = interpreter.current_entry.fields[name]
+            value = self.interpreter.current_entry.fields[self.name]
 
             #FIXME that's because of (ugly) defaultdict never failing
             if not value:
