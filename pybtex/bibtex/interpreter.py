@@ -82,9 +82,11 @@ class EntryString(String, EntryVariable):
     pass
 
 
-class MissingField(object):
-    def __init__(self, name):
+class MissingField(str):
+    def __new__(cls, name):
+        self = str.__new__(cls)
         self.name = name
+        return self
     def __repr__(self):
         return 'MISSING<%s>' % self.name
 
