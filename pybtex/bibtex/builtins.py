@@ -171,6 +171,13 @@ def skip(i):
     pass
 
 @builtin
+def swap(i):
+    tmp1 = i.pop()
+    tmp2 = i.pop()
+    i.push(tmp1)
+    i.push(tmp2)
+
+@builtin
 def warning(i):
     #FIXME stub
     msg = i.pop()
@@ -219,6 +226,7 @@ builtins = {
         'pop$': pop,
         'preamble$': preamble,
         'skip$': skip,
+        'swap$': swap,
         'warning$': warning,
         'while$': while_,
         'width$': width,
