@@ -85,6 +85,12 @@ def operator_minus(i):
     arg2 = i.pop()
     i.push(arg2 - arg1)
 
+@builtin
+def add_period(i):
+    s = i.pop()
+    if s and s.rstrip('}')[-1] in '.?!':
+        s += '.'
+    i.push(s)
 
 @builtin
 def call_type(i):
@@ -191,6 +197,7 @@ builtins = {
         '-': operator_minus,
         '*': operator_asterisk,
         ':=': operator_assign,
+        'add.period$': add_period,
         'call.type$': call_type,
         'change.case$': change_case,
         'cite$': cite,
