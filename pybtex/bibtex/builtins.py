@@ -92,6 +92,10 @@ def call_type(i):
     i.vars[type].execute(i)
 
 @builtin
+def cite(i):
+    i.push(i.current_entry_key)
+
+@builtin
 def empty(i):
     #FIXME error checking
     s = i.pop()
@@ -149,6 +153,7 @@ builtins = {
         '*': operator_asterisk,
         ':=': operator_assign,
         'call.type$': call_type,
+        'cite$': cite,
         'empty$': empty,
         'if$': if_,
         'int.to.str$': int_to_str,

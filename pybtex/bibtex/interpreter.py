@@ -213,8 +213,9 @@ class Interpreter(object):
 
     def command_iterate(self):
         f = self.vars[self.getToken()[0].value()]
-        for entry in self.bib_data.values():
+        for key, entry in self.bib_data.iteritems():
             self.current_entry = entry
+            self.current_entry_key = key
             f.execute(self)
         self.currentEntry = None
 
