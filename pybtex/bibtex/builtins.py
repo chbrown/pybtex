@@ -201,8 +201,9 @@ def width(i):
 
 @builtin
 def write(i):
+    #FIXME encodings
     s = i.pop()
-    i.output(s)
+    i.output(s.encode('UTF-8'))
 
 builtins = {
         '>': operator_more,

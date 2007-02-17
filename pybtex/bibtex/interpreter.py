@@ -75,7 +75,10 @@ class EntryInteger(Integer, EntryVariable):
 class String(Variable):
     value_type = basestring
     def __repr__(self):
-        return '"%s"' % self.value()
+        if self.value() is None:
+            return '<empty>'
+        #FIXME encodings
+        return '"%s"' % self.value().encode('UTF-8')
 
 
 class EntryString(String, EntryVariable):
