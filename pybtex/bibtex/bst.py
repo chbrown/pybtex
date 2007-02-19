@@ -63,11 +63,30 @@ commandName = Word(alphas).setParseAction(downcaseTokens)
 arg = Group(lbrace + ZeroOrMore(token | tokenList) + rbrace)
 command = commandName + ZeroOrMore(arg)
 bstGrammar = OneOrMore(command) + StringEnd()
-bstGrammar.ignore(comment)
 
-parse_file = bstGrammar.parseFile
+# sloooooow
+# bstGrammar.ignore(comment)
+
+# somewhat faster
+def strip_comment(s):
+    quotes = 0
+    pos = 0
+    for char in s:
+        if char == '"':
+            quotes += 1
+        elif char == '%':
+            if quotes % 2 == 0:
+                break 
+        pos += 1
+    return s[:pos]
+
+def parse_file(filename):
+    l = []
+    f = file(filename)
+    s = ''.join(strip_comment(line) for line in f)
+    return bstGrammar.parseString(s)
 
 
 if __name__ == '__main__':
     import sys
-    print bstGrammar.parseFile(sys.argv[1])
+    print parse_file(sys.argv[1])
