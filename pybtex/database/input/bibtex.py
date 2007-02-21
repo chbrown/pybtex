@@ -109,7 +109,6 @@ class Parser(ParserBase):
     def process_record(self, s, loc, toks):
         entry = Entry(toks[0].lower())
         fields = {}
-        print toks
         key = toks[1]
         if key is None:
             key = 'unnamed-%i' % self.unnamed_entry_counter
@@ -124,13 +123,13 @@ class Parser(ParserBase):
         return (key, entry)
 
     def process_macro(self, s, loc, toks):
-        print toks
         for i in toks:
             s = i[1][0] % tuple([self.macros[arg] for arg in i[1][1]])
             self.macros[i[0]] = s
 
     def parse_file(self, filename=None, macros=month_names):
-        """parse BibTeX file and return a tree"""
+        """parse BibTeX file and return a tree
+        """
         if filename is None:
             filename = self.filename
         self.macros = dict(macros)
