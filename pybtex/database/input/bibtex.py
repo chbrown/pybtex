@@ -22,6 +22,7 @@
 import codecs, locale
 from pyparsing import *
 from pybtex.core import Entry, Person
+from pybtex.database.input import ParserBase
 
 month_names = {
     'jan': 'January',
@@ -67,11 +68,9 @@ class BibData:
     def addMacros(self, macros):
         self.macros.update(macros)
 
-class Parser:
+class Parser(ParserBase):
     def __init__(self, encoding=None, filename=None):
-        if encoding is None:
-            encoding = locale.getpreferredencoding()
-        self.set_encoding(encoding)
+        ParserBase.__init__(self, encoding)
         self.data = BibData()
         self.filename = filename
 
@@ -90,7 +89,7 @@ class Parser:
         bracedString << '{' + ZeroOrMore(CharsNotIn('{}\n\r') | bracedString) + '}'
         bracedString.setParseAction(self.processBracedString)
         bibTeXString = quotedString | bracedString
-        bibTeXString.setParseAction(self.decode)
+#        bibTeXString.setParseAction(self.decode)
 
         name = Word(alphanums + '!$&*+-./:;<>?[]^_`|').setParseAction(downcaseTokens)
         value = Group(delimitedList(bibTeXString | Word(alphanums).setParseAction(downcaseTokens) | Word(nums), delim='#'))
@@ -104,11 +103,6 @@ class Parser:
         string_body = bibtexGroup(fields)#Word(alphanums).setParseAction(upcaseTokens) + equal + value))
         string = at + CaselessLiteral('STRING').suppress() + string_body
         string.setParseAction(self.data.addMacro)
-
-        #Meta
-        meta_body = bibtexGroup(fields)#Group(bibtexGroup(Word(alphanums).setParseAction(upcaseTokens) + equal + field_value))
-        meta_body.setParseAction(self.processMeta)
-        meta = at + CaselessLiteral('META') + meta_body
 
         #Record
         record_header = at + Word(alphas).setParseAction(upcaseTokens)
@@ -127,7 +121,7 @@ class Parser:
         #Raw text
         raw_text = CharsNotIn('@').suppress()
 
-        self.BibTeX_BNF = ZeroOrMore(meta | comment | raw_text | Suppress(string) | Suppress(record)) + StringEnd()
+        self.BibTeX_BNF = ZeroOrMore(comment | raw_text | Suppress(string) | Suppress(record)) + StringEnd()
 
     def set_encoding(self, s):
         self._decode = codecs.getdecoder(s)
@@ -137,11 +131,6 @@ class Parser:
 
     def processBracedString(self, s, loc, toks):
         return "".join(toks)
-
-    def processMeta(self, s, loc, toks):
-        for i in toks:
-            if i[0] == 'ENCODING':
-                self.setEncoding(i[1][0])
 
     def processField(self, s, loc, toks):
         result = []
@@ -166,7 +155,7 @@ class Parser:
         if filename is None:
             filename = self.filename
         self.data.addMacros(macros)
-        f = open(filename)
+        f = codecs.open(filename, encoding=self.encoding)
         s = f.read()
         f.close()
         try:
