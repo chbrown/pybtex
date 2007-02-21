@@ -41,37 +41,9 @@ month_names = {
 
 file_extension = 'bib'
 
-class BibData:
-    def __init__(self):
-        self.records = {}
-        self.macros = {}
-
-    def addRecord(self, s, loc, toks):
-        entry = Entry(toks[0].lower())
-        fields = {}
-        key = toks[1]
-        for field in toks[2]:
-            value = field[1][0] % tuple([self.macros[arg] for arg in field[1][1]])
-            if field[0] in Entry.valid_roles:
-                for name in value.split(' and '):
-                    entry.add_person(Person(name), field[0])
-            else:
-                entry.fields[field[0]] = value
-        return (key, entry)
-
-    def addMacro(self, s, loc, toks):
-        print toks
-        for i in toks:
-            s = i[1][0] % tuple([self.macros[arg] for arg in i[1][1]])
-            self.macros[i[0]] = s
-
-    def addMacros(self, macros):
-        self.macros.update(macros)
-
 class Parser(ParserBase):
-    def __init__(self, encoding=None, filename=None):
+    def __init__(self, encoding=None, filename=None, allow_keyless_entries=False):
         ParserBase.__init__(self, encoding)
-        self.data = BibData()
         self.filename = filename
 
         lparenth = Literal('(').suppress()
@@ -93,27 +65,30 @@ class Parser(ParserBase):
 
         #fields
         field = Group(name + Suppress('=') + value)
-        field.setParseAction(self.processField)
+        field.setParseAction(self.process_field)
         fields = Dict(delimitedList(field))
 
         #String (aka macro)
         string_body = bibtexGroup(fields)
         string = at + CaselessLiteral('STRING').suppress() + string_body
-        string.setParseAction(self.data.addMacro)
+        string.setParseAction(self.process_macro)
 
         #Record
         record_header = at + Word(alphas).setParseAction(upcaseTokens)
         record_key = Word(printables.replace(',', ''))
-        record_body = bibtexGroup(record_key + comma + Group(fields))
+        if allow_keyless_entries:
+            record_body = bibtexGroup(Optional(record_key + comma, None) + Group(fields))
+        else:
+            record_body = bibtexGroup(record_key + comma + Group(fields))
         record = record_header + record_body
-        record.setParseAction(self.data.addRecord)
+        record.setParseAction(self.process_record)
 
         self.BibTeX_entry = string | record
 
     def set_encoding(self, s):
         self._decode = codecs.getdecoder(s)
 
-    def processField(self, s, loc, toks):
+    def process_field(self, s, loc, toks):
         result = []
         for token in toks:
             strings = []
@@ -131,11 +106,31 @@ class Parser(ParserBase):
             result.append((token[0], ("".join(strings), args)))
         return result
 
+    def process_record(self, s, loc, toks):
+        entry = Entry(toks[0].lower())
+        fields = {}
+        print toks
+        key = toks[1]
+        for field in toks[2]:
+            value = field[1][0] % tuple([self.macros[arg] for arg in field[1][1]])
+            if field[0] in Entry.valid_roles:
+                for name in value.split(' and '):
+                    entry.add_person(Person(name), field[0])
+            else:
+                entry.fields[field[0]] = value
+        return (key, entry)
+
+    def process_macro(self, s, loc, toks):
+        print toks
+        for i in toks:
+            s = i[1][0] % tuple([self.macros[arg] for arg in i[1][1]])
+            self.macros[i[0]] = s
+
     def parse_file(self, filename=None, macros=month_names):
         """parse BibTeX file and return a tree"""
         if filename is None:
             filename = self.filename
-        self.data.addMacros(macros)
+        self.macros = dict(macros)
         f = codecs.open(filename, encoding=self.encoding)
         s = f.read()
         f.close()
