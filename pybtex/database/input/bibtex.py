@@ -126,9 +126,6 @@ class Parser(ParserBase):
     def set_encoding(self, s):
         self._decode = codecs.getdecoder(s)
 
-    def decode(self, s, loc, toks):
-        return map(lambda x:self._decode(x)[0], toks)
-
     def processBracedString(self, s, loc, toks):
         return "".join(toks)
 
