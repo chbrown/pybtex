@@ -84,12 +84,10 @@ class Parser(ParserBase):
         equal = Literal('=').suppress()
         at = Literal('@').suppress()
         comma = Literal(',').suppress()
-        quotedString = Combine( '"' + ZeroOrMore( CharsNotIn('\"\n\r') ) + '"' )
+        quotedString = Combine('"' + ZeroOrMore(CharsNotIn('\"\n\r')) + '"')
         bracedString = Forward()
-        bracedString << '{' + ZeroOrMore(CharsNotIn('{}\n\r') | bracedString) + '}'
-        bracedString.setParseAction(self.processBracedString)
+        bracedString << Combine('{' + ZeroOrMore(CharsNotIn('{}\n\r') | bracedString) + '}')
         bibTeXString = quotedString | bracedString
-#        bibTeXString.setParseAction(self.decode)
 
         name = Word(alphanums + '!$&*+-./:;<>?[]^_`|').setParseAction(downcaseTokens)
         value = Group(delimitedList(bibTeXString | Word(alphanums).setParseAction(downcaseTokens) | Word(nums), delim='#'))
@@ -100,7 +98,7 @@ class Parser(ParserBase):
         fields = Dict(delimitedList(field))
 
         #String (aka macro)
-        string_body = bibtexGroup(fields)#Word(alphanums).setParseAction(upcaseTokens) + equal + value))
+        string_body = bibtexGroup(fields)
         string = at + CaselessLiteral('STRING').suppress() + string_body
         string.setParseAction(self.data.addMacro)
 
@@ -108,11 +106,8 @@ class Parser(ParserBase):
         record_header = at + Word(alphas).setParseAction(upcaseTokens)
         record_name = Word(printables.replace(',', ''))
         record_body = bibtexGroup(record_name + comma + Group(fields))
-        #group(record_name + comma + fields)
-        #lbrace + record_name + comma + fields + rbrace
         record = Group(record_header + record_body)
         record.setParseAction(self.data.addRecord)
-
 
         #Comment
         comment_header = Word(alphas) | (at + CaselessLiteral('COMMENT'))
@@ -125,9 +120,6 @@ class Parser(ParserBase):
 
     def set_encoding(self, s):
         self._decode = codecs.getdecoder(s)
-
-    def processBracedString(self, s, loc, toks):
-        return "".join(toks)
 
     def processField(self, s, loc, toks):
         result = []
@@ -156,7 +148,7 @@ class Parser(ParserBase):
         s = f.read()
         f.close()
         try:
-            self.BibTeX_BNF.parseString(s)
+            print self.BibTeX_BNF.parseString(s)
             #print self.data.records
             return self.data.records
         except ParseException, e:
