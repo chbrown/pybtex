@@ -111,6 +111,9 @@ class Parser(ParserBase):
         fields = {}
         print toks
         key = toks[1]
+        if key is None:
+            key = 'unnamed-%i' % self.unnamed_entry_counter
+            self.unnamed_entry_counter += 1
         for field in toks[2]:
             value = field[1][0] % tuple([self.macros[arg] for arg in field[1][1]])
             if field[0] in Entry.valid_roles:
@@ -131,6 +134,7 @@ class Parser(ParserBase):
         if filename is None:
             filename = self.filename
         self.macros = dict(macros)
+        self.unnamed_entry_counter = 1
         f = codecs.open(filename, encoding=self.encoding)
         s = f.read()
         f.close()
