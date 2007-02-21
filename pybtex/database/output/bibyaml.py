@@ -21,7 +21,7 @@ import yaml
 from pybtex.core import Entry
 from pybtex.database.output import WriterBase
 
-file_extension = 'bibtexml'
+file_extension = 'yaml'
 doctype = """<!DOCTYPE bibtex:file PUBLIC
     "-//BibTeXML//DTD XML for BibTeX v1.0//EN"
         "bibtexml.dtd" >
