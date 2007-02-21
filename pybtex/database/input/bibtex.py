@@ -74,7 +74,7 @@ class Parser(ParserBase):
         string.setParseAction(self.process_macro)
 
         #Record
-        record_header = at + Word(alphas).setParseAction(upcaseTokens)
+        record_header = at + Word(alphas).setParseAction(downcaseTokens)
         record_key = Word(printables.replace(',', ''))
         if allow_keyless_entries:
             record_body = bibtexGroup(Optional(record_key + comma, None) + Group(fields))
