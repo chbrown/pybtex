@@ -47,20 +47,20 @@ class BibData:
         self.macros = {}
 
     def addRecord(self, s, loc, toks):
-        for i in toks:
-            entry = Entry(i[0].lower())
-            fields = {}
-            for field in i[2]:
-                value = field[1][0] % tuple([self.macros[arg] for arg in field[1][1]])
-                if field[0] in Entry.valid_roles:
-                    for name in value.split(' and '):
-                        entry.add_person(Person(name), field[0])
-                else:
-                    entry.fields[field[0]] = value
-            #fields['TYPE'] = i[0]
-            self.records[i[1]] = entry
+        entry = Entry(toks[0].lower())
+        fields = {}
+        key = toks[1]
+        for field in toks[2]:
+            value = field[1][0] % tuple([self.macros[arg] for arg in field[1][1]])
+            if field[0] in Entry.valid_roles:
+                for name in value.split(' and '):
+                    entry.add_person(Person(name), field[0])
+            else:
+                entry.fields[field[0]] = value
+        return (key, entry)
 
     def addMacro(self, s, loc, toks):
+        print toks
         for i in toks:
             s = i[1][0] % tuple([self.macros[arg] for arg in i[1][1]])
             self.macros[i[0]] = s
@@ -81,9 +81,8 @@ class Parser(ParserBase):
         def bibtexGroup(s):
             return (lparenth + s + rparenth) | (lbrace + s + rbrace)
 
-        equal = Literal('=').suppress()
-        at = Literal('@').suppress()
-        comma = Literal(',').suppress()
+        at = Suppress('@')
+        comma = Suppress(',')
         quotedString = Combine('"' + ZeroOrMore(CharsNotIn('\"\n\r')) + '"')
         bracedString = Forward()
         bracedString << Combine('{' + ZeroOrMore(CharsNotIn('{}\n\r') | bracedString) + '}')
@@ -93,7 +92,7 @@ class Parser(ParserBase):
         value = Group(delimitedList(bibTeXString | Word(alphanums).setParseAction(downcaseTokens) | Word(nums), delim='#'))
 
         #fields
-        field = Group(name + equal + value)
+        field = Group(name + Suppress('=') + value)
         field.setParseAction(self.processField)
         fields = Dict(delimitedList(field))
 
@@ -104,19 +103,12 @@ class Parser(ParserBase):
 
         #Record
         record_header = at + Word(alphas).setParseAction(upcaseTokens)
-        record_name = Word(printables.replace(',', ''))
-        record_body = bibtexGroup(record_name + comma + Group(fields))
-        record = Group(record_header + record_body)
+        record_key = Word(printables.replace(',', ''))
+        record_body = bibtexGroup(record_key + comma + Group(fields))
+        record = record_header + record_body
         record.setParseAction(self.data.addRecord)
 
-        #Comment
-        comment_header = Word(alphas) | (at + CaselessLiteral('COMMENT'))
-        comment = Suppress(comment_header + lbrace + ZeroOrMore(CharsNotIn('}')) + rbrace)
-
-        #Raw text
-        raw_text = CharsNotIn('@').suppress()
-
-        self.BibTeX_BNF = ZeroOrMore(comment | raw_text | Suppress(string) | Suppress(record)) + StringEnd()
+        self.BibTeX_entry = string | record
 
     def set_encoding(self, s):
         self._decode = codecs.getdecoder(s)
@@ -148,9 +140,7 @@ class Parser(ParserBase):
         s = f.read()
         f.close()
         try:
-            print self.BibTeX_BNF.parseString(s)
-            #print self.data.records
-            return self.data.records
+            return dict(entry[0][0] for entry in self.BibTeX_entry.scanString(s))
         except ParseException, e:
             print "%s: syntax error:" % filename
             print e
