@@ -26,7 +26,7 @@ file_extension = 'yaml'
 class Parser(ParserBase):
     def parse_file(self, filename):
         f = open(filename)
-        t = yaml.load(f)
+        t = yaml.safe_load(f)
         entries = ((key, self.process_entry(entry)) for (key, entry) in t['data'].iteritems())
         d = dict(entries)
         return d

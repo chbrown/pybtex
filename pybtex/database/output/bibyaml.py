@@ -53,5 +53,5 @@ class Writer(WriterBase):
 
         data = {'data': dict(process_entries(bib_data))}
         f = open(filename, 'w')
-        yaml.dump(data, f, allow_unicode=True, default_flow_style=False, indent=4)
+        yaml.safe_dump(data, f, allow_unicode=True, default_flow_style=False, indent=4)
         f.close()
