@@ -25,7 +25,7 @@ from pybtex import find_plugin
 class ConvertError(Exception):
     pass
 
-def convert(input, from_format, to_format, output=None, input_encoding=None, output_encoding=None):
+def convert(input, from_format, to_format, output=None, input_encoding=None, output_encoding=None, parser_options={}):
     input_format = find_plugin('database.input', from_format)
     output_format = find_plugin('database.output', to_format)
     
@@ -42,5 +42,5 @@ def convert(input, from_format, to_format, output=None, input_encoding=None, out
     if input == output:
         raise ConvertError('input and output file can not be the same')
 
-    bib_data = input_format.Parser(input_encoding).parse_file(input)
+    bib_data = input_format.Parser(input_encoding, **parser_options).parse_file(input)
     output_format.Writer(output_encoding).write(bib_data, output)

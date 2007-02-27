@@ -22,7 +22,7 @@ filetypes = {'bib' : 'bibtex'}
 import locale
 
 class ParserBase:
-    def __init__(self, encoding=None):
+    def __init__(self, encoding=None, **kwargs):
         if encoding is None:
             encoding = locale.getpreferredencoding()
         self.encoding = encoding

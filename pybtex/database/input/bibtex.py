@@ -42,7 +42,7 @@ month_names = {
 file_extension = 'bib'
 
 class Parser(ParserBase):
-    def __init__(self, encoding=None, filename=None, allow_keyless_entries=False):
+    def __init__(self, encoding=None, filename=None, **kwargs):
         ParserBase.__init__(self, encoding)
         self.filename = filename
 
@@ -76,7 +76,7 @@ class Parser(ParserBase):
         #Record
         record_header = at + Word(alphas).setParseAction(downcaseTokens)
         record_key = Word(printables.replace(',', ''))
-        if allow_keyless_entries:
+        if kwargs.get('allow_keyless_entries', False):
             record_body = bibtexGroup(Optional(record_key + comma, None) + Group(fields))
         else:
             record_body = bibtexGroup(record_key + comma + Group(fields))
