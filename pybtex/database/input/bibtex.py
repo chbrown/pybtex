@@ -41,6 +41,30 @@ month_names = {
 
 file_extension = 'bib'
 
+def split_name_list(s):
+    after_space = False
+    brace_level = 0
+    name_start = 0
+    pos = -1
+    names = []
+    for c in s:
+        pos += 1
+        if c.isspace():
+            after_space = True
+        elif c == '{':
+            brace_level += 1
+        elif c == '}':
+            brace_level -= 1
+        elif (brace_level == 0
+                and s[pos:pos + 3].lower() == 'and'
+                and s[pos + 3:pos+4].isspace()):
+            names.append(s[name_start:pos - 1])
+            name_start = pos + 4
+        after_space = False
+    names.append(s[name_start:])
+    return names
+
+
 class Parser(ParserBase):
     def __init__(self, encoding=None, filename=None, **kwargs):
         ParserBase.__init__(self, encoding)
@@ -116,7 +140,7 @@ class Parser(ParserBase):
         for field in toks[2]:
             value = field[1][0] % tuple([self.macros[arg] for arg in field[1][1]])
             if field[0] in Entry.valid_roles:
-                for name in value.split(' and '):
+                for name in split_name_list(value):
                     entry.add_person(Person(name), field[0])
             else:
                 entry.fields[field[0]] = value
