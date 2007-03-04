@@ -40,7 +40,6 @@ class Entry:
     - persons (a dict of Person objects)
     - fields (all dict of string)
     """
-    valid_roles = ['author', 'editor'] 
     def __init__(self, type_, fields = {}, persons = {}):
         self.type = type_
 
@@ -70,6 +69,7 @@ class Entry:
 class Person:
     """Represents a person (usually human).
     """
+    valid_roles = ['author', 'editor'] 
     style1_re = re.compile('^(.+),\s*(.+)$')
     style2_re = re.compile('^(.+),\s*(.+),\s*(.+)$')
     def __init__(self, string="", first="", middle="", prelast="", last="", lineage=""):

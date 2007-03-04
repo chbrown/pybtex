@@ -34,7 +34,7 @@ class Parser(ParserBase):
     def process_entry(self, entry):
         e = Entry(entry['type']) 
         for (k, v) in entry.iteritems():
-            if k in Entry.valid_roles:
+            if k in Person.valid_roles:
                 for names in v:
                     e.add_person(Person(**names), k)
             elif k == 'type':

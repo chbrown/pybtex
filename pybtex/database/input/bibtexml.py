@@ -62,7 +62,7 @@ class Parser(ParserBase):
         e = Entry(type)
         for field in item.getchildren():
             field_name = remove_ns(field.tag)
-            if field_name in Entry.valid_roles:
+            if field_name in Person.valid_roles:
                 process_person(field, field_name)
             else:
                 e.fields[field_name] = field.text.strip()

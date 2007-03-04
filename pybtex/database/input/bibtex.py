@@ -139,7 +139,7 @@ class Parser(ParserBase):
             self.unnamed_entry_counter += 1
         for field in toks[2]:
             value = field[1][0] % tuple([self.macros[arg] for arg in field[1][1]])
-            if field[0] in Entry.valid_roles:
+            if field[0] in Person.valid_roles:
                 for name in split_name_list(value):
                     entry.add_person(Person(name), field[0])
             else:
