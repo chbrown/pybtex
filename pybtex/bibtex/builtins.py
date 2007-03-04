@@ -23,6 +23,7 @@ CAUTION: functions should PUSH results, not RETURN
 """
 
 import interpreter
+from pybtex.database.input.bibtex import split_name_list
 
 class Builtin(object):
     def __init__(self, f):
@@ -130,8 +131,9 @@ def format_name(i):
     #FIXME stub
     format = i.pop()
     n = i.pop()
-    list = i.pop()
-    i.push(list)
+    names = i.pop()
+    name = split_name_list(names)[n - 1]
+    i.push(name)
 
 
 @builtin
@@ -164,9 +166,8 @@ def newline(i):
 
 @builtin
 def num_names(i):
-    #FIXME stub
-    i.pop()
-    i.push(1)
+    names = i.pop()
+    i.push(len(split_name_list(names)))
 
 @builtin
 def pop(i):

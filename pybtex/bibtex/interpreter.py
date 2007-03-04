@@ -20,10 +20,6 @@
 from builtins import builtins
 from pybtex.database.input import bibtex
 
-from pybtex.core import Entry
-valid_roles = Entry.valid_roles
-del Entry
-
 
 class BibTeXError(Exception):
     pass
@@ -103,9 +99,6 @@ class Field(object):
         self.interpreter.push(self.value())
 
     def value(self):
-        #FIXME: need to do something with names
-        if self.name in valid_roles:
-            return 'Foo Bar Baz, jr'
         try:
             value = self.interpreter.current_entry.fields[self.name]
 
@@ -245,7 +238,7 @@ class Interpreter(object):
     def command_read(self):
 #        print 'READ'
         p = bibtex.Parser()
-        self.bib_data = p.parse_file(filename=self.bib_file, macros=self.macros)
+        self.bib_data = p.parse_file(filename=self.bib_file, macros=self.macros, person_fields=[])
 #        for k, v in self.bib_data.iteritems():
 #            print k
 #            for field, value in v.fields.iteritems():
