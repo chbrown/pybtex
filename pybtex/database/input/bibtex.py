@@ -139,7 +139,7 @@ class Parser(ParserBase):
             self.unnamed_entry_counter += 1
         for field in toks[2]:
             value = field[1][0] % tuple([self.macros[arg] for arg in field[1][1]])
-            if field[0] in Person.valid_roles:
+            if field[0] in self.person_fields:
                 for name in split_name_list(value):
                     entry.add_person(Person(name), field[0])
             else:
@@ -151,12 +151,13 @@ class Parser(ParserBase):
             s = i[1][0] % tuple([self.macros[arg] for arg in i[1][1]])
             self.macros[i[0]] = s
 
-    def parse_file(self, filename=None, macros=month_names):
+    def parse_file(self, filename=None, macros=month_names, person_fields=Person.valid_roles):
         """parse BibTeX file and return a tree
         """
         if filename is None:
             filename = self.filename
         self.macros = dict(macros)
+        self.person_fields = person_fields
         self.unnamed_entry_counter = 1
         f = codecs.open(filename, encoding=self.encoding)
         s = f.read()
