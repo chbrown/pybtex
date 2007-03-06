@@ -20,7 +20,10 @@
 try:
     import cElementTree as ET
 except ImportError:
-    from elementtree import ElementTree as ET
+    try:
+        from elementtree import ElementTree as ET
+    except ImportError:
+        from xml.etree import ElementTree as ET
 from pybtex.core import Entry, Person
 from pybtex.database.input import ParserBase
 
