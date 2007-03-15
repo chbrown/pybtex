@@ -45,15 +45,13 @@ def split_name_list(s):
     after_space = False
     brace_level = 0
     name_start = 0
-    pos = -1
     names = []
-    for c in s:
-        pos += 1
-        if c.isspace():
+    for pos, char in enumerate(s):
+        if char.isspace():
             after_space = True
-        elif c == '{':
+        elif char == '{':
             brace_level += 1
-        elif c == '}':
+        elif char == '}':
             brace_level -= 1
         elif (brace_level == 0
                 and s[pos:pos + 3].lower() == 'and'
