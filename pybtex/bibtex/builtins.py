@@ -24,6 +24,7 @@ CAUTION: functions should PUSH results, not RETURN
 
 import interpreter
 from pybtex.database.input.bibtex import split_name_list
+from pybtex.core import Person
 
 class Builtin(object):
     def __init__(self, f):
@@ -33,10 +34,16 @@ class Builtin(object):
     def __repr__(self):
         return '<builtin %s>' % self.f.__name__
 
-def builtin(f):
-    return Builtin(f)
+def builtin(name):
+    def _builtin(f):
+        global builtins
+        b = Builtin(f)
+        builtins[name] = b
+    return _builtin
 
-@builtin
+builtins = {}
+
+@builtin('>')
 def operator_more(i):
     arg1 = i.pop()
     arg2 = i.pop()
@@ -45,7 +52,7 @@ def operator_more(i):
     else:
         i.push(0)
 
-@builtin
+@builtin('<')
 def operator_less(i):
     arg1 = i.pop()
     arg2 = i.pop()
@@ -54,7 +61,7 @@ def operator_less(i):
     else:
         i.push(0)
 
-@builtin
+@builtin('=')
 def operator_equals(i):
     arg1 = i.pop()
     arg2 = i.pop()
@@ -63,43 +70,43 @@ def operator_equals(i):
     else:
         i.push(0)
 
-@builtin
+@builtin('*')
 def operator_asterisk(i):
     arg1 = i.pop()
     arg2 = i.pop()
     i.push(arg2 + arg1)
 
-@builtin
+@builtin(':=')
 def operator_assign(i):
     var = i.pop()
     value = i.pop()
     var.set(value)
 
-@builtin
+@builtin('+')
 def operator_plus(i):
     arg1 = i.pop()
     arg2 = i.pop()
     i.push(arg2 + arg1)
 
-@builtin
+@builtin('-')
 def operator_minus(i):
     arg1 = i.pop()
     arg2 = i.pop()
     i.push(arg2 - arg1)
 
-@builtin
+@builtin('add.period$')
 def add_period(i):
     s = i.pop()
     if s and not s.rstrip('}')[-1] in '.?!':
         s += '.'
     i.push(s)
 
-@builtin
+@builtin('call.type$')
 def call_type(i):
     type = i.current_entry.type
     i.vars[type].execute(i)
 
-@builtin
+@builtin('change.case$')
 def change_case(i):
     mode = i.pop()
     s = i.pop()
@@ -107,17 +114,17 @@ def change_case(i):
     i.push(s)
 
 
-@builtin
+@builtin('cite$')
 def cite(i):
     i.push(i.current_entry_key)
 
-@builtin
+@builtin('duplicate$')
 def duplicate(i):
     tmp = i.pop()
     i.push(tmp)
     i.push(tmp)
 
-@builtin
+@builtin('empty$')
 def empty(i):
     #FIXME error checking
     s = i.pop()
@@ -126,7 +133,7 @@ def empty(i):
     else:
         i.push(1)
 
-@builtin
+@builtin('format.name$')
 def format_name(i):
     #FIXME stub
     format = i.pop()
@@ -135,8 +142,7 @@ def format_name(i):
     name = split_name_list(names)[n - 1]
     i.push(name)
 
-
-@builtin
+@builtin('if$')
 def if_(i):
     f1 = i.pop()
     f2 = i.pop()
@@ -146,11 +152,11 @@ def if_(i):
     else:
         f1.execute(i)
 
-@builtin
+@builtin('int.to.str$')
 def int_to_str(i):
     i.push(str(i.pop()))
 
-@builtin
+@builtin('missing$')
 def missing(i):
     f = i.pop()
     if isinstance(f, interpreter.MissingField):
@@ -158,31 +164,31 @@ def missing(i):
     else:
         i.push(0)
 
-@builtin
+@builtin('newline$')
 def newline(i):
     # FIXME bibtex does some automatic line breaking
     # needs more investigation
     i.output('\n')
 
-@builtin
+@builtin('num.names$')
 def num_names(i):
     names = i.pop()
     i.push(len(split_name_list(names)))
 
-@builtin
+@builtin('pop$')
 def pop(i):
     i.pop()
 
-@builtin
+@builtin('preamble$')
 def preamble(i):
     #FIXME stub
     i.push('')
 
-@builtin
+@builtin('skip$')
 def skip(i):
     pass
 
-@builtin
+@builtin('substring$')
 def substring(i):
     len = i.pop()
     start = i.pop()
@@ -195,26 +201,26 @@ def substring(i):
         raise BibTeXError('start=0 passed to substring$')
 
 
-@builtin
+@builtin('swap$')
 def swap(i):
     tmp1 = i.pop()
     tmp2 = i.pop()
     i.push(tmp1)
     i.push(tmp2)
 
-@builtin
+@builtin('text.length$')
 def text_length(i):
     # FIXME special characters and braces
     s = i.pop()
     i.push(len(s))
 
-@builtin
+@builtin('warning$')
 def warning(i):
     #FIXME stub
     msg = i.pop()
     print 'WARNING:', msg
 
-@builtin
+@builtin('while$')
 def while_(i):
     f = i.pop()
     p = i.pop()
@@ -224,46 +230,15 @@ def while_(i):
             break
         f.execute(i)
 
-@builtin
+@builtin('width$')
 def width(i):
     #FIXME need to investigate bibtex' source
     s = i.pop()
     i.push(len(s))
 
-@builtin
+@builtin('write$')
 def write(i):
     #FIXME encodings
     s = i.pop()
     i.output(s.encode('UTF-8'))
 
-builtins = {
-        '>': operator_more,
-        '<': operator_less,
-        '=': operator_equals,
-        '+': operator_plus,
-        '-': operator_minus,
-        '*': operator_asterisk,
-        ':=': operator_assign,
-        'add.period$': add_period,
-        'call.type$': call_type,
-        'change.case$': change_case,
-        'cite$': cite,
-        'duplicate$': duplicate,
-        'empty$': empty,
-        'format.name$': format_name,
-        'if$': if_,
-        'int.to.str$': int_to_str,
-        'missing$': missing,
-        'newline$': newline,
-        'num.names$': num_names,
-        'pop$': pop,
-        'preamble$': preamble,
-        'skip$': skip,
-        'substring$': substring,
-        'swap$': swap,
-        'text.length$': text_length,
-        'warning$': warning,
-        'while$': while_,
-        'width$': width,
-        'write$': write,
-}
