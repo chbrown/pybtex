@@ -135,7 +135,6 @@ def change_case(i):
         s = s.upper()
     elif mode == 't':
         s = title(s)
-        print s
     i.push(s)
 
 
