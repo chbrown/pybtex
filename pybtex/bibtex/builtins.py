@@ -137,6 +137,14 @@ def change_case(i):
         s = title(s)
     i.push(s)
 
+@builtin('chr.to.int$')
+def chr_to_int(i):
+    s = i.pop()
+    try:
+        value = ord(s)
+    except TypeError:
+        raise interpreter.BibTeXError('%s passed to chr.to.int$', s)
+    i.push(value)
 
 @builtin('cite$')
 def cite(i):
@@ -233,7 +241,7 @@ def substring(i):
     elif start < 0:
         i.push(s[-start - len:-start])
     else:
-        raise BibTeXError('start=0 passed to substring$')
+        raise interpreter.BibTeXError('start=0 passed to substring$')
 
 
 @builtin('swap$')
