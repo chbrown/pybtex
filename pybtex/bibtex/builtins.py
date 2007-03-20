@@ -209,6 +209,17 @@ def preamble(i):
     #FIXME stub
     i.push('')
 
+@builtin('purify$')
+def purify(i):
+    #FIXME need to strip TeX control sequences starting with backslash
+    s = i.pop()
+    l = []
+    for char in s:
+        if char.isalpha() or char.isdigit() or char.isspace():
+            l.append(char)
+    i.push(''.join(l))
+
+
 @builtin('skip$')
 def skip(i):
     pass
