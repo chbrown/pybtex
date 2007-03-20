@@ -235,6 +235,9 @@ def purify(i):
             l.append(char)
     i.push(''.join(l))
 
+@builtin('quote$')
+def quote(i):
+    i.push('"')
 
 @builtin('skip$')
 def skip(i):
