@@ -158,6 +158,7 @@ class Interpreter(object):
         #FIXME is 10000 OK?
         self.add_variable('global.max$', Integer(10000))
         self.add_variable('entry.max$', Integer(10000))
+        self.add_variable('sort.key$', EntryString(self, ''))
         self.macros = {}
 
     def push(self, value):
