@@ -1,4 +1,5 @@
-# Copyright 2006 Andrey Golovizin
+
+# Copyright 2007 Andrey Golovizin
 #
 # This file is part of pybtex.
 #
@@ -17,25 +18,10 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-"""BibTeX unnamed stack language interpreter and related stuff
-"""
+from subprocess import Popen, PIPE
 
-import bst
-from interpreter import Interpreter
-from pybtex import auxfile
-from pybtex.bibtex.kpathsea import kpsewhich
-
-class BibTeX:
-    def __init__(self):
-        self.interpreter = Interpreter()
-    def run(self, aux_filename):
-        aux_data = auxfile.parse_file(aux_filename)
-        bst_filename = kpsewhich(aux_data.style + '.bst')
-        bst_script = bst.parse_file(bst_filename)
-        self.interpreter.run(bst_script, aux_data.citations, aux_data.data + '.bib', aux_filename + '.bbl')
-
-
-if __name__ == '__main__':
-    import sys
-    b = BibTeX()
-    b.run(sys.argv[1])
+def kpsewhich(filename):
+    p = Popen(['kpsewhich', filename], stdout=PIPE, stderr=PIPE)
+    path = p.communicate()[0].rstrip()
+    if p.returncode == 0:
+        return path
