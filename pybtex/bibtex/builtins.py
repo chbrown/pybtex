@@ -249,6 +249,10 @@ def text_length(i):
     s = i.pop()
     i.push(bibtex_len(s))
 
+@builtin('top$')
+def top(i):
+    print (i.pop())
+
 @builtin('type$')
 def type_(i):
     i.push(i.current_entry.type)
