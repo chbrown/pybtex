@@ -257,6 +257,13 @@ def text_length(i):
     s = i.pop()
     i.push(bibtex_len(s))
 
+@builtin('text.prefix$')
+def text_prefix(i):
+    # FIXME special characters and braces
+    l = i.pop()
+    s = i.pop()
+    i.push(s[:l])
+
 @builtin('top$')
 def top(i):
     #FIXME encoding
