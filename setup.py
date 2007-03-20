@@ -45,10 +45,10 @@ def list_modules():
 class Sdist(sdist):
     def run(self):
         from pybtex.database.convert import convert
-        bibtexml = os.path.join('examples', 'foo.bibtexml')
+        bibtex_yaml = os.path.join('examples', 'foo.yaml')
         bibtex = os.path.join('examples', 'foo.bibtex')
-        if not os.path.exists(bibtex) or newer(bibtexml, bibtex):
-            convert(bibtexml, 'bibtexml', 'bibtex')
+        if not os.path.exists(bibtex) or newer(bibtex_yaml, bibtex):
+            convert(bibtex_yaml, 'bibyaml', 'bibtex')
         sdist.run(self)
 
 class InstallData(install_data):

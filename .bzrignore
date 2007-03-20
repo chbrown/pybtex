@@ -1,4 +1,5 @@
 examples/foo.bib
+examples/foo.bibtexml
 examples/*.aux
 examples/*.bbl
 examples/*.dvi
