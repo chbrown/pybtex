@@ -270,7 +270,7 @@ def type_(i):
 def warning(i):
     #FIXME stub
     msg = i.pop()
-    print 'WARNING:', msg
+    print 'Warning--' + msg
 
 @builtin('while$')
 def while_(i):
