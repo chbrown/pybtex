@@ -160,7 +160,7 @@ class Interpreter(object):
         #FIXME is 10000 OK?
         self.add_variable('global.max$', Integer(10000))
         self.add_variable('entry.max$', Integer(10000))
-        self.add_variable('sort.key$', EntryString(self, ''))
+        self.add_variable('sort.key$', EntryString(self, 'sort.key$'))
         self.macros = {}
 
     def push(self, value):
@@ -226,8 +226,11 @@ class Interpreter(object):
             self.vars[id.value()] = Integer()
 
     def command_iterate(self):
+        self._iterate(self.citations)
+
+    def _iterate(self, citations):
         f = self.vars[self.getToken()[0].value()]
-        for key in self.citations:
+        for key in citations:
             self.current_entry_key = key
             self.current_entry = self.bib_data[key]
             f.execute(self)
@@ -249,11 +252,12 @@ class Interpreter(object):
 #        pass
 
     def command_reverse(self):
-        print 'REVERSE'
-        self.getToken()
+        self._iterate(reversed(self.citations))
 
     def command_sort(self):
-        print 'SORT'
+        def key(citation):
+            return self.bib_data[citation].vars['sort.key$']
+        self.citations.sort(key=key)
 
     def command_strings(self):
         #print 'STRINGS'
