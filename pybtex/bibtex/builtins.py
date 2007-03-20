@@ -184,6 +184,15 @@ def if_(i):
     else:
         f1.execute(i)
 
+@builtin('int.to.chr$')
+def int_to_chr(i):
+    n = i.pop()
+    try:
+        char = chr(n)
+    except ValueError:
+        raise interpreter.BibTeXError('%i passed to int.to.chr$', n)
+    i.push(char)
+
 @builtin('int.to.str$')
 def int_to_str(i):
     i.push(str(i.pop()))
