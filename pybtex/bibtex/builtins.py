@@ -26,6 +26,7 @@ import interpreter
 from pybtex.database.input.bibtex import split_name_list
 from pybtex.core import Person
 from pybtex.bibtex.utils import bibtex_len
+from pybtex.bibtex.name import format as format_bibtex_name
 
 class Builtin(object):
     def __init__(self, f):
@@ -109,9 +110,32 @@ def call_type(i):
 
 @builtin('change.case$')
 def change_case(i):
+    def title(s):
+        l = []
+        start = True
+        for pos, char in enumerate(s):
+            if char == ':':
+                try:
+                    start = s[pos+1].isspace()
+                except IndexError:
+                    pass
+                start = True
+            if start:
+                l.append(char)
+                start = False
+            else:
+                l.append(char.lower())
+        return(''.join(l))
+
     mode = i.pop()
     s = i.pop()
-    #FIXME stub
+    if mode == 'l':
+        s = s.lower()
+    elif mode == 'u':
+        s = s.upper()
+    elif mode == 't':
+        s = title(s)
+        print s
     i.push(s)
 
 
@@ -141,7 +165,7 @@ def format_name(i):
     n = i.pop()
     names = i.pop()
     name = split_name_list(names)[n - 1]
-    i.push(name)
+    i.push(format_bibtex_name(name, format))
 
 @builtin('if$')
 def if_(i):
