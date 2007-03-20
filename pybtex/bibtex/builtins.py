@@ -25,6 +25,7 @@ CAUTION: functions should PUSH results, not RETURN
 import interpreter
 from pybtex.database.input.bibtex import split_name_list
 from pybtex.core import Person
+from pybtex.bibtex.utils import bibtex_len
 
 class Builtin(object):
     def __init__(self, f):
@@ -212,7 +213,7 @@ def swap(i):
 def text_length(i):
     # FIXME special characters and braces
     s = i.pop()
-    i.push(len(s))
+    i.push(bibtex_len(s))
 
 @builtin('warning$')
 def warning(i):
@@ -234,7 +235,7 @@ def while_(i):
 def width(i):
     #FIXME need to investigate bibtex' source
     s = i.pop()
-    i.push(len(s))
+    i.push(bibtex_len(s))
 
 @builtin('write$')
 def write(i):
