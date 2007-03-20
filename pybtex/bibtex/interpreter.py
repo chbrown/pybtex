@@ -26,17 +26,17 @@ class BibTeXError(Exception):
 
 
 class Variable(object):
-    def __init__(self, value = None):
+    def __init__(self, value=None):
         self.set(value)
     def set(self, value):
+        if value is None:
+            value = self.default
         self.validate(value)
         self._value = value
     def validate(self, value):
         if not (isinstance(value, self.value_type) or value is None):
             raise ValueError('Invalid value for BibTeX %s: %s' % (self.__class__.__name__, value))
     def execute(self, interpreter):
-        if self.value() is None:
-            raise ValueError('undefined %s variable' % self.__class__.__name__)
         interpreter.push(self.value())
     def value(self):
         return self._value
@@ -60,6 +60,7 @@ class EntryVariable(Variable):
 
 class Integer(Variable):
     value_type = int
+    default = 0
     def __repr__(self):
         return str(self.value())
 
@@ -70,6 +71,7 @@ class EntryInteger(Integer, EntryVariable):
 
 class String(Variable):
     value_type = basestring
+    default = ''
     def __repr__(self):
         if self.value() is None:
             return '<empty>'
