@@ -140,6 +140,14 @@ class Person:
         p = Phrase(sep=Symbol('nbsp'))
         p.extend(names)
         return p
+
+    #FIXME needs some thinking and cleanup
+    def bibtex_first(self):
+        """Return first and middle names together.
+        (BibTeX treats all middle names as first)
+        """
+        return self._first + self._middle
+
     def first(self, abbr=False):
         return self.get_part('first', abbr)
     def middle(self, abbr=False):
