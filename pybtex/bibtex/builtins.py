@@ -252,7 +252,7 @@ def text_length(i):
 @builtin('top$')
 def top(i):
     #FIXME encoding
-    print (i.pop().encode('UTF-8'))
+    print (unicode(i.pop()).encode('UTF-8'))
 
 @builtin('type$')
 def type_(i):
