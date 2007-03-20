@@ -119,14 +119,17 @@ class Person:
             process_von_last(parts[0])
             process_first_middle(parts[1].split())
         else: # First von Last
-            parts = reversed(s.split())
-            self._last.append(parts.next())
             first_middle = []
-            for part in parts:
+            first = True
+
+            for part in s.split():
                 if part.islower():
-                    self._prelast.insert(0, part)
+                    self._prelast.append(part)
+                    first = False
+                elif first:
+                    first_middle.append(part)
                 else:
-                    first_middle.append(0, part)
+                    self._last.append(part)
             process_first_middle(first_middle)
 
     def get_part_as_text(self, type):
