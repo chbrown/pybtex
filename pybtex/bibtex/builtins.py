@@ -255,6 +255,13 @@ def substring(i):
     else:
         raise interpreter.BibTeXError('start=0 passed to substring$')
 
+@builtin('stack$')
+def stack(i):
+    try:
+        while True:
+            print i.pop()
+    except IndexError:
+        pass
 
 @builtin('swap$')
 def swap(i):
@@ -312,4 +319,3 @@ def write(i):
     #FIXME encodings
     s = i.pop()
     i.output(s.encode('UTF-8'))
-
