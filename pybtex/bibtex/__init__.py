@@ -20,6 +20,7 @@
 """BibTeX unnamed stack language interpreter and related stuff
 """
 
+from os import path
 import bst
 from interpreter import Interpreter
 from pybtex import auxfile
@@ -30,12 +31,19 @@ class BibTeX:
         self.interpreter = Interpreter()
     def run(self, aux_filename):
         aux_data = auxfile.parse_file(aux_filename)
-        bst_filename = kpsewhich(aux_data.style + '.bst')
+        bst_filename = kpsewhich(aux_data.style + path.extsep + 'bst')
         bst_script = bst.parse_file(bst_filename)
-        self.interpreter.run(bst_script, aux_data.citations, aux_data.data + '.bib', aux_filename + '.bbl')
+        base_filename = path.splitext(aux_filename)[0]
+        bbl_filename = base_filename + path.extsep + 'bbl'
+        bib_filename = base_filename + path.extsep + 'bib'
+        self.interpreter.run(bst_script, aux_data.citations, bib_filename, bbl_filename)
 
 
 if __name__ == '__main__':
     import sys
+    aux_filename = path.splitext(sys.argv[1])[0] + path.extsep + 'aux'
     b = BibTeX()
-    b.run(sys.argv[1])
+    b.run(aux_filename)
+
+
+
