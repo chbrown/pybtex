@@ -68,26 +68,26 @@ class Parser(ParserBase):
         ParserBase.__init__(self, encoding)
         self.filename = filename
 
-        lparenth = Literal('(').suppress()
-        rparenth = Literal(')').suppress()
-        lbrace = Literal('{').suppress()
-        rbrace = Literal('}').suppress()
+        lbrace = Suppress('{')
+        rbrace = Suppress('}')
         def bibtexGroup(s):
-            return (lparenth + s + rparenth) | (lbrace + s + rbrace)
+            return ((lbrace + s + rbrace) |
+                    (Suppress('(') + s + Suppress(')')))
 
         at = Suppress('@')
         comma = Suppress(',')
-        quotedString = Combine('"' + ZeroOrMore(CharsNotIn('\"\n\r')) + '"')
+
+        quotedString = Combine(Suppress('"') + ZeroOrMore(CharsNotIn('"\n\r')) + Suppress('"'))
         bracedString = Forward()
-        bracedString << Combine('{' + ZeroOrMore(CharsNotIn('{}\n\r') | bracedString) + '}')
+        bracedString << Combine(lbrace + ZeroOrMore(CharsNotIn('{}\n\r') | bracedString) + rbrace)
         bibTeXString = quotedString | bracedString
 
+        macro_substitution = Word(alphanums).setParseAction(self.substitute_macro)
         name = Word(alphanums + '!$&*+-./:;<>?[]^_`|').setParseAction(downcaseTokens)
-        value = Group(delimitedList(bibTeXString | Word(alphanums).setParseAction(downcaseTokens) | Word(nums), delim='#'))
+        value = Combine(delimitedList(bibTeXString | Word(nums) | macro_substitution, delim='#'), adjacent=False)
 
         #fields
         field = Group(name + Suppress('=') + value)
-        field.setParseAction(self.process_field)
         fields = Dict(delimitedList(field))
 
         #String (aka macro)
@@ -95,59 +95,43 @@ class Parser(ParserBase):
         string = at + CaselessLiteral('STRING').suppress() + string_body
         string.setParseAction(self.process_macro)
 
-        #Record
-        record_header = at + Word(alphas).setParseAction(downcaseTokens)
-        record_key = Word(printables.replace(',', ''))
+        #bibliography entry
+        entry_header = at + Word(alphas).setParseAction(downcaseTokens)
+        entry_key = Word(printables.replace(',', ''))
         if kwargs.get('allow_keyless_entries', False):
-            record_body = bibtexGroup(Optional(record_key + comma, None) + Group(fields))
+            entry_body = bibtexGroup(Optional(entry_key + comma, None) + Group(fields))
         else:
-            record_body = bibtexGroup(record_key + comma + Group(fields))
-        record = record_header + record_body
-        record.setParseAction(self.process_record)
+            entry_body = bibtexGroup(entry_key + comma + Group(fields))
+        entry = entry_header + entry_body
+        entry.setParseAction(self.process_entry)
 
-        self.BibTeX_entry = string | record
+        self.BibTeX_entry = string | entry
 
     def set_encoding(self, s):
         self._decode = codecs.getdecoder(s)
 
-    def process_field(self, s, loc, toks):
-        result = []
-        for token in toks:
-            strings = []
-            args = []
-            for s in token[1]:
-                s = s.replace('%', '%%')
-                if (s.startswith('"') and s.endswith('"')) or \
-                   (s.startswith('{') and s.endswith('}')):
-                    strings.append(s[1:-1])
-                elif s.isdigit():
-                    strings.append(str(s))
-                else:
-                    strings.append('%s')
-                    args.append(s)
-            result.append((token[0], ("".join(strings), args)))
-        return result
-
-    def process_record(self, s, loc, toks):
+    def process_entry(self, s, loc, toks):
         entry = Entry(toks[0].lower())
         fields = {}
         key = toks[1]
+
         if key is None:
             key = 'unnamed-%i' % self.unnamed_entry_counter
             self.unnamed_entry_counter += 1
-        for field in toks[2]:
-            value = field[1][0] % tuple([self.macros[arg] for arg in field[1][1]])
-            if field[0] in self.person_fields:
-                for name in split_name_list(value):
-                    entry.add_person(Person(name), field[0])
+
+        for k, v in toks[2]:
+            if k in self.person_fields:
+                for name in split_name_list(v):
+                    entry.add_person(Person(name), k)
             else:
-                entry.fields[field[0]] = value
+                entry.fields[k] = v
         return (key, entry)
 
+    def substitute_macro(self, s, loc, toks):
+        return self.macros[toks[0].lower()]
+
     def process_macro(self, s, loc, toks):
-        for i in toks:
-            s = i[1][0] % tuple([self.macros[arg] for arg in i[1][1]])
-            self.macros[i[0]] = s
+        self.macros[toks[0][0].lower()] = toks[0][1]
 
     def parse_file(self, filename=None, macros=month_names, person_fields=Person.valid_roles):
         """parse BibTeX file and return a tree
