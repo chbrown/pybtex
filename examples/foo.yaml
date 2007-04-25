@@ -2,9 +2,9 @@ data:
     ruckenstein-diffusion:
         journal: Ind. Eng. Chem. Res.
         language: English
-        year: '1997'
-        ages: 888-895
-        volume: '36'
+        year: 1997
+        pages: 888-895
+        volume: 36
         title: Predicting the Diffusion Coefficient in Supercritical Fluids
         author:
         -   last: Liu
@@ -20,7 +20,7 @@ data:
             first: Михаил
         language: Russian
         type: book
-        year: '1977'
+        year: 1977
         title: Методы вычисления физико-химических величин и прикладные расчёты
     test-booklet:
         author:
@@ -35,10 +35,10 @@ data:
         title: Just a booklet
         type: booklet
         howpublished: Published by Foo
-        year: '2006'
+        year: 2006
     test-inbook:
-        number: '3'
-        year: '1933'
+        number: 3
+        year: 1933
         author:
         -   last: Jackson
             first: Peter

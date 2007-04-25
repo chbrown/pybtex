@@ -40,5 +40,5 @@ class Parser(ParserBase):
             elif k == 'type':
                 pass
             else:
-                e.fields[k] = v
+                e.fields[k] = unicode(v)
         return e
