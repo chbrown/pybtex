@@ -232,7 +232,7 @@ class Interpreter(object):
         f = self.vars[self.getToken()[0].value()]
         for key in citations:
             self.current_entry_key = key
-            self.current_entry = self.bib_data[key]
+            self.current_entry = self.bib_data.entries[key]
             f.execute(self)
         self.currentEntry = None
 
@@ -256,7 +256,7 @@ class Interpreter(object):
 
     def command_sort(self):
         def key(citation):
-            return self.bib_data[citation].vars['sort.key$']
+            return self.bib_data.entries[citation].vars['sort.key$']
         self.citations.sort(key=key)
 
     def command_strings(self):

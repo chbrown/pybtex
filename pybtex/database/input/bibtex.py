@@ -22,6 +22,7 @@
 import codecs, locale
 from pyparsing import *
 from pybtex.core import Entry, Person
+from pybtex.database import BibliographyData
 from pybtex.database.input import ParserBase
 
 month_names = {
@@ -125,7 +126,8 @@ class Parser(ParserBase):
                     entry.add_person(Person(name), k)
             else:
                 entry.fields[k] = v
-        return (key, entry)
+#        return (key, entry)
+        self.data.entries[key] = entry
 
     def substitute_macro(self, s, loc, toks):
         return self.macros[toks[0].lower()]
@@ -144,8 +146,11 @@ class Parser(ParserBase):
         f = codecs.open(filename, encoding=self.encoding)
         s = f.read()
         f.close()
+        self.data = BibliographyData()
         try:
-            return dict(entry[0][0] for entry in self.BibTeX_entry.scanString(s))
+#            entries = dict(entry[0][0] for entry in self.BibTeX_entry.scanString(s))
+            self.BibTeX_entry.searchString(s)
+            return self.data
         except ParseException, e:
             print "%s: syntax error:" % filename
             print e

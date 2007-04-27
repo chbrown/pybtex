@@ -76,7 +76,7 @@ def make_bibliography(aux_filename,
 def prepare_entries(bib_data, citations, label_style, name_style, abbreviate_names):
     entries = []
     for number, key in enumerate(citations):
-        entry = bib_data[key]
+        entry = bib_data.entries[key]
         entry.number = number + 1 # entry numbers start with 1
         entry.key = key
         entry.label = label_style(entry)
