@@ -51,7 +51,7 @@ class Writer(WriterBase):
                 fields.update(process_person_roles(entry))
                 yield key, fields
 
-        data = {'data': dict(process_entries(bib_data.entries))}
+        data = {'entries': dict(process_entries(bib_data.entries))}
         f = open(filename, 'w')
         yaml.safe_dump(data, f, allow_unicode=True, default_flow_style=False, indent=4)
         f.close()

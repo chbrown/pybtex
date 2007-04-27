@@ -31,7 +31,7 @@ class Parser(ParserBase):
 
         data = BibliographyData()
         entries = ((key, self.process_entry(entry))
-                for (key, entry) in t['data'].iteritems())
+                for (key, entry) in t['entries'].iteritems())
         data.entries.update(entries)
         return data
 
