@@ -52,6 +52,9 @@ class Writer(WriterBase):
                 yield key, fields
 
         data = {'entries': dict(process_entries(bib_data.entries))}
+        preamble = bib_data.preamble()
+        if preamble:
+            data['preamble'] = preamble
         f = open(filename, 'w')
         yaml.safe_dump(data, f, allow_unicode=True, default_flow_style=False, indent=4)
         f.close()
