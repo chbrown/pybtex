@@ -52,8 +52,12 @@ class Writer(WriterBase):
 #            persons = getattr(entry, role + 's')
             if persons:
                 write_field(role, ' and '.join([format_name(person) for person in persons]))
+        def write_preamble(preamble):
+            if preamble:
+                f.write('@preamble{%s}\n\n' % self.quote(preamble))
 
         f = codecs.open(filename, 'w', encoding=self.encoding)
+        write_preamble(bib_data.preamble())
         for key, entry in bib_data.entries.iteritems():
             f.write('@%s' % entry.type)
             f.write('{\n')

@@ -96,6 +96,11 @@ class Parser(ParserBase):
         string = at + CaselessLiteral('STRING').suppress() + string_body
         string.setParseAction(self.process_macro)
 
+        #preamble
+        preamble_body = bibtexGroup(value)
+        preamble = at + CaselessLiteral('PREAMBLE').suppress() + preamble_body
+        preamble.setParseAction(self.process_preamble)
+
         #bibliography entry
         entry_header = at + Word(alphas).setParseAction(downcaseTokens)
         entry_key = Word(printables.replace(',', ''))
@@ -106,10 +111,13 @@ class Parser(ParserBase):
         entry = entry_header + entry_body
         entry.setParseAction(self.process_entry)
 
-        self.BibTeX_entry = string | entry
+        self.BibTeX_entry = string | preamble | entry
 
     def set_encoding(self, s):
         self._decode = codecs.getdecoder(s)
+
+    def process_preamble(self, s, loc, toks):
+        self.data.add_to_preamble(toks[0])
 
     def process_entry(self, s, loc, toks):
         entry = Entry(toks[0].lower())
