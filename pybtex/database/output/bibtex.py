@@ -54,7 +54,7 @@ class Writer(WriterBase):
                 write_field(role, ' and '.join([format_name(person) for person in persons]))
 
         f = codecs.open(filename, 'w', encoding=self.encoding)
-        for key, entry in bib_data.iteritems():
+        for key, entry in bib_data.entries.iteritems():
             f.write('@%s' % entry.type)
             f.write('{\n')
             f.write('    %s' % key)

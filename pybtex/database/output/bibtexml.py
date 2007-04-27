@@ -54,7 +54,7 @@ class Writer(WriterBase):
         w = XMLWriter(f, self.encoding)
         w.declaration()
         bibtex_file = w.start('bibtex:file', attrib={'xmlns:bibtex': 'http://bibtexml.sf.net/'})
-        for key, entry in bib_data.iteritems():
+        for key, entry in bib_data.entries.iteritems():
             newline()
             newline()
             w.start('bibtex:entry', id=key)
