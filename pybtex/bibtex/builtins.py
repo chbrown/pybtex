@@ -222,8 +222,7 @@ def pop(i):
 
 @builtin('preamble$')
 def preamble(i):
-    #FIXME stub
-    i.push('')
+    i.push(i.bib_data.preamble())
 
 @builtin('purify$')
 def purify(i):
