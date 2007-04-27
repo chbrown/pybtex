@@ -20,6 +20,7 @@
 import yaml
 from pybtex.database.input import ParserBase
 from pybtex.core import Entry, Person
+from pybtex.database import BibliographyData
 
 file_extension = 'yaml'
 
@@ -27,9 +28,12 @@ class Parser(ParserBase):
     def parse_file(self, filename):
         f = open(filename)
         t = yaml.safe_load(f)
-        entries = ((key, self.process_entry(entry)) for (key, entry) in t['data'].iteritems())
-        d = dict(entries)
-        return d
+
+        data = BibliographyData()
+        entries = ((key, self.process_entry(entry))
+                for (key, entry) in t['data'].iteritems())
+        data.entries.update(entries)
+        return data
 
     def process_entry(self, entry):
         e = Entry(entry['type']) 
