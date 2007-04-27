@@ -32,6 +32,12 @@ class Parser(ParserBase):
         data = BibliographyData()
         entries = ((key, self.process_entry(entry))
                 for (key, entry) in t['entries'].iteritems())
+
+        try:
+            data.add_to_preamble(t['preamble'])
+        except KeyError:
+            pass
+
         data.entries.update(entries)
         return data
 
