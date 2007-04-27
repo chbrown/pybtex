@@ -25,6 +25,7 @@ except ImportError:
     except ImportError:
         from xml.etree import ElementTree as ET
 from pybtex.core import Entry, Person
+from pybtex.database import BibliographyData
 from pybtex.database.input import ParserBase
 
 bibtexns = '{http://bibtexml.sf.net/}'
@@ -36,11 +37,11 @@ def remove_ns(s):
 
 class Parser(ParserBase):
     def parse_file(self, file):
-        self.entries = {}
+        data = BibliographyData()
         t = ET.parse(file)
-        for entry in t.findall(bibtexns + 'entry'):
-            self.process_entry(entry)
-        return self.entries
+        entries = t.findall(bibtexns + 'entry')
+        data.entries.update(self.process_entry(entry) for entry in entries)
+        return data
 
     def process_entry(self, entry):
         def process_person(person_entry, role):
@@ -69,4 +70,4 @@ class Parser(ParserBase):
                 process_person(field, field_name)
             else:
                 e.fields[field_name] = field.text.strip()
-        self.entries[id_] = e
+        return id_, e
