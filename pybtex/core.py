@@ -140,9 +140,7 @@ class Person:
         names = getattr(self, '_' + type)
         if abbr:
             names = [utils.abbreviate(name) for name in names]
-        p = Phrase(sep=Symbol('nbsp'))
-        p.extend(names)
-        return p
+        return names
 
     #FIXME needs some thinking and cleanup
     def bibtex_first(self):
