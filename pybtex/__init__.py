@@ -22,21 +22,15 @@
 
 from os import path
 import auxfile
-import styles
-import backends.latex
-import database.input.bibtex
 from pybtex.plugin import find_plugin
 
 __version__ = "20060416"
 
 def make_bibliography(aux_filename,
-        bib_format=database.input.bibtex,
+        bib_format=None,
         bib_encoding=None,
         latex_encoding=None,
-        label_style=styles.labels.number,
-        name_style=styles.names.plain,
-        output_backend=backends.latex,
-        abbreviate_names=True
+        **kwargs
         ):
     """This functions extracts all nessessary information from .aux file
     and writes the bibliography.
@@ -44,6 +38,26 @@ def make_bibliography(aux_filename,
 
     filename = path.splitext(aux_filename)[0]
     aux_data = auxfile.parse_file(aux_filename)
+
+    if bib_format is None:
+        from database.input import bibtex as bib_format
+
+    try:
+        label_style = kwargs['label_style']
+    except KeyError:
+        from styles.labels import number as label_style
+
+    try:
+        name_style = kwargs['name_style']
+    except KeyError:
+        from styles.names import plain as name_style
+
+    try:
+        output_backend = kwargs['output_backend']
+    except KeyError:
+        from backends import latex as output_backend
+
+    abbreviate_names = kwargs.get('abbreviate_names', True)
 
     bib_filename = path.extsep.join([aux_data.data, bib_format.file_extension])
     bib_data = bib_format.Parser(bib_encoding).parse_file(bib_filename)
