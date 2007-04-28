@@ -29,12 +29,14 @@ def main():
     opt_parser = optparse.OptionParser(prog='pybtex', usage='%prog auxfile[.aux] [options]', version='%%prog-%s' % __version__)
     opt_parser.add_option('-f', '--bibliography-format', dest='bib_format')
     opt_parser.add_option('-b', '--output-backend', dest='output_backend')
+    opt_parser.add_option('-e', '--engine', dest='engine')
     opt_parser.add_option('--label-style', dest='label_style')
     opt_parser.add_option('--name-style', dest='name_style')
     opt_parser.add_option('--abbreviate-names', action='store_true', dest='abbreviate_names')
     encoding = opt_parser.add_option_group('encoding options')
     encoding.add_option('--bibtex-encoding', dest='bib_encoding')
     encoding.add_option('--latex-encoding', dest='latex_encoding')
+    opt_parser.set_defaults(engine='bibtex')
 
     (options, args) = opt_parser.parse_args()
 
@@ -62,7 +64,14 @@ def main():
         if value:
             kwargs[option] = getattr(options, option)
 
-    make_bibliography(filename, **kwargs)
+    if options.engine == 'bibtex':
+        from pybtex import bibtex as engine
+    elif options.engine == 'pybtex':
+        import pybtex as engine
+    else:
+        opt_parser.error('unknown engine %s' % options.engine)
+
+    engine.make_bibliography(filename, **kwargs)
 
 if __name__ == '__main__':
     main()

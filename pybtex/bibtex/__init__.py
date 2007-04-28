@@ -26,24 +26,16 @@ from interpreter import Interpreter
 from pybtex import auxfile
 from pybtex.bibtex.kpathsea import kpsewhich
 
-class BibTeX:
-    def __init__(self):
-        self.interpreter = Interpreter()
-    def run(self, aux_filename):
-        aux_data = auxfile.parse_file(aux_filename)
-        bst_filename = kpsewhich(aux_data.style + path.extsep + 'bst')
-        bst_script = bst.parse_file(bst_filename)
-        base_filename = path.splitext(aux_filename)[0]
-        bbl_filename = base_filename + path.extsep + 'bbl'
-        bib_filename = base_filename + path.extsep + 'bib'
-        self.interpreter.run(bst_script, aux_data.citations, bib_filename, bbl_filename)
 
-
-if __name__ == '__main__':
-    import sys
-    aux_filename = path.splitext(sys.argv[1])[0] + path.extsep + 'aux'
-    b = BibTeX()
-    b.run(aux_filename)
-
-
-
+def make_bibliography(aux_filename,
+        bib_format=None,
+        bib_encoding=None,
+        latex_encoding=None,
+        **kwargs):
+    aux_data = auxfile.parse_file(aux_filename)
+    bst_filename = kpsewhich(aux_data.style + path.extsep + 'bst')
+    bst_script = bst.parse_file(bst_filename)
+    base_filename = path.splitext(aux_filename)[0]
+    bbl_filename = base_filename + path.extsep + 'bbl'
+    bib_filename = base_filename + path.extsep + 'bib'
+    Interpreter().run(bst_script, aux_data.citations, bib_filename, bbl_filename)
