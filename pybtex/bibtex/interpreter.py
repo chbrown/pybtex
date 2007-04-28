@@ -90,6 +90,8 @@ class MissingField(str):
         return self
     def __repr__(self):
         return 'MISSING<%s>' % self.name
+    def __nonzero__(self):
+        return False
 
 
 class Field(object):
@@ -102,15 +104,9 @@ class Field(object):
 
     def value(self):
         try:
-            value = self.interpreter.current_entry.fields[self.name]
-
-            #FIXME that's because of (ugly) defaultdict never failing
-            if not value:
-                value = MissingField(self.name)
-            return value
-
+            return self.interpreter.current_entry.fields[self.name]
         except KeyError:
-            return MissingField
+            return MissingField(self.name)
 
 
 class Identifier(Variable):

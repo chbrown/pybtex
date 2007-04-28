@@ -21,8 +21,6 @@
 """
 
 import re
-import utils
-from richtext import Phrase, Symbol
 
 class FormattedEntry:
     """Formatted bibliography entry. Consists of
@@ -42,11 +40,7 @@ class Entry:
     """
     def __init__(self, type_, fields = {}, persons = {}):
         self.type = type_
-
-        #FIXME: after migration to the new template languate
-        #defaultdict should be removed
-        self.fields = utils.defaultdict(fields)
-        
+        self.fields = dict(fields)
         self.persons = dict(persons)
 
         # for BibTeX interpreter
