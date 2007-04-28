@@ -20,7 +20,7 @@
 """convert bibliography database from one format to another
 """
 from os import path
-from pybtex import find_plugin
+from pybtex.plugin import find_plugin
 
 class ConvertError(Exception):
     pass
