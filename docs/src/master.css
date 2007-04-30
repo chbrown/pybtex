@@ -43,6 +43,10 @@ h1.title {
 	font-size: 800%;
 }
 
+h1 .tail {
+        font-size: 50%;
+}
+
 h1 {
 	margin-top: 0px;
         margin-bottom: 0.2em;

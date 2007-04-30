@@ -24,6 +24,7 @@ from docutils.core import publish_parts
 from docutils.writers import html4css1
 
 from jinja import Environment, FileSystemLoader
+from jinja.filters import stringfilter
 
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
@@ -55,6 +56,27 @@ pygments_directive.arguments = (1, 0, 1)
 pygments_directive.content = 1
 directives.register_directive('sourcecode', pygments_directive)
 
+
+@stringfilter
+def mark_tail(phrase, keyword, pattern = '%s<span class="tail"> %s</span>'):
+    """Finds and highlights a 'tail' in the sentense.
+
+    A tail consists of several lowercase words and a keyword.
+
+    >>> print mark_tail('Pybtex', 'The Manual of Pybtex')
+    The Manual<span class="tail"> of Pybtex</span>
+
+    Look at the generated documentation for further explanation.
+    """
+
+    words = phrase.split()
+    if words[-1] == keyword:
+        pos = -[not word.islower() for word in reversed(words[:-1])].index(True) - 1
+        return pattern % (' '.join(words[:pos]), ' '.join(words[pos:]))
+    else:
+        return phrase
+
+e.filters['mark_tail'] = mark_tail
 
 def create_translator(link_style):
     class Translator(html4css1.HTMLTranslator):

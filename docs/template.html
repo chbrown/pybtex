@@ -12,7 +12,7 @@
 {% if file_id == 'index' %}
         <h1 class="title">{{ title }}</h1>
 {% else %}
-        <h1>{{ title }}</h1>
+        <h1>{{ title|mark_tail("Pybtex") }}</h1>
 {% endif %}
 {% if file_id != 'index' and toc %}
         <div id="toc">

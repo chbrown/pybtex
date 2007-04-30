@@ -1,6 +1,6 @@
-===============
-Pybtex Features
-===============
+======================
+The Features of Pybtex
+======================
 
 Bibliography formats
 ====================
