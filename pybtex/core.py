@@ -33,14 +33,23 @@ class FormattedEntry:
         self.text = text
         self.label = label
 
-class Entry:
+class Entry(object):
     """Bibliography entry. Important members are:
     - persons (a dict of Person objects)
     - fields (all dict of string)
     """
+
+    class FieldDict(dict):
+        def __init__(self, parent, *args, **kwargw):
+            self.parent = parent
+            dict.__init__(self, *args, **kwargw)
+        def __missing__(self, key):
+            persons = self.parent.persons[key]
+            return ' and '.join(unicode(person) for person in persons)
+
     def __init__(self, type_, fields = {}, persons = {}):
         self.type = type_
-        self.fields = dict(fields)
+        self.fields = self.FieldDict(self, fields)
         self.persons = dict(persons)
 
         # for BibTeX interpreter
@@ -125,6 +134,14 @@ class Person:
                 else:
                     self._last.append(part)
             process_first_middle(first_middle)
+
+    def __unicode__(self):
+        return ('%s %s, %s, %s %s' %
+                (self.get_part_as_text('prelast'),
+                self.get_part_as_text('last'),
+                self.get_part_as_text('lineage'),
+                self.get_part_as_text('first'),
+                self.get_part_as_text('middle')))
 
     def get_part_as_text(self, type):
         names = getattr(self, '_' + type)
