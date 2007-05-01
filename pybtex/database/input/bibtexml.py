@@ -36,9 +36,9 @@ def remove_ns(s):
         return s[len(bibtexns):]
 
 class Parser(ParserBase):
-    def parse_file(self, file):
+    def parse_file(self, filename, **kwargs):
         data = BibliographyData()
-        t = ET.parse(file)
+        t = ET.parse(filename)
         entries = t.findall(bibtexns + 'entry')
         data.entries.update(self.process_entry(entry) for entry in entries)
         return data

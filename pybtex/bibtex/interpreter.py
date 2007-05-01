@@ -18,7 +18,7 @@
 # USA
 
 from builtins import builtins
-from pybtex.database.input import bibtex
+#from pybtex.database.input import bibtex
 
 
 class BibTeXError(Exception):
@@ -150,7 +150,8 @@ class FunctionLiteral(Function):
 
 
 class Interpreter(object):
-    def __init__(self):
+    def __init__(self, bib_format):
+        self.bib_format = bib_format
         self.stack = []
         self.vars = dict(builtins)
         #FIXME is 10000 OK?
@@ -239,7 +240,7 @@ class Interpreter(object):
 
     def command_read(self):
 #        print 'READ'
-        p = bibtex.Parser()
+        p = self.bib_format.Parser()
         self.bib_data = p.parse_file(filename=self.bib_file, macros=self.macros, person_fields=[])
 #        for k, v in self.bib_data.iteritems():
 #            print k

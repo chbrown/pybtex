@@ -25,7 +25,7 @@ from pybtex.database import BibliographyData
 file_extension = 'yaml'
 
 class Parser(ParserBase):
-    def parse_file(self, filename):
+    def parse_file(self, filename, macros={}, **kwargs):
         f = open(filename)
         t = yaml.safe_load(f)
 
