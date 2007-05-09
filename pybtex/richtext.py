@@ -17,31 +17,34 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-"""rich text formatting and more
+r"""(simple but) rich text formatting tools
+
+Usage:
+>>> from pybtex.backends import latex
+>>> backend = latex.Writer()
+>>> t = Text('This ', 'is a ', Tag('emph', 'very'), Text(' rich', ' text.'))
+>>> print t.render(backend)
+This is a \emph{very} rich text.
+
+>>> t = Text('Some ', Tag('emph', Text('nested ', Tag('texttt', 'Text', Text(' objects')))), '.')
+>>> print t.render(backend)
+Some \emph{nested \texttt{Text objects}}.
 """
 
-import utils
-
 class Text(list):
-    """Rich text is basically a list of
-    - strings
+    """
+    Rich text is basically a list of
+    - plain strings
     - Tag objects
-    - Symbol object
-    Text is used as an internal formatting language of pybtex,
+    - other Text objects
+    Text is used as an internal formatting language of Pybtex,
     being rendered to to HTML or LaTeX markup or whatever in the end.
     """
 
-    def __init__(self, *args, **kwargs):
-        """All the non-keyword arguments form the content of the Text object.
-        E. g. Text('This ', 'is a', Tag('emph', 'very'), Text(' rich', ' text.')
-        Note the spaces. After rendering you will probably get something like
-        "This is a \emph{very} rich text". Isn't that simple? =)
-        """
+    def __init__(self, *parts):
+        r"""Create a Text consisting one or more parts."""
 
-        list.__init__(self)
-
-        for i in args:
-            self.append(i)
+        list.__init__(self, parts)
 
     def append(self, item):
         """Appends some text or something.
@@ -69,171 +72,46 @@ class Text(list):
                 text.append(item.render(backend))
         return "".join(text)
 
-    def format(self, data):
-        """This function allows using Text objects as template nodes
-        """
-        return self
+    def enumerate(self):
+        for n, child in enumerate(self):
+            try:
+                for p in child.enumerate():
+                    yield p
+            except AttributeError:
+                yield self, n
 
-    def is_terminated(self):
-        """Return true if the text ends with period or something.
-        """
-        try:
-            item = self[-1]
-        except IndexError:
-            return False
-        try:
-            return item.is_terminated()
-        except AttributeError:
-            return utils.is_terminated(item)
+    def reversed(self):
+        for n, child in reversed(self):
+            try:
+                for p in child.reversed():
+                    yield p
+            except AttributeError:
+                yield self, n
 
-    def add_period(self):
-        """Add period if possible
-        """
-        if not self.is_terminated():
-            self.append('.')
-        return self
-
-class Tag(object):
+class Tag(Text):
     """A tag is somethins like <foo>some text</foo> in HTML
     or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
     'some text' is tag's text.
     """
-    def __init__(self, text, name):
+    def __init__(self, name, *args):
         self.name = name
-        self.text = text
-    def is_terminated(self):
-        return utils.is_terminated(self.text)
+        Text.__init__(self, *args)
     def render(self, backend):
-        try:
-            text = self.text.render(backend)
-        except AttributeError:
-            text = self.text
+        text = super(Tag, self).render(backend)
         return backend.format_tag(self.name, text)
-    def add_period(self):
-        return Text(self).add_period()
-    def format(self, entry):
-        try:
-            self.text = self.text.format(entry)
-        except:
-            pass
-        return self
-
-
-class Symbol(Text):
-    """A symbol is used to represent some special characters.
-    Example: Symbol('ndash') produces '&ndash;' when rendered to HTML
-    and '--' when rendered to LaTeX.
-    """
-    def __init__(self, name):
-        self.name = name
-    def render(self, backend):
-        return backend.symbols[self.name]
-
-
-class Phrase(Text):
-    """Phrase is a helper class for easy construction of phrases.
-    Examples:
-        Phrase('One', 'two', 'three', add_period=True) -> 'One, two, three.'
-        Phrase('Her', 'me', sep2=' and ') -> 'Her and me'
-    More complex example:
-        p = Phrase(sep2=' and ', last_sep=', and ', add_period=True)
-        p.append('Her')               # "Her."
-        p.append('her parents')       # "Her and her parents."
-        p.append('her little sister') # "Her, her parents, and her little sister."
-        p.append('me')                # "Her, her parents, her little sister, and me."
-    """
-    def __init__(self, *args, **kwargs):
-        """Construct a phrase from all non-keyword arguments.
-        Available keyword arguments are:
-        - sep (default separator);
-        - last_sep (separatos used before the last part of the phrase), defaults to sep;
-        - sep2 (separator used if a phrase consists of exactly two parts), defaults to last_sep;
-        - add_period (add a period at the end of phrase if there is none yet)
-        - add_periods (add a period to every part of the phrase)
-        """
-
-        self.sep = kwargs.get('sep', ', ')
-        self.last_sep = kwargs.get('last_sep', self.sep)
-        self.sep2 = kwargs.get('sep2', self.last_sep)
-        self.period = kwargs.get('add_period', False)
-        self.periods = kwargs.get('add_periods', False)
-        self.sep_after = None
-        self.parts = []
-
-        self.need_rebuild = True
-        
-        if kwargs.get('check', False) and (False in (bool(arg) for arg in args)):
-            args = []
-
-        for text in args:
-            self.append(text)
-
-    def append(self, text, sep_before=None, sep_after=None):
-        if text:
-            if self.periods:
-                text = utils.add_period(text)
-
-            if self.sep_after is not None:
-                sep_before = self.sep_after
-                self.sep_after = None
-            if sep_after is not None:
-                self.sep_after = sep_after
-
-            self.need_rebuild = True
-            self.parts.append((text, sep_before))
-
-    def add_period(self):
-        return Text(self).add_period()
-    
-    def _rebuild(self):
-        """Create a Text representation of the phrase
-        """
-        if not self.need_rebuild:
-            return
-        def output_part(part, sep):
-            if part[1] is not None:
-                sep = part[1]
-            if sep:
-                result.append(sep)
-            result.append(part[0])
-
-        if not self.parts:
-            result = Text()
-        elif len(self.parts) == 1:
-            result = Text(self.parts[0][0])
-        elif len(self.parts) == 2:
-            sep = self.parts[1][1]
-            if sep is None:
-                sep = self.sep2
-            result = Text(self.parts[0][0], sep, self.parts[1][0])
-        else:
-            result = Text()
-            output_part(self.parts[0], sep='')
-            for part in self.parts[1:-1]:
-                output_part(part, self.sep)
-            output_part(self.parts[-1], self.last_sep)
-        if self.period:
-            result.add_period()
-        self[:] = result
-
-    def __repr__(self):
-        return self[:].__repr__()
-
-    def _rebuild_and_do(f):
-        def my_f(self, *args, **kwargs):
-            self._rebuild()
-            return f(self, *args, **kwargs)
-        return my_f
-
-    __len__ = _rebuild_and_do(Text.__len__)
-    __getitem__ = _rebuild_and_do(Text.__getitem__)
-    __getslice__ = _rebuild_and_do(Text.__getslice__)
-    __iter__ = _rebuild_and_do(Text.__iter__)
-
 
 def main():
-    p = Phrase(Phrase('first'), 'second', add_periods=True)
-    print p
+    from backends import latex
+    backend = latex.Writer()
+    text = Text('foo', ' bar ', Tag('emph', 'some other words'))
+    text.append(' 42')
+    text.append(' football')
+    print text.render(backend)
+    for l, i in text.enumerate():
+        l[i] = l[i].upper()
+    print text.render(backend)
+
+
 
 if __name__ == '__main__':
     main()
