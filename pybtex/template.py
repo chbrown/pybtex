@@ -1,4 +1,4 @@
-# Copyright 2006 Andrey Golovizin
+#: Copyright 2006 Andrey Golovizin
 #
 # This file is part of pybtex.
 #
@@ -19,14 +19,42 @@
 
 """template micro-language
 
->>> class entry:
-...     fields = {'title': 'Some Title', 'author': 'Some Author'}
->>> template = AddPeriod(Phrase(Field('author'), Text('Lopata')))
->>> print template.format(entry())
-['Some Author', ', ', 'Lopata', '.']
+>>> from pybtex.backends import latex
+>>> backend = latex.Writer()
+>>> class Entry:
+...     fields = {'title': 'The Book of Pybtex', 'author': 'Ero-sennin'}
+>>> e = Entry()
+>>> template = join(' ') [
+...     field('title'),
+...     ['by', field('author')],
+...     '--',
+...     (str(i) for i in range(10))
+... ]
+>>> print template.format(e).render(backend)
+The Book of Pybtex by Ero-sennin -- 0 1 2 3 4 5 6 7 8 9
+
+>>> template = join ['Abra', 'kadabra', '!!!']
+>>> print template.format(e).render(backend)
+Abrakadabra!!!
+
+>>> template = phrase ['one', 'two']
+>>> print template.format(e).render(backend)
+one, two
+
+>>> template = phrase (sep2 = ' and ', last_sep = ' ,and ') ['one', 'two']
+>>> print template.format(e).render(backend)
+one and two
+
+>>> template = phrase (sep2 = ' and ', last_sep = ', and ') [
+... 'one',
+... 'two',
+... 'three',
+... 'four']
+>>> print template.format(e).render(backend)
+one, two, three, and four
 """
 
-from richtext import Text
+from pybtex.richtext import Text
 
 class TextElementMissing(Exception):
     def __init__(self, errors = []):
@@ -56,17 +84,6 @@ class AddPeriod(TextNode):
     def format(self, entry):
         return self.data.format(entry).add_period()
 
-class Field(TextNode):
-    def format(self, entry):
-        try:
-            return Text(entry.fields[self.data])
-        except KeyError:
-            raise FieldMissing(errors=['%s field missing' % self.data])
-
-#class String(TextNode):
-#    def format(self, entry):
-#        return self.data
-
 class Required(TextNode):
     def format(self, entry):
         try:
@@ -80,41 +97,6 @@ class Core(TextNode):
             return self.data.format(entry)
         except TextElementMissing, s:
             raise CoreElementMissing(s.errors)
-
-class TextNodeList(TextNode):
-    def __init__(self, *items):
-        self._list = []
-        self._list += items
-    def __repr__(self):
-        return self._list.__repr__()
-    def append(self, item):
-        self._list.append(item)
-    def extend(self, items):
-        self._list.extend(items)
-
-class ComplexTemplate(TextNodeList):
-    def __add__(self, other):
-        self.append(other)
-        return self
-
-    def format(self, entry):
-        result = Text()
-        for i in self._list:
-            try:
-                result.append(i.format(entry))
-            except OptionalElementMissing:
-                continue
-        if result:
-            return result
-        else:
-            raise OptionalElementMissing
-
-class Group(TextNodeList):
-    def format(self, entry):
-        try:
-            return Text(*[i.format(entry) for i in self._list])
-        except CoreElementMissing:
-            return ''
 
 class Or(TextNodeList):
     def __or__(self, other):
@@ -133,85 +115,131 @@ class Or(TextNodeList):
         # no valid elements found
         raise OptionalElementMissing(errors)
         
+def flatten(l):
+    """Flat iterator over nested lists. Also wrap strings into quote objects.
 
-class Phrase(TextNodeList):
-    """Phrase is a helper class for easy construction of phrases.
-    Examples:
-        Phrase('One', 'two', 'three', add_period=True) -> 'One, two, three.'
-        Phrase('Her', 'me', sep2=' and ') -> 'Her and me'
-    More complex example:
-        p = Phrase(sep2=' and ', last_sep=', and ', add_period=True)
-        p.append('Her')               # "Her."
-        p.append('her parents')       # "Her and her parents."
-        p.append('her little sister') # "Her, her parents, and her little sister."
-        p.append('me')                # "Her, her parents, her little sister, and me."
+    >>> [i for i in flatten([1, (2, 3, [4, 5])])]
+    [1, 2, 3, 4, 5]
+    
+    >>> for i in flatten([['here we', 'have'], ['some', 'words']]):
+    ...     print i.format(None)
+    here we
+    have
+    some
+    words
     """
+    if isinstance(l, (TemplateElement, TemplateElementProto)):
+        yield l
+    elif isinstance(l, basestring):
+        yield quote(l)
+    else:
+        try:
+            for i in l:
+                for tmp in flatten(i):
+                    yield tmp
+        except TypeError:
+            yield l
 
-    def __init__(self, *args, **kwargs):
-        """Construct a phrase from all non-keyword arguments.
-        Available keyword arguments are:
-        - sep (default separator);
-        - last_sep (separatos used before the last part of the phrase), defaults to sep;
-        - sep2 (separator used if a phrase consists of exactly two parts), defaults to last_sep;
-        - add_period (add a period at the end of phrase if there is none yet)
-        - add_periods (add a period to every part of the phrase)
-        """
+class TemplateElementProto(object):
+    def __init__(self, f):
+        self.f = f
+    def __call__(self, *args, **kwargs):
+        return TemplateElement(self.f)(*args, **kwargs)
+    def __getitem__(self, children):
+        return TemplateElement(self.f)[children]
 
-        TextNodeList.__init__(self)
-
-        self.sep = kwargs.get('sep', ', ')
-        self.last_sep = kwargs.get('last_sep', self.sep)
-        self.sep2 = kwargs.get('sep2', self.last_sep)
-#        self.period = kwargs.get('add_period', False)
-        self.periods = kwargs.get('add_periods', False)
-        self.sep_after = None
-        
-        for text in args:
-            self.append(text)
-
-    def append(self, text, sep_before=None, sep_after=None):
-        if text:
-            if self.sep_after is not None:
-                sep_before = self.sep_after
-                self.sep_after = None
-            if sep_after is not None:
-                self.sep_after = sep_after
-
-            if self.periods:
-                text = AddPeriod(text)
-            self._list.append((text, sep_before))
-
+class TemplateElement(object):
+    def __init__(self, f):
+        self.formatter = f
+        self.children = []
+        self.args = []
+        self.kwargs = {}
+    def __call__(self, *args, **kwargs):
+        self.args.extend(args)
+        self.kwargs.update(kwargs)
+        return self
+    def __getitem__(self, children):
+        self.children.extend(flatten(children))
+        return self
     def format(self, entry):
-        """Create a Text representation of the phrase
-        """
-        def output_part(part, sep):
-            if part[1] is not None:
-                sep = part[1]
-            if sep:
-                result.append(sep)
-            result.append(part[0].format(entry))
+        formatted_children = [child.format(entry) for child in self.children]
+        return self.formatter(entry, formatted_children, *self.args, **self.kwargs)
 
-        if not self._list:
-            result = Text()
-        elif len(self._list) == 1:
-            result = Text(self._list[0][0].format(entry))
-        elif len(self._list) == 2:
-            sep = self._list[1][1]
-            if sep is None:
-                sep = self.sep2
-            result = Text(self._list[0][0].format(entry), sep, self._list[1][0].format(entry))
-        else:
-            result = Text()
-            output_part(self._list[0], sep='')
-            for part in self._list[1:-1]:
-                output_part(part, self.sep)
-            output_part(self._list[-1], self.last_sep)
+def template(f):
+    return TemplateElementProto(f)
 
+@template
+def quote(entry, children, s):
+    """do nothing and return unmodified output"""
+    return s
+
+@template
+def field(entry, children, name):
+    return entry.fields[name]
+
+@template
+def join(entry, children, sep=''):
+    if children:
+        result = Text(children[0])
+        for child in children[1:]:
+            result.append(sep)
+            result.append(child)
+        return result
+    else:
+        return Text()
+
+@template
+def phrase(entry, children, sep=', ', last_sep=None, sep2=None):
+    if last_sep is None:
+        last_sep = sep
+    if sep2 is None:
+        sep2 = last_sep
+
+#    children = [child.format(entry) for child in children]
+    if not children:
+        return Text()
+    elif len(children) == 1:
+        return Text(children[0])
+    elif len(children) == 2:
+        return Text(children[0], sep2, children[1])
+    else:
+        result = Text()
+        for child in children[:-2]:
+            result.append(child)
+            result.append(sep)
+        result.append(children[-2])
+        result.append(last_sep)
+        result.append(children[-1])
         return result
 
-def _test():
-    import doctest
-    doctest.testmod()
+#        def output_part(part, sep):
+#            if part[1] is not None:
+#                sep = part[1]
+#            if sep:
+#                result.append(sep)
+#            result.append(part[0].format(entry))
+
+#        if not self._list:
+#            result = Text()
+#        elif len(self._list) == 1:
+#            result = Text(self._list[0][0].format(entry))
+#        elif len(self._list) == 2:
+#            sep = self._list[1][1]
+#            if sep is None:
+#                sep = self.sep2
+#            result = Text(self._list[0][0].format(entry), sep, self._list[1][0].format(entry))
+#        else:
+#            result = Text()
+#            output_part(self._list[0], sep='')
+#            for part in self._list[1:-1]:
+#                output_part(part, self.sep)
+#            output_part(self._list[-1], self.last_sep)
+
+#        return result
 
 if __name__ == "__main__":
-    _test()
+    class Entry(object):
+        fields = {'title': 'The Book of Pybtex', 'author': 'Densetsu no Ero-sennin'}
+    e = Entry()
+    template = join(' ') [field('title'), ['lopata'], (str(i) for i in range(10))]
+    print template.format(e)
