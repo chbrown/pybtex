@@ -29,7 +29,7 @@ For detailed description of the BibTeX format please refer to the
 BibTeXML
 --------
 
-BibTeXML format attempts to combine the simplicity of BibTeX format with the
+`BibTeXML <http://bibtexml.sourceforge.net>`_ format attempts to combine the simplicity of BibTeX format with the
 power of XML. Here is like the above BibTeX bibliography entry wolud look like:
 
 .. sourcecode:: xml
@@ -43,8 +43,8 @@ power of XML. Here is like the above BibTeX bibliography entry wolud look like:
     <bibtex:author>
             <bibtex:person>
                 <bibtex:first>William</bibtex:first>
-                <bibtex:lineage>Jr.</bibtex:lineage>
                 <bibtex:last>Strunk</bibtex:last>
+                <bibtex:lineage>Jr.</bibtex:lineage>
             </bibtex:person>
             <bibtex:person>
                 <bibtex:first>E.</bibtex:first>
@@ -55,25 +55,29 @@ power of XML. Here is like the above BibTeX bibliography entry wolud look like:
     </bibtex:book>
     </bibtex:entry>
 
-See `the official BibTeXML site <http://bibtexml.sourceforge.net>`_ for more details.
-
 YAML
 ----
 
-We choosed to create our own format to use with Pybtex. It is quite similar to BibTeXML
-but based on YAML and therefore much less verbose.
+We choosed to create our own format to use with Pybtex. It is quite similar to
+`BibTeXML <http://bibtexml.sourceforge.net>`_
+but based on `YAML <http://yaml.org>`_ instead of XML and therefore
+is much less verbose.
 
 .. sourcecode:: yaml
+
     strunk-and-white:
         type: book
-        author: Strunk, Jr., William and E. B. White
+        author:
+            - first: William
+              last: Strunk
+              lineage: Jr.
+            - first: E.
+              middle: B.
+              last: White
         title: The Elements of Style
         publisher: Macmillan
         edition: Third
         year: 1979
-    }
-
-See `<http://yaml.org>`_ for more details.
 
 Output formats
 ==============
