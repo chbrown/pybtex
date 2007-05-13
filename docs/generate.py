@@ -190,7 +190,9 @@ def run(dst, mode, sources=(), handle_file=handle_file):
             f.close()
 
 
-def main(mode, dst='html', *sources):
+def main(mode, dst=None, *sources):
+    if dst is None:
+        dst = os.path.join(os.path.dirname(__file__), 'html')
     run(os.path.realpath(dst), mode, sources)
     if mode == 'site':
         os.system('rsync -rv --delete %s ero-sennin@shell.sourceforge.net:/home/groups/p/py/pybtex/htdocs'
