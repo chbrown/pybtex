@@ -48,7 +48,7 @@ setup(name=progname,
 written in Python. Please note that the correct spelling is just pybtex, without
 that TeX-like camel-casing, which we considered too boring to type.''',
     author='Andrey Golovizin',
-    author_email='golovizin@gorodok.net',
+    author_email='golovizin@gmail.com',
     url='http://pybtex.sourceforge.net/',
     download_url='http://sourceforge.net/project/showfiles.php?group_id=151578',
     license='GPL-2',
