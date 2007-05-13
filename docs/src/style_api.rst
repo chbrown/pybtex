@@ -3,7 +3,7 @@ The Style API of Pybtex
 =======================
 
 Well, to tell the truth, the style API is still undergoing heavy development
-and not ready for production use.
+and is far from being finished yet.
 
 Here is what it looks like.
 
@@ -14,8 +14,8 @@ BibTeX users probably know that it has a simple stack oriented language
 for defining bibliography styles. That is what is placed inside of ``.bst`` files.
 For a Pythonic bibliography processor it is natural to use Python for writing styles.
 Pybtex style file is just a Python module containing several functions with names
-like ``format_article``, ``format_book``, etc. Every function takes a bibliography entry
-as an argument and returns a formatted text and returns a formatted bibliography entry:
+like ``format_article``, ``format_book``, etc. Every function takes a bibliography
+entry as an argument and returns a formatted bibliography entry:
 
 .. sourcecode:: python
 
@@ -26,7 +26,7 @@ To make things easier we designed a simple template language:
 
 .. sourcecode:: python
 
-    from pybtex.template import field, join
+    from pybtex.template import field, join, optional
 
     def format_article(entry):
         template = join (' ') [
