@@ -65,6 +65,10 @@ that TeX-like camel-casing, which we considered too annoying to type.""",
         'Topic :: Text Processing :: Markup :: XML'
     ],
     packages=find_packages(),
+    setup_requires = [
+        'pyparsing>=1.4',
+        'PyYAML>=3.01'
+    ],
     scripts=[os.path.join('scripts', progname), os.path.join('scripts', progname + "-convert")],
     cmdclass={'sdist' : Sdist}
     )
