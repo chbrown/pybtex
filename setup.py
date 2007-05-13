@@ -22,25 +22,11 @@
 import sys
 import os
 from glob import glob1
-from distutils.core import setup
-from distutils.command.install_data import install_data
+from setuptools import setup, find_packages
 from distutils.command.sdist import sdist
-from distutils.dep_util import newer
-from distutils.log import info
 
 progname = 'pybtex'
 from pybtex import __version__ as version
-
-def list_modules():
-    modules = []
-    def add(art, dirname, filenames):
-        dirs = dirname.split(os.path.sep)
-        if '.svn' in dirs:
-            return
-        module = '.'.join(dirs)
-        modules.append(module)
-    os.path.walk(progname, add, None)
-    return modules
 
 class Sdist(sdist):
     def run(self):
@@ -49,65 +35,36 @@ class Sdist(sdist):
         bibtex = os.path.join('examples', 'foo.bibtex')
         if not os.path.exists(bibtex) or newer(bibtex_yaml, bibtex):
             convert(bibtex_yaml, 'bibyaml', 'bibtex')
+
+        from docs import generate
+        generate.main('local')
+
         sdist.run(self)
 
-class InstallData(install_data):
-    def run(self):
-        # we don't usually have the tools to compile po files in win32
-        if sys.platform != 'win32':
-            self.data_files.extend(self._compile_po_files())
-
-        install_data.run(self)
-
-
-    def _compile_po_files(self):
-        data_files = []
-        for po in glob1('po', '*.po'):
-            lang = os.path.splitext(po)[0]
-            po = os.path.join('po', po)
-            mo = os.path.join('locale', lang,
-                              'LC_MESSAGES', '%s.mo' % progname)
-
-            if not os.path.exists(mo) or newer(po, mo):
-                directory = os.path.dirname(mo)
-                if not os.path.exists(directory):
-                    info("creating %s" % directory)
-                    os.makedirs(directory)
-                cmd = 'msgfmt -o %s %s' % (mo, po)
-                info('compiling %s -> %s' % (po, mo))
-                if os.system(cmd) != 0:
-                    raise SystemExit("Error while running msgfmt")
-            dest = os.path.dirname(os.path.join('share', mo))
-            data_files.append((dest, [mo]))
-
-        return data_files
-
-data_files=[]
 setup(name=progname,
     version=version,
     description='Bibtex-compatible bibliography processor in Python',
-    long_description='''Pybtex is just another bibliography processor.
-As the name suggests, pybtex is designed much after BibTeX and written
-in Python. Please note that the correct spelling is just pybtex, without
+    long_description='''Pybtex is a BibTeX-compatible bibliography processor
+written in Python. Please note that the correct spelling is just pybtex, without
 that TeX-like camel-casing, which we considered too boring to type.''',
     author='Andrey Golovizin',
     author_email='golovizin@gorodok.net',
     url='http://pybtex.sourceforge.net/',
+    download_url='http://sourceforge.net/project/showfiles.php?group_id=151578',
     license='GPL-2',
     platforms=['platform-independent'],
     classifiers=[
-        'License :: OSI-Approved Open Source :: GNU General Public License (GPL)',
-        'Intended Audience :: by End-User Class :: End Users/Desktop',
         'Development Status :: 3 - Alpha',
-        'Topic :: Formats and Protocols :: Data Formats :: TeX/LaTeX',
-        'Topic :: Formats and Protocols :: Data Formats :: XML',
-        'Topic :: Text Editors :: Text Processing',
+        'Environment :: Console',
+        'Intended Audience :: End Users/Desktop',
+        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Operating System :: Grouping and Descriptive Categories :: OS Independent',
-        'User Interface :: Textual :: Command-line'
+        'Topic :: Text Editors :: Text Processing',
+        'Topic :: Text Processing :: Markup :: LaTeX',
+        'Topic :: Text Processing :: Markup :: XML'
     ],
-    packages=list_modules(),
+    packages=find_packages(),
     scripts=[os.path.join('scripts', progname), os.path.join('scripts', progname + "-convert")],
-    data_files=data_files,
-    cmdclass={'install_data': InstallData, 'sdist' : Sdist}
+    cmdclass={'sdist' : Sdist}
     )

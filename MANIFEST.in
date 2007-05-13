@@ -1,4 +1,7 @@
-include examples/foo.bib examples/foo.bibtexml examples/foo.tex
+include examples/foo.bib examples/foo.bibtexml examples/foo.yaml examples/foo.tex
 include COPYING NEWS
 include langadmin.py
 recursive-include po *.po *.pot
+recursive-include docs/html *.html *.css
+recursive-include docs/src *.rst *.css
+recursive-include docs *.py
