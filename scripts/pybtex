@@ -21,12 +21,11 @@
 
 import sys
 import optparse
-from pybtex import __version__, make_bibliography
+from pybtex.__version__ import version
 from os import path
-from pybtex.plugin import find_plugin
 
 def main():
-    opt_parser = optparse.OptionParser(prog='pybtex', usage='%prog auxfile[.aux] [options]', version='%%prog-%s' % __version__)
+    opt_parser = optparse.OptionParser(prog='pybtex', usage='%prog auxfile[.aux] [options]', version='%%prog-%s' % version)
     opt_parser.add_option('-f', '--bibliography-format', dest='bib_format')
     opt_parser.add_option('-b', '--output-backend', dest='output_backend')
     opt_parser.add_option('-e', '--engine', dest='engine')
@@ -43,6 +42,9 @@ def main():
     if not args:
         opt_parser.print_help()
         sys.exit(1)
+
+    from pybtex import make_bibliography
+    from pybtex.plugin import find_plugin
 
     filename = args[0]
     ext = path.splitext(filename)[1]

@@ -21,11 +21,10 @@
 
 import sys
 import optparse
-from pybtex import __version__
-from pybtex.database.convert import convert, ConvertError
+from pybtex.__version__ import version
 
 def main():
-    opt_parser = optparse.OptionParser(prog='pybtex-convert', usage='%prog filename -f from_format -t to_format [options]', version='%%prog-%s' % __version__)
+    opt_parser = optparse.OptionParser(prog='pybtex-convert', usage='%prog filename -f from_format -t to_format [options]', version='%%prog-%s' % version)
     opt_parser.add_option('-f', '--from', action='store', type='string', dest='from_format')
     opt_parser.add_option('-t', '--to', action='store', type='string', dest='to_format')
     opt_parser.add_option('-o', '--output-filename', action='store', type='string', dest='output')
@@ -40,6 +39,8 @@ def main():
     if not args:
         opt_parser.print_help()
         sys.exit(1)
+
+    from pybtex.database.convert import convert, ConvertError
 
     if not options.from_format:
         opt_parser.error('source format not specified')

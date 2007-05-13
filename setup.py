@@ -26,7 +26,7 @@ from setuptools import setup, find_packages
 from distutils.command.sdist import sdist
 
 progname = 'pybtex'
-from pybtex import __version__ as version
+from pybtex.__version__ import version
 
 class Sdist(sdist):
     def run(self):

@@ -24,8 +24,6 @@ from os import path
 import auxfile
 from pybtex.plugin import find_plugin
 
-__version__ = "20060416"
-
 def make_bibliography(aux_filename,
         bib_format=None,
         bib_encoding=None,
