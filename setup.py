@@ -44,9 +44,9 @@ class Sdist(sdist):
 setup(name=progname,
     version=version,
     description='Bibtex-compatible bibliography processor in Python',
-    long_description='''Pybtex is a BibTeX-compatible bibliography processor
-written in Python. Please note that the correct spelling is just pybtex, without
-that TeX-like camel-casing, which we considered too boring to type.''',
+    long_description="""Pybtex is a BibTeX-compatible bibliography processor
+written in Python. Please note that the correct spelling is just Pybtex, without
+that TeX-like camel-casing, which we considered too annoying to type.""",
     author='Andrey Golovizin',
     author_email='golovizin@gmail.com',
     url='http://pybtex.sourceforge.net/',
