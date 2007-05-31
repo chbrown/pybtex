@@ -44,8 +44,8 @@ class Sdist(sdist):
 setup(name=progname,
     version=version,
     description='Bibtex-compatible bibliography processor in Python',
-    long_description="""Pybtex is a BibTeX-compatible bibliography processor
-written in Python. Please note that the correct spelling is just Pybtex, without
+    long_description="""Pybtex is a drop-in replacement for BibTeX
+written in Python. Please note that the correct spelling is just *Pybtex*, without
 that TeX-like camel-casing, which we considered too annoying to type.""",
     author='Andrey Golovizin',
     author_email='golovizin@gmail.com',
@@ -66,7 +66,7 @@ that TeX-like camel-casing, which we considered too annoying to type.""",
     ],
     packages=find_packages(),
     setup_requires = [
-        'pyparsing>=1.4',
+        'pyparsing>=1.4.5',
         'PyYAML>=3.01'
     ],
     scripts=[os.path.join('scripts', progname), os.path.join('scripts', progname + "-convert")],
