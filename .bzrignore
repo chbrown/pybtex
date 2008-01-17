@@ -10,3 +10,4 @@ dist
 *.e3s
 *.e3t
 MANIFEST
+docs/html
