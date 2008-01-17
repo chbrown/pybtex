@@ -18,7 +18,7 @@ Yes, it really is, most of the time.
 
 BibTeX styles work fine with Pybtex,
 although there are still some minor issues.
-Nevetherless, we are going to achieve 100% compatibility before releasing
+Nevertheless, we are going to achieve 100% compatibility before releasing
 version 1.0.
 
 If something does not work for you, just let us know.
