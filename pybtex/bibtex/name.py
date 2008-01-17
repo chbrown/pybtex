@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from pyparsing import *
 from pybtex.core import Person
 from pybtex.bibtex.utils import bibtex_len
