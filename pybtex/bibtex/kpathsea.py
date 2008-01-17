@@ -1,4 +1,3 @@
-
 # Copyright 2007 Andrey Golovizin
 #
 # This file is part of pybtex.
