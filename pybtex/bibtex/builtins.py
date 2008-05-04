@@ -317,4 +317,4 @@ def width(i):
 def write(i):
     #FIXME encodings
     s = i.pop()
-    i.output(s.encode('UTF-8'))
+    i.output(s)

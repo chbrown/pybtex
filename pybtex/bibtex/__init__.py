@@ -20,7 +20,9 @@
 """BibTeX unnamed stack language interpreter and related stuff
 """
 
+import codecs
 from os import path
+
 import bst
 from interpreter import Interpreter
 from pybtex import auxfile
@@ -40,4 +42,5 @@ def make_bibliography(aux_filename,
     base_filename = path.splitext(aux_filename)[0]
     bbl_filename = base_filename + path.extsep + 'bbl'
     bib_filename = base_filename + path.extsep + bib_format.file_extension
-    Interpreter(bib_format).run(bst_script, aux_data.citations, bib_filename, bbl_filename)
+    bbl_file = codecs.open(bbl_filename, 'w', encoding=latex_encoding)
+    Interpreter(bib_format).run(bst_script, aux_data.citations, bib_filename, bbl_file)

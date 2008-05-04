@@ -185,7 +185,7 @@ class Interpreter(object):
         self.bst_script = iter(bst_script)
         self.citations = citations
         self.bib_file = bib_file
-        self.output_file = open(bbl_file, 'w')
+        self.output_file = bbl_file
 
         for i in self.bst_script:
             commandname = 'command_' + i
