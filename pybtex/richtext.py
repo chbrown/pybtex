@@ -17,23 +17,44 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-from copy import deepcopy
-
-from pybtex import textutils
-
 r"""(simple but) rich text formatting tools
 
 Usage:
 >>> from pybtex.backends import latex
 >>> backend = latex.Writer()
->>> t = Text('This ', 'is a ', Tag('emph', 'very'), Text(' rich', ' text.'))
+>>> t = Text('this ', 'is a ', Tag('emph', 'very'), Text(' rich', ' text'))
+>>> print t.render(backend)
+this is a \emph{very} rich text
+>>> print t.plaintext()
+this is a very rich text
+>>> t.capfirst()
+>>> t.add_period()
 >>> print t.render(backend)
 This is a \emph{very} rich text.
+>>> print t.plaintext()
+This is a very rich text.
 
 >>> t = Text('Some ', Tag('emph', Text('nested ', Tag('texttt', 'Text', Text(' objects')))), '.')
 >>> print t.render(backend)
 Some \emph{nested \texttt{Text objects}}.
+>>> print t.plaintext()
+Some nested Text objects.
+>>> from string import upper, lower
+>>> t.apply(upper)
+>>> print t.render(backend)
+SOME \emph{NESTED \texttt{TEXT OBJECTS}}.
+>>> print t.plaintext()
+SOME NESTED TEXT OBJECTS.
+
+>>> t = Text(', ').join(['one', 'two', Tag('emph', 'three')])
+>>> print t.render(backend)
+one, two, \emph{three}
+>>> print t.plaintext()
+one, two, three
 """
+
+from copy import deepcopy
+from pybtex import textutils
 
 class Text(list):
     """
