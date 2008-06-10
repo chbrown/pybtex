@@ -2,6 +2,7 @@
 #vim:fileencoding=utf-8
 
 from pybtex.core import Entry
+from pybtex.richtext import Text
 
 class Proto(object):
     def __init__(self, *args, **kwargs):
@@ -83,10 +84,10 @@ def phrase(children, data, sep=', ', sep2=None, last_sep=None):
         last_sep = sep
     parts = [format_data(child, data) for child in children]
     if len(parts) <= 1:
-        return ''.join(parts)
+        return Text(*parts)
     elif len(parts) == 2:
-        return sep2.join(parts)
+        return Text(sep2).join(parts)
     else:
-        return sep.join(parts[:-1]) + last_sep + parts[-1]
+        return Text(last_sep).join([Text(sep).join(parts[:-1]), parts[-1]])
 
 text = phrase(sep='')
