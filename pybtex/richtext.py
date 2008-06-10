@@ -95,6 +95,10 @@ class Text(list):
         l, i = self.enumerate().next()
         l[i] = f(l[i])
 
+    def apply_to_end(self, f):
+        l, i = self.reversed().next()
+        l[i] = f(l[i])
+
     def join(self, parts):
         joined = Text()
         for part in parts[:-1]:
