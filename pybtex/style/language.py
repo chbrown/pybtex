@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 #vim:fileencoding=utf-8
 
-from pybtex.core import Entry
-from pybtex.richtext import Text
 
 class Proto(object):
     def __init__(self, *args, **kwargs):
@@ -65,13 +63,24 @@ class Node(object):
     def format_data(self, data):
         return self.f(self.children, data, *self.args, **self.kwargs)
 
-def format_data(node, data):
+
+def _format_data(node, data):
     try:
         f = node.format_data
     except AttributeError:
         return unicode(node)
     else:
         return f(data)
+
+def _format_list(list_, data):
+    return [_format_data(part, data) for part in list_]
+
+def _strip(list_):
+    def empty(part):
+        return not bool(part)
+    from itertools import dropwhile
+    tmp = list(dropwhile(empty, reversed(list_)))
+    return list(dropwhile(empty, reversed(tmp)))
 
 def node(f):
     return Proto(f.__name__, f)
@@ -82,7 +91,7 @@ def Phrase(children, data, sep='', sep2=None, last_sep=None):
         sep2 = sep
     if last_sep is None:
         last_sep = sep
-    parts = [format_data(child, data) for child in children]
+    parts = _strip(_format_list(children, data))
     if len(parts) <= 1:
         return Text(*parts)
     elif len(parts) == 2:
@@ -90,9 +99,45 @@ def Phrase(children, data, sep='', sep2=None, last_sep=None):
     else:
         return Text(last_sep).join([Text(sep).join(parts[:-1]), parts[-1]])
 
+List = Phrase(sep=', ')
+
 @node
-def Sentence(children, data):
-    text = phrase(sep=' ') [children].format_data(data)
+def Sentence(children, data, sep=' '):
+    text = Phrase(sep) [children].format_data(data)
     text.capfirst()
     text.add_period()
     return text
+
+class FieldIsMissing(Exception):
+    pass
+
+@node
+def Field(children, data, name):
+    assert not children
+    try:
+        field = data.fields[name]
+    except KeyError:
+        raise FieldIsMissing(name)
+    else:
+        return field
+
+@node
+def Optional(children, data):
+    try:
+        return Text(*_format_list(children, data))
+    except FieldIsMissing:
+        return None
+
+from pybtex.richtext import Text
+from pybtex.core import Entry, Person
+author = Person(first='First', last='Last', middle='Middle')
+fields = {
+        'title': 'The Book',
+        'year': '2000',
+}
+e = Entry('book', fields=fields)
+#e.add_person('author', author)
+book_format = Sentence [
+    List [Field('title'), Field('year'), Optional [Field('sdf')]]
+]
+print book_format.format_data(e).plaintext()
