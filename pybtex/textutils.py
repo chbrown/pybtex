@@ -23,7 +23,7 @@ terminators = '.?!'
 dash_re = re.compile(r'-')
 
 def capfirst(s):
-    return s[0].upper() + s[1:]
+    return s[0].upper() + s[1:] if s else s
 
 def is_terminated(s):
     """Return true if s ends with a terminating character.
