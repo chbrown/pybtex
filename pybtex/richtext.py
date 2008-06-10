@@ -19,6 +19,8 @@
 
 from copy import deepcopy
 
+from pybtex import textutils
+
 r"""(simple but) rich text formatting tools
 
 Usage:
@@ -80,7 +82,7 @@ class Text(list):
                 yield self, n
 
     def reversed(self):
-        for n, child in reversed(self):
+        for n, child in reversed(list(enumerate(self))):
             try:
                 for p in child.reversed():
                     yield p
@@ -109,6 +111,11 @@ class Text(list):
     def plaintext(self):
         return ''.join(l[i] for l, i in self.enumerate())
 
+    def capfirst(self):
+        self.apply_to_start(textutils.capfirst)
+
+    def add_period(self):
+        self.apply_to_end(textutils.add_period)
 
 class Tag(Text):
     """A tag is somethins like <foo>some text</foo> in HTML
@@ -132,6 +139,9 @@ def main():
     print text.render(backend)
     text.apply(string.upper)
     text.apply_to_start(string.lower)
+    print text.render(backend)
+    text.capfirst()
+    text.add_period()
     print text.render(backend)
     print Text(', ').join([Tag('b', 'a'), 'b']).render(backend)
 
