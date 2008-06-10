@@ -20,7 +20,7 @@
 import locale
 import codecs
 from pybtex.core import FormattedEntry
-from pybtex.richtext import Text, Symbol, Phrase
+from pybtex.richtext import Text
 
 def default_phrase(*args, **kwargs):
     kwargs['sep'] = Text(Symbol('newblock'), ' ')

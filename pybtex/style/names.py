@@ -20,14 +20,11 @@
 """name formatting styles
 """
 
-from pybtex.utils import abbreviate
-from pybtex.richtext import Phrase, Symbol
-
-def plain(person, abbr=False):
-    s = Phrase(sep=' ')
-    s.append(person.first(abbr))
-    s.append(person.middle(abbr), sep_before=Symbol('nbsp'))
-    s.append(person.prelast())
-    s.append(person.last())
-    s.append(person.lineage())
-    return s
+#def plain(person, abbr=False):
+#    s = Phrase(sep=' ')
+#    s.append(person.first(abbr))
+#    s.append(person.middle(abbr), sep_before=Symbol('nbsp'))
+#    s.append(person.prelast())
+#    s.append(person.last())
+#    s.append(person.lineage())
+#    return s

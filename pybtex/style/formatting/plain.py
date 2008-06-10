@@ -17,9 +17,9 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-from pybtex.utils import dashify
-from pybtex.richtext import Text, Phrase, Tag, Symbol
-from pybtex.styles.formatting import FormatterBase, default_phrase
+#from pybtex.utils import dashify
+#from pybtex.richtext import Text, Phrase, Tag, Symbol
+from pybtex.style.formatting import FormatterBase, default_phrase
 
 class Formatter(FormatterBase):
     def format_names(self, persons):
