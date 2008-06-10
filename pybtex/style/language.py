@@ -61,7 +61,8 @@ class Node(object):
         args_repr = ', '.join(repr(arg) for arg in self.args)
         if args_repr:
             params.append(args_repr)
-        kwargs_repr = ', '.join('%s=%s' % (key, repr(value)) for (key, value) in self.kwargs.items())
+        kwargs_repr = ', '.join('%s=%s' % (key, repr(value))
+                for (key, value) in self.kwargs.items())
         if kwargs_repr:
             params.append(kwargs_repr)
         if params:
@@ -70,7 +71,8 @@ class Node(object):
             params_repr = ''
 
         if self.children:
-            children_repr = ' [%s]' % ', '.join(repr(child) for child in self.children)
+            children_repr = ' [%s]' % ', '.join(repr(child)
+                    for child in self.children)
         else:
             children_repr = ''
 
