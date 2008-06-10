@@ -18,7 +18,6 @@
 # USA
 
 import re
-from pybtex.richtext import Symbol, Phrase
 
 terminators = '.?!'
 dash_re = re.compile(r'-')
@@ -66,10 +65,3 @@ def abbreviate(s):
         else:
             return part[1]
     return ''.join(abbr(part) for part in parts(s))
-
-def dashify(s):
-    """replace a dash wich Symbol('ndash')
-    """
-    p = Phrase(sep=Symbol('ndash'))
-    p.extend(dash_re.split(s))
-    return p
