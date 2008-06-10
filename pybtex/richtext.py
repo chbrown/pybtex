@@ -17,6 +17,8 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
+from copy import deepcopy
+
 r"""(simple but) rich text formatting tools
 
 Usage:
@@ -51,10 +53,7 @@ class Text(list):
         Empty strings and similar things are ignored.
         """
         if item:
-            if isinstance(item, Text):
-                self.extend(item)
-            else:
-                list.append(self, item)
+            list.append(self, item)
 
     def extend(self, list):
         for item in list:
@@ -88,6 +87,25 @@ class Text(list):
             except AttributeError:
                 yield self, n
 
+    def apply(self, f):
+        for l, i in self.enumerate():
+            l[i] = f(l[i])
+
+    def apply_to_start(self, f):
+        l, i = self.enumerate().next()
+        l[i] = f(l[i])
+
+    def join(self, parts):
+        joined = Text()
+        for part in parts[:-1]:
+            joined.extend([part, deepcopy(self)])
+        joined.append(parts[-1])
+        return joined
+
+    def plaintext(self):
+        return ''.join(l[i] for l, i in self.enumerate())
+
+
 class Tag(Text):
     """A tag is somethins like <foo>some text</foo> in HTML
     or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
@@ -101,15 +119,17 @@ class Tag(Text):
         return backend.format_tag(self.name, text)
 
 def main():
+    import string
     from backends import latex
     backend = latex.Writer()
     text = Text('foo', ' bar ', Tag('emph', 'some other words'))
     text.append(' 42')
     text.append(' football')
     print text.render(backend)
-    for l, i in text.enumerate():
-        l[i] = l[i].upper()
+    text.apply(string.upper)
+    text.apply_to_start(string.lower)
     print text.render(backend)
+    print Text(', ').join([Tag('b', 'a'), 'b']).render(backend)
 
 
 
