@@ -1,6 +1,21 @@
 #!/usr/bin/env python
 #vim:fileencoding=utf-8
 
+"""
+>>> from pybtex.core import Entry, Person
+>>> author = Person(first='First', last='Last', middle='Middle')
+>>> fields = {
+...         'title': 'The Book',
+...         'year': '2000',
+... }
+>>> e = Entry('book', fields=fields)
+>>> book_format = Sentence(sep=', ') [
+...     Field('title'), Field('year'), Optional [Field('sdf')]
+... ]
+>>> print book_format.format_data(e).plaintext()
+The Book, 2000.
+"""
+
 from pybtex.richtext import Text
 
 class Proto(object):
@@ -128,20 +143,3 @@ def Optional(children, data):
         return Text(*_format_list(children, data))
     except FieldIsMissing:
         return None
-
-def main():
-    from pybtex.core import Entry, Person
-    author = Person(first='First', last='Last', middle='Middle')
-    fields = {
-            'title': 'The Book',
-            'year': '2000',
-    }
-    e = Entry('book', fields=fields)
-    #e.add_person('author', author)
-    book_format = Sentence [
-        List [Field('title'), Field('year'), Optional [Field('sdf')]]
-    ]
-    print book_format.format_data(e).plaintext()
-
-if __name__ == '__main__':
-    main()
