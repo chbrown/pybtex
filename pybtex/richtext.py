@@ -67,7 +67,7 @@ class Text(list):
     """
 
     def __init__(self, *parts):
-        r"""Create a Text consisting one or more parts."""
+        r"""Create a Text consisting of one or more parts."""
 
         list.__init__(self, parts)
 
@@ -83,9 +83,8 @@ class Text(list):
             self.append(item)
 
     def render(self, backend):
-        """Return textual representation of the Text.
-        The representation is obviously backend-dependent.
-        """
+        """Return backend-dependent textual representation of this Text."""
+
         text = []
         for item in self:
             if isinstance(item, basestring):
@@ -111,18 +110,26 @@ class Text(list):
                 yield self, n
 
     def apply(self, f):
+        """Apply a function to each part of the text."""  
+
         for l, i in self.enumerate():
             l[i] = f(l[i])
 
     def apply_to_start(self, f):
+        """Apply a function to the last part of the text"""
+
         l, i = self.enumerate().next()
         l[i] = f(l[i])
 
     def apply_to_end(self, f):
+        """Apply a function to the last part of the text"""
+
         l, i = self.reversed().next()
         l[i] = f(l[i])
 
     def join(self, parts):
+        """Join a list using this text (like string.join)"""
+
         joined = Text()
         for part in parts[:-1]:
             joined.extend([part, deepcopy(self)])
@@ -133,9 +140,13 @@ class Text(list):
         return ''.join(l[i] for l, i in self.enumerate())
 
     def capfirst(self):
+        """Capitalize the first letter of the text"""
+
         self.apply_to_start(textutils.capfirst)
 
     def add_period(self):
+        """Add a period to the end of text, if necessary"""
+
         self.apply_to_end(textutils.add_period)
 
 class Tag(Text):
