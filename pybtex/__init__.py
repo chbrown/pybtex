@@ -23,11 +23,12 @@
 from os import path
 import auxfile
 from pybtex.plugin import find_plugin
+import locale
 
 def make_bibliography(aux_filename,
         bib_format=None,
-        bib_encoding=None,
-        latex_encoding=None,
+        bib_encoding=locale.getpreferredencoding(),
+        latex_encoding=locale.getpreferredencoding(),
         **kwargs
         ):
     """This functions extracts all nessessary information from .aux file

@@ -27,12 +27,13 @@ import bst
 from interpreter import Interpreter
 from pybtex import auxfile
 from pybtex.bibtex.kpathsea import kpsewhich
+import locale
 
 
 def make_bibliography(aux_filename,
         bib_format=None,
-        bib_encoding=None,
-        latex_encoding=None,
+        bib_encoding=locale.getpreferredencoding(),
+        latex_encoding=locale.getpreferredencoding(),
         **kwargs):
     if bib_format is None:
         from pybtex.database.input import bibtex as bib_format
