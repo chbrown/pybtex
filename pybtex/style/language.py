@@ -77,7 +77,7 @@ def node(f):
     return Proto(f.__name__, f)
 
 @node
-def phrase(children, data, sep=', ', sep2=None, last_sep=None):
+def Phrase(children, data, sep='', sep2=None, last_sep=None):
     if sep2 is None:
         sep2 = sep
     if last_sep is None:
@@ -90,4 +90,9 @@ def phrase(children, data, sep=', ', sep2=None, last_sep=None):
     else:
         return Text(last_sep).join([Text(sep).join(parts[:-1]), parts[-1]])
 
-text = phrase(sep='')
+@node
+def Sentence(children, data):
+    text = phrase(sep=' ') [children].format_data(data)
+    text.capfirst()
+    text.add_period()
+    return text
