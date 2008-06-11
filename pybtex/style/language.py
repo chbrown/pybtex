@@ -83,6 +83,9 @@ class Node(object):
     def format_data(self, data):
         return self.f(self.children, data, *self.args, **self.kwargs)
 
+    def format(self):
+        return self.format_data(None)
+
 
 def _format_data(node, data):
     try:
@@ -100,6 +103,8 @@ def node(f):
 
 @node
 def Join(children, data, sep='', sep2=None, last_sep=None):
+    """Join text fragments together"""
+
     if sep2 is None:
         sep2 = sep
     if last_sep is None:
@@ -114,14 +119,20 @@ def Join(children, data, sep='', sep2=None, last_sep=None):
 
 @node
 def List(children, data, sep=', '):
+    """Join text fragments with commas"""
+
     return Join(sep) [children].format_data(data)
 
 @node
 def Words(children, data, sep=' '):
+    """Join text fragments with spaces"""
+
     return Join(sep) [children].format_data(data)
 
 @node
 def Sentence(children, data, capfirst=True, add_period=True, sep=', '):
+    """Join text fragments, capitalyze the first letter, add a period to the end."""
+
     text = Join(sep) [children].format_data(data)
     if capfirst:
         text.capfirst()
@@ -134,6 +145,8 @@ class FieldIsMissing(Exception):
 
 @node
 def Field(children, data, name, apply_func=None):
+    """Return the contents of the bibliography entry field"""
+
     assert not children
     try:
         field = data.fields[name]
@@ -146,12 +159,16 @@ def Field(children, data, name, apply_func=None):
 
 @node
 def Names(children, data, role, **kwargs):
+    """Return formatted names"""
+
     assert not children
     persons = data.persons[role]
     return Join(**kwargs) [[person.text for person in persons]].format_data(data)
 
 @node
 def Optional(children, data):
+    """If child Field is missing, return None. Else return formatted children"""
+
     try:
         return richtext.Text(*_format_list(children, data))
     except FieldIsMissing:
@@ -169,6 +186,8 @@ def Tag(children, data, name):
 
 @node
 def FirstOf(children, data):
+    """Return first nonempty child"""
+
     for child in _format_list(children, data):
         if child:
             return child
