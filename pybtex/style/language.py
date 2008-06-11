@@ -18,7 +18,7 @@ The Book, 2000.
 one two three four
 """
 
-from pybtex.richtext import Text
+from pybtex import richtext
 
 class Proto(object):
     def __init__(self, *args, **kwargs):
@@ -106,11 +106,11 @@ def Phrase(children, data, sep='', sep2=None, last_sep=None):
         last_sep = sep
     parts = [part for part in _format_list(children, data) if part]
     if len(parts) <= 1:
-        return Text(*parts)
+        return richtext.Text(*parts)
     elif len(parts) == 2:
-        return Text(sep2).join(parts)
+        return richtext.Text(sep2).join(parts)
     else:
-        return Text(last_sep).join([Text(sep).join(parts[:-1]), parts[-1]])
+        return richtext.Text(last_sep).join([richtext.Text(sep).join(parts[:-1]), parts[-1]])
 
 @node
 def List(children, data, sep=', '):
@@ -121,10 +121,12 @@ def Words(children, data, sep=' '):
     return Phrase(sep) [children].format_data(data)
 
 @node
-def Sentence(children, data, sep=' '):
+def Sentence(children, data, capfirst=True, add_period=True, sep=' '):
     text = Phrase(sep) [children].format_data(data)
-    text.capfirst()
-    text.add_period()
+    if capfirst:
+        text.capfirst()
+    if add_period:
+        text.add_period()
     return text
 
 class FieldIsMissing(Exception):
@@ -149,6 +151,18 @@ def Names(children, data, role, **kwargs):
 @node
 def Optional(children, data):
     try:
-        return Text(*_format_list(children, data))
+        return richtext.Text(*_format_list(children, data))
     except FieldIsMissing:
         return None
+
+@node
+def Tag(children, data, name):
+    parts = _format_list(children, data)
+    return richtext.Tag(name, *_format_list(children, data))
+
+@node
+def FirstOf(children, data):
+    for child in _format_list(children, data):
+        if child:
+            return child
+    return richtext.Text()
