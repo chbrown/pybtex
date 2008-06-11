@@ -18,8 +18,17 @@
 # USA
 
 #from pybtex.utils import dashify
+import re
+
 from pybtex.style.formatting import FormatterBase, Toplevel
 from pybtex.style.language import Phrase, List, Words, Field, Optional, FirstOf, Names, Sentence, Tag
+from pybtex.richtext import Text, Symbol
+
+def dashify(text):
+    dash_re = re.compile(r'-+')
+    return Text(Symbol('ndash')).join(dash_re.split(text))
+
+pages = Field('pages', apply_func=dashify)
 
 date = Words [Optional[Field('month')], Field('year')]
 
@@ -29,9 +38,9 @@ class Formatter(FormatterBase):
 
     def format_article(self, e):
         if e.fields['volume']:
-            vp = Phrase [Field('volume'), Optional [':', Field('pages')]]
+            vp = Phrase [Field('volume'), Optional [':', pages]]
         else:
-            vp = Words ['pages', Optional[Field('pages')]]
+            vp = Words ['pages', Optional [pages]]
         format = Toplevel [
             self.format_names('author'),
             Sentence [Field('title')],
@@ -75,7 +84,7 @@ class Formatter(FormatterBase):
     def format_chapter_and_pages(self, e):
         return List [
             Optional [Words ['chapter', Field('chapter')]],
-            Optional [Words ['pages', Field('pages')]],
+            Optional [Words ['pages', pages]],
         ]
 
     def format_book(self, e):

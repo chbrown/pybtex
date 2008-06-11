@@ -133,13 +133,15 @@ class FieldIsMissing(Exception):
     pass
 
 @node
-def Field(children, data, name):
+def Field(children, data, name, apply_func=None):
     assert not children
     try:
         field = data.fields[name]
     except KeyError:
         raise FieldIsMissing(name)
     else:
+        if apply_func:
+            field = apply_func(field)
         return field
 
 @node
