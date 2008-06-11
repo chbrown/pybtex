@@ -28,20 +28,14 @@ def capfirst(s):
 def is_terminated(s):
     """Return true if s ends with a terminating character.
     """
-    try:
-        return s.is_terminated()
-    except AttributeError:
-        return (bool(s) and s[-1] in terminators)
+    return (bool(s) and s[-1] in terminators)
 
 def add_period(s):
     """Add a period to the end of s, if there is none yet.
     """
-    try:
-        return s.add_period()
-    except AttributeError:
-        if s and not is_terminated(s):
-            s += '.'
-        return s
+    if s and not is_terminated(s):
+        return s + '.'
+    return s
 
 def abbreviate(s):
     """Abbreviate some text.
