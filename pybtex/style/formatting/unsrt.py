@@ -65,23 +65,24 @@ class Formatter(FormatterBase):
     
     def format_volume_and_series(self, e):
         volume_and_series = Optional [
-            Words [
+            Sentence(capfirst=False, sep=' ') [
                 'Volume', Field('volume'), Optional [
                     Words ['of', Field('series')]
                 ]
             ]
         ]
         number_and_series = Optional [
-            Words [
+            Sentence(capfirst=False, sep=' ') [
                 'Number', Field('number'), Optional [
                     Words ['in', Field('series')]
                 ]
             ]
         ]
+        series = Optional [ Sentence(capfirst=False) [Field('series')] ]
         return FirstOf [
                 volume_and_series,
                 number_and_series,
-                Optional [Field('series')]
+                series,
             ]
     
     def format_chapter_and_pages(self, e):
