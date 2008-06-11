@@ -35,7 +35,7 @@ class Formatter(FormatterBase):
         format = Toplevel [
             self.format_names('author'),
             Sentence [Field('title')],
-            Sentence(sep=', ') [
+            Sentence [
                 Tag('emph') [Field('journal')], vp, date],
         ]
         return format.format_data(e)
@@ -83,14 +83,14 @@ class Formatter(FormatterBase):
             self.format_author_or_editor(e),
             Tag('emph') [Sentence [Field('title')]],
             self.format_volume_and_series(e),
-            Sentence(sep=', ') [Field('publisher'), date],
+            Sentence [Field('publisher'), date],
         ]
         return format.format_data(e)
 
     def format_booklet(self, e):
         format = Toplevel [
-            Sentence(sep=', ') [self.format_names('author'), Field('title')],
-            Sentence(sep=', ') [
+            Sentence [self.format_names('author'), Field('title')],
+            Sentence [
                 Optional [Field('howpublished')],
                 Optional [Field('address')],
                 date,
@@ -101,12 +101,12 @@ class Formatter(FormatterBase):
 
     def format_inbook(self, e):
         format = Toplevel [
-            Sentence(sep=', ') [
+            Sentence [
                 Tag('emph') [Field('title')],
                 self.format_chapter_and_pages(e),
             ],
             self.format_volume_and_series(e),
-            Sentence(sep=', ') [
+            Sentence [
                 Field('publisher'),
                 Optional [Field('address')],
                 Optional [

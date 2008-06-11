@@ -121,7 +121,7 @@ def Words(children, data, sep=' '):
     return Phrase(sep) [children].format_data(data)
 
 @node
-def Sentence(children, data, capfirst=True, add_period=True, sep=' '):
+def Sentence(children, data, capfirst=True, add_period=True, sep=', '):
     text = Phrase(sep) [children].format_data(data)
     if capfirst:
         text.capfirst()
