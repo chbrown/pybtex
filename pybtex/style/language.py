@@ -14,6 +14,8 @@
 ... ]
 >>> print book_format.format_data(e).plaintext()
 The Book, 2000.
+>>> print Words ['one', 'two', Words ['three', 'four']].format_data(e).plaintext()
+one two three four
 """
 
 from pybtex.richtext import Text
@@ -117,8 +119,13 @@ def Phrase(children, data, sep='', sep2=None, last_sep=None):
     else:
         return Text(last_sep).join([Text(sep).join(parts[:-1]), parts[-1]])
 
-List = Phrase(sep=', ')
-Words = Phrase(sep=' ')
+@node
+def List(children, data, sep=', '):
+    return Phrase(sep) [children].format_data(data)
+
+@node
+def Words(children, data, sep=' '):
+    return Phrase(sep) [children].format_data(data)
 
 @node
 def Sentence(children, data, sep=' '):
