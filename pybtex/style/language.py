@@ -141,6 +141,12 @@ def Field(children, data, name):
         return field
 
 @node
+def Names(children, data, role, **kwargs):
+    assert not children
+    persons = data.persons[role]
+    return Phrase(**kwargs) [[person.text for person in persons]].format_data(data)
+
+@node
 def Optional(children, data):
     try:
         return Text(*_format_list(children, data))
