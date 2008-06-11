@@ -19,12 +19,18 @@
 
 """name formatting styles
 """
+from pybtex.richtext import Symbol
+from pybtex.style.language import Phrase, Words
 
-#def plain(person, abbr=False):
-#    s = Phrase(sep=' ')
-#    s.append(person.first(abbr))
-#    s.append(person.middle(abbr), sep_before=Symbol('nbsp'))
-#    s.append(person.prelast())
-#    s.append(person.last())
-#    s.append(person.lineage())
-#    return s
+def plain(person, abbr=False):
+    s = Words [
+        Phrase(sep=Symbol('nbsp')) [
+            Words [person.first(abbr)], Words [person.middle(abbr)]
+        ],
+        Words [
+            person.prelast(abbr) +
+            person.last(abbr) +
+            person.lineage(abbr)
+        ]
+    ]
+    return s

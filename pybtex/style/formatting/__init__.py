@@ -20,13 +20,12 @@
 import locale
 import codecs
 from pybtex.core import FormattedEntry
-from pybtex.richtext import Text
+from pybtex.style.language import node, Phrase
+from pybtex.richtext import Symbol, Text
 
-def default_phrase(*args, **kwargs):
-    kwargs['sep'] = Text(Symbol('newblock'), ' ')
-    kwargs['add_period'] = True
-    kwargs['add_periods'] = True
-    return Phrase(*args, **kwargs)
+@node
+def Toplevel(children, data):
+    return Phrase(sep=Text(Symbol('newblock'), '\n')) [children].format_data(data)
 
 class FormatterBase:
     def format_entries(self, entries):
