@@ -102,7 +102,8 @@ class Formatter(FormatterBase):
 
     def format_booklet(self, e):
         format = Toplevel [
-            Sentence [self.format_names('author'), Field('title')],
+            Sentence [self.format_names('author')],
+            Sentence [Field('title')],
             Sentence [
                 OptionalField('howpublished'),
                 OptionalField('address'),
