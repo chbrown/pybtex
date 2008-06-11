@@ -55,6 +55,8 @@ one, two, three
 >>> t = Text(Symbol('nbsp')).join(['one', 'two', Tag('emph', 'three')])
 >>> print t.render(backend)
 one~two~\emph{three}
+>>> print t.plaintext()
+one<nbsp>two<nbsp>three
 """
 
 from copy import deepcopy
@@ -141,7 +143,7 @@ class Text(list):
         return joined
 
     def plaintext(self):
-        return ''.join(l[i] for l, i in self.enumerate())
+        return ''.join(unicode(l[i]) for l, i in self.enumerate())
 
     def capfirst(self):
         """Capitalize the first letter of the text"""
@@ -168,8 +170,13 @@ class Tag(Text):
 class Symbol(object):
     def __init__(self, name):
         self.name = name
+
+    def __unicode__(self):
+        return u'<%s>' % self.name
+
     def render(self, backend):
         return backend.symbols[self.name]
+
 def main():
     import string
     from backends import latex
