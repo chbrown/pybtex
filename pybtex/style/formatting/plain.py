@@ -21,7 +21,10 @@
 import re
 
 from pybtex.style.formatting import FormatterBase, Toplevel
-from pybtex.style.language import Phrase, List, Words, Field, Optional, FirstOf, Names, Sentence, Tag
+from pybtex.style.language import (
+        Phrase, List, Words, Field, Optional, FirstOf,
+    Names, Sentence, Tag, OptionalField
+)
 from pybtex.richtext import Text, Symbol
 
 def dashify(text):
@@ -30,7 +33,7 @@ def dashify(text):
 
 pages = Field('pages', apply_func=dashify)
 
-date = Words [Optional[Field('month')], Field('year')]
+date = Words [OptionalField('month'), Field('year')]
 
 class Formatter(FormatterBase):
     def format_names(self, role):
@@ -100,10 +103,10 @@ class Formatter(FormatterBase):
         format = Toplevel [
             Sentence [self.format_names('author'), Field('title')],
             Sentence [
-                Optional [Field('howpublished')],
-                Optional [Field('address')],
+                OptionalField('howpublished'),
+                OptionalField('address'),
                 date,
-                Optional [Field('note')],
+                OptionalField('note'),
             ]
         ]
         return format.format_data(e)
@@ -117,12 +120,12 @@ class Formatter(FormatterBase):
             self.format_volume_and_series(e),
             Sentence [
                 Field('publisher'),
-                Optional [Field('address')],
+                OptionalField('address'),
                 Optional [
                     Words ['edition', Field('edition')]
                 ],
                 date,
-                Optional [Field('note')],
+                OptionalField('note'),
             ]
         ]
         return format.format_data(e)

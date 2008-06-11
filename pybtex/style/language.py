@@ -158,6 +158,11 @@ def Optional(children, data):
         return None
 
 @node
+def OptionalField(children, data, *args, **kwargs):
+    assert not children
+    return Optional [Field(*args, **kwargs)].format_data(data)
+
+@node
 def Tag(children, data, name):
     parts = _format_list(children, data)
     return richtext.Tag(name, *_format_list(children, data))
