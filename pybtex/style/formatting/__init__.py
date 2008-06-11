@@ -20,12 +20,12 @@
 import locale
 import codecs
 from pybtex.core import FormattedEntry
-from pybtex.style.language import node, Phrase
+from pybtex.style.language import node, Join
 from pybtex.richtext import Symbol, Text
 
 @node
 def Toplevel(children, data):
-    return Phrase(sep=Text(Symbol('newblock'), '\n')) [children].format_data(data)
+    return Join(sep=Text(Symbol('newblock'), '\n')) [children].format_data(data)
 
 class FormatterBase:
     def format_entries(self, entries):

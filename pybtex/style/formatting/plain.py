@@ -22,7 +22,7 @@ import re
 
 from pybtex.style.formatting import FormatterBase, Toplevel
 from pybtex.style.language import (
-        Phrase, List, Words, Field, Optional, FirstOf,
+        Join, List, Words, Field, Optional, FirstOf,
     Names, Sentence, Tag, OptionalField
 )
 from pybtex.richtext import Text, Symbol
@@ -41,7 +41,7 @@ class Formatter(FormatterBase):
 
     def format_article(self, e):
         if e.fields['volume']:
-            vp = Phrase [Field('volume'), Optional [':', pages]]
+            vp = Join [Field('volume'), Optional [':', pages]]
         else:
             vp = Words ['pages', Optional [pages]]
         format = Toplevel [

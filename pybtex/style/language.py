@@ -99,7 +99,7 @@ def node(f):
     return Proto(f.__name__, f)
 
 @node
-def Phrase(children, data, sep='', sep2=None, last_sep=None):
+def Join(children, data, sep='', sep2=None, last_sep=None):
     if sep2 is None:
         sep2 = sep
     if last_sep is None:
@@ -114,15 +114,15 @@ def Phrase(children, data, sep='', sep2=None, last_sep=None):
 
 @node
 def List(children, data, sep=', '):
-    return Phrase(sep) [children].format_data(data)
+    return Join(sep) [children].format_data(data)
 
 @node
 def Words(children, data, sep=' '):
-    return Phrase(sep) [children].format_data(data)
+    return Join(sep) [children].format_data(data)
 
 @node
 def Sentence(children, data, capfirst=True, add_period=True, sep=', '):
-    text = Phrase(sep) [children].format_data(data)
+    text = Join(sep) [children].format_data(data)
     if capfirst:
         text.capfirst()
     if add_period:
@@ -148,7 +148,7 @@ def Field(children, data, name, apply_func=None):
 def Names(children, data, role, **kwargs):
     assert not children
     persons = data.persons[role]
-    return Phrase(**kwargs) [[person.text for person in persons]].format_data(data)
+    return Join(**kwargs) [[person.text for person in persons]].format_data(data)
 
 @node
 def Optional(children, data):
