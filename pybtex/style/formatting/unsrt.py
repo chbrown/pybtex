@@ -115,6 +115,7 @@ class Formatter(FormatterBase):
 
     def format_inbook(self, e):
         format = Toplevel [
+            Sentence [self.format_names('author')],
             Sentence [
                 Tag('emph') [Field('title')],
                 self.format_chapter_and_pages(e),
@@ -124,7 +125,7 @@ class Formatter(FormatterBase):
                 Field('publisher'),
                 OptionalField('address'),
                 Optional [
-                    Words ['edition', Field('edition')]
+                    Words [Field('edition'), 'edition']
                 ],
                 date,
                 OptionalField('note'),
