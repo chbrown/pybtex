@@ -176,24 +176,3 @@ class Symbol(object):
 
     def render(self, backend):
         return backend.symbols[self.name]
-
-def main():
-    import string
-    from backends import latex
-    backend = latex.Writer()
-    text = Text('foo', ' bar ', Tag('emph', 'some other words'))
-    text.append(' 42')
-    text.append(' football')
-    print text.render(backend)
-    text.apply(string.upper)
-    text.apply_to_start(string.lower)
-    print text.render(backend)
-    text.capfirst()
-    text.add_period()
-    print text.render(backend)
-    print Text(', ').join([Tag('b', 'a'), 'b']).render(backend)
-
-
-
-if __name__ == '__main__':
-    main()
