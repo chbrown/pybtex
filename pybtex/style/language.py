@@ -118,6 +118,7 @@ def Phrase(children, data, sep='', sep2=None, last_sep=None):
         return Text(last_sep).join([Text(sep).join(parts[:-1]), parts[-1]])
 
 List = Phrase(sep=', ')
+Words = Phrase(sep=' ')
 
 @node
 def Sentence(children, data, sep=' '):
