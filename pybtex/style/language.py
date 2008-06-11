@@ -95,13 +95,6 @@ def _format_data(node, data):
 def _format_list(list_, data):
     return [_format_data(part, data) for part in list_]
 
-def _strip(list_):
-    def empty(part):
-        return not bool(part)
-    from itertools import dropwhile
-    tmp = list(dropwhile(empty, reversed(list_)))
-    return list(dropwhile(empty, reversed(tmp)))
-
 def node(f):
     return Proto(f.__name__, f)
 
@@ -111,7 +104,7 @@ def Phrase(children, data, sep='', sep2=None, last_sep=None):
         sep2 = sep
     if last_sep is None:
         last_sep = sep
-    parts = _strip(_format_list(children, data))
+    parts = [part for part in _format_list(children, data) if part]
     if len(parts) <= 1:
         return Text(*parts)
     elif len(parts) == 2:
