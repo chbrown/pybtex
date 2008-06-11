@@ -3,7 +3,7 @@ preamble: "%%% pybtex example file"
 entries:
     ruckenstein-diffusion:
         journal: Ind. Eng. Chem. Res.
-        language: English
+        language: english
         year: 1997
         pages: 888-895
         volume: 36
@@ -20,7 +20,7 @@ entries:
         -   middle: Маркович
             last: Викторов
             first: Михаил
-        language: Russian
+        language: russian
         type: book
         year: 1977
         title: Методы вычисления физико-химических величин и прикладные расчёты
@@ -33,7 +33,7 @@ entries:
             lineage: Jr.
         month: January
         address: Moscow
-        language: English
+        language: english
         title: Just a booklet
         type: booklet
         howpublished: Published by Foo
@@ -45,7 +45,7 @@ entries:
         -   last: Jackson
             first: Peter
         type: inbook
-        language: English
+        language: english
         edition: Second
         series: Some series
         pages: 44--59

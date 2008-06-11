@@ -12,3 +12,4 @@ pybtex.egg-info
 *.e3t
 MANIFEST
 docs/html
+pybtex/.ropeproject

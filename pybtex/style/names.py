@@ -17,22 +17,20 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-import locale
-import codecs
-from pybtex.core import FormattedEntry
-from pybtex.richtext import Text, Symbol, Phrase
+"""name formatting styles
+"""
+from pybtex.richtext import Symbol
+from pybtex.style.language import Join, Words
 
-def default_phrase(*args, **kwargs):
-    kwargs['sep'] = Text(Symbol('newblock'), ' ')
-    kwargs['add_period'] = True
-    kwargs['add_periods'] = True
-    return Phrase(*args, **kwargs)
-
-class FormatterBase:
-    def format_entries(self, entries):
-        l = []
-        for entry in entries:
-            f = getattr(self, "format_" + entry.type)
-            text = f(entry)
-            l.append(FormattedEntry(entry.key, text, entry.label))
-        return l
+def plain(person, abbr=False):
+    s = Words [
+        Join(sep=Symbol('nbsp')) [
+            Words [person.first(abbr)], Words [person.middle(abbr)]
+        ],
+        Words [
+            person.prelast(abbr) +
+            person.last(abbr) +
+            person.lineage(abbr)
+        ]
+    ]
+    return s

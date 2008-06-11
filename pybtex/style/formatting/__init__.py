@@ -17,17 +17,21 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-"""name formatting styles
-"""
+import locale
+import codecs
+from pybtex.core import FormattedEntry
+from pybtex.style.language import node, Join
+from pybtex.richtext import Symbol, Text
 
-from pybtex.utils import abbreviate
-from pybtex.richtext import Phrase, Symbol
+@node
+def Toplevel(children, data):
+    return Join(sep=Text(Symbol('newblock'), '\n')) [children].format_data(data)
 
-def plain(person, abbr=False):
-    s = Phrase(sep=' ')
-    s.append(person.first(abbr))
-    s.append(person.middle(abbr), sep_before=Symbol('nbsp'))
-    s.append(person.prelast())
-    s.append(person.last())
-    s.append(person.lineage())
-    return s
+class FormatterBase:
+    def format_entries(self, entries):
+        l = []
+        for entry in entries:
+            f = getattr(self, "format_" + entry.type)
+            text = f(entry)
+            l.append(FormattedEntry(entry.key, text, entry.label))
+        return l

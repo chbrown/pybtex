@@ -18,28 +18,24 @@
 # USA
 
 import re
-from pybtex.richtext import Symbol, Phrase
 
 terminators = '.?!'
 dash_re = re.compile(r'-')
 
+def capfirst(s):
+    return s[0].upper() + s[1:] if s else s
+
 def is_terminated(s):
     """Return true if s ends with a terminating character.
     """
-    try:
-        return s.is_terminated()
-    except AttributeError:
-        return (bool(s) and s[-1] in terminators)
+    return (bool(s) and s[-1] in terminators)
 
 def add_period(s):
     """Add a period to the end of s, if there is none yet.
     """
-    try:
-        return s.add_period()
-    except AttributeError:
-        if s and not is_terminated(s):
-            s += '.'
-        return s
+    if s and not is_terminated(s):
+        return s + '.'
+    return s
 
 def abbreviate(s):
     """Abbreviate some text.
@@ -66,10 +62,3 @@ def abbreviate(s):
         else:
             return part[1]
     return ''.join(abbr(part) for part in parts(s))
-
-def dashify(s):
-    """replace a dash wich Symbol('ndash')
-    """
-    p = Phrase(sep=Symbol('ndash'))
-    p.extend(dash_re.split(s))
-    return p

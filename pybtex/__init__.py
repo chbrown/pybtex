@@ -44,12 +44,12 @@ def make_bibliography(aux_filename,
     try:
         label_style = kwargs['label_style']
     except KeyError:
-        from styles.labels import number as label_style
+        from style.labels import number as label_style
 
     try:
         name_style = kwargs['name_style']
     except KeyError:
-        from styles.names import plain as name_style
+        from style.names import plain as name_style
 
     try:
         output_backend = kwargs['output_backend']
@@ -64,7 +64,7 @@ def make_bibliography(aux_filename,
     entries = prepare_entries(bib_data, aux_data.citations, label_style, name_style, abbreviate_names)
     del bib_data
 
-    formatter = find_plugin('styles.formatting', aux_data.style).Formatter()
+    formatter = find_plugin('style.formatting', aux_data.style).Formatter()
     formatted_entries = formatter.format_entries(entries)
     del entries
 
