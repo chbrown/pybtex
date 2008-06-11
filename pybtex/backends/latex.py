@@ -24,7 +24,7 @@ file_extension = 'bbl'
 class Writer(BackendBase):
     symbols = {
         'ndash': '--',
-        'newblock': '\n\\newblock',
+        'newblock': '\n\\newblock ',
         'nbsp': '~'
     }
     
@@ -35,7 +35,7 @@ class Writer(BackendBase):
         self.output('\\begin{thebibliography}{%s}' % ('8' * maxlen))
 
     def write_epilogue(self):
-        self.output('\n\\end{thebibliography}\n')
+        self.output('\n\n\\end{thebibliography}\n')
 
     def write_item(self, entry):
         self.output('\n\n\\bibitem[%s]{%s}\n' % (entry.label, entry.key))
