@@ -33,7 +33,8 @@ this is a very rich text
 This is a \emph{very} rich text.
 >>> print t.plaintext()
 This is a very rich text.
-
+>>> print Symbol('ndash').render(backend)
+--
 >>> t = Text('Some ', Tag('emph', Text('nested ', Tag('texttt', 'Text', Text(' objects')))), '.')
 >>> print t.render(backend)
 Some \emph{nested \texttt{Text objects}}.
@@ -51,6 +52,9 @@ SOME NESTED TEXT OBJECTS.
 one, two, \emph{three}
 >>> print t.plaintext()
 one, two, three
+>>> t = Text(Symbol('nbsp')).join(['one', 'two', Tag('emph', 'three')])
+>>> print t.render(backend)
+one~two~\emph{three}
 """
 
 from copy import deepcopy
@@ -161,6 +165,11 @@ class Tag(Text):
         text = super(Tag, self).render(backend)
         return backend.format_tag(self.name, text)
 
+class Symbol(object):
+    def __init__(self, name):
+        self.name = name
+    def render(self, backend):
+        return backend.symbols[self.name]
 def main():
     import string
     from backends import latex
