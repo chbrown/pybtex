@@ -28,7 +28,7 @@ import locale
 def make_bibliography(aux_filename,
         bib_format=None,
         bib_encoding=locale.getpreferredencoding(),
-        latex_encoding=locale.getpreferredencoding(),
+        output_encoding=locale.getpreferredencoding(),
         **kwargs
         ):
     """This functions extracts all nessessary information from .aux file
@@ -69,7 +69,7 @@ def make_bibliography(aux_filename,
     del entries
 
     output_filename = path.extsep.join([filename, output_backend.file_extension])
-    output_backend.Writer(latex_encoding).write_bibliography(formatted_entries, output_filename)
+    output_backend.Writer(output_encoding).write_bibliography(formatted_entries, output_filename)
 
 def prepare_entries(bib_data, citations, label_style, name_style, abbreviate_names):
     entries = []

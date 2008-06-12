@@ -34,7 +34,7 @@ def main():
     opt_parser.add_option('--abbreviate-names', action='store_true', dest='abbreviate_names')
     encoding = opt_parser.add_option_group('encoding options')
     encoding.add_option('--bibtex-encoding', dest='bib_encoding')
-    encoding.add_option('--latex-encoding', dest='latex_encoding')
+    encoding.add_option('--output-encoding', dest='output_encoding')
     opt_parser.set_defaults(engine='bibtex')
 
     (options, args) = opt_parser.parse_args()
@@ -61,7 +61,7 @@ def main():
     if options.bib_format:
         kwargs['bib_format'] = find_plugin('database.input', options.bib_format)
     kwargs['abbreviate_names'] = bool(options.abbreviate_names)
-    for option in ('bib_encoding', 'latex_encoding'):
+    for option in ('bib_encoding', 'output_encoding'):
         value = getattr(options, option)
         if value:
             kwargs[option] = getattr(options, option)
