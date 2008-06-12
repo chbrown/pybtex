@@ -6,6 +6,7 @@ examples/*.dvi
 examples/*.log
 examples/*.blg
 examples/*.txt
+examples/*.html
 build
 dist
 pybtex.egg-info
