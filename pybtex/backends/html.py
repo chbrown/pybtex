@@ -25,6 +25,7 @@ file_extension = 'html'
 PROLOGUE = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head><meta name="generator" content="Pybtex">
+<meta http-equiv="Content-Type" content="text/html; charset=%s">
 <title>Bibliography</title>
 </head>
 <body>
@@ -49,7 +50,7 @@ class Writer(BackendBase):
         return r'<%s>%s</%s>' % (tag, text, tag)
     
     def write_prologue(self, maxlen):
-        self.output(PROLOGUE)
+        self.output(PROLOGUE % self.encoding)
 
     def write_epilogue(self):
         self.output('</dl></body></html>\n')
