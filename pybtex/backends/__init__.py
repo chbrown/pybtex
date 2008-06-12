@@ -32,6 +32,19 @@ class BackendBase:
     def write_epilogue(self):
         pass
 
+    def format_text(self, text):
+        return text
+
+    def format_tag(self, tag_name, text):
+        """Format a tag with some text inside.
+
+        Text is already formatted with format_text."""
+
+        raise NotImplementedError
+
+    def write_item(self, entry):
+        raise NotImplementedError
+
     def write_bibliography(self, entries, filename):
         self.f = codecs.open(filename, "w", self.encoding)
         self.output = self.f.write

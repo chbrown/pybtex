@@ -94,7 +94,7 @@ class Text(list):
         text = []
         for item in self:
             if isinstance(item, basestring):
-                text.append(item)
+                text.append(backend.format_text(item))
             else:
                 text.append(item.render(backend))
         return "".join(text)
