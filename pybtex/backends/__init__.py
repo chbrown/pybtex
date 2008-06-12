@@ -42,7 +42,7 @@ class BackendBase:
 
         raise NotImplementedError
 
-    def write_item(self, entry):
+    def write_entry(self, label, key, text):
         raise NotImplementedError
 
     def write_bibliography(self, entries, filename):
@@ -53,7 +53,7 @@ class BackendBase:
 
         self.write_prologue(maxlen)
         for entry in entries:
-            self.write_item(entry)
+            self.write_entry(entry.key, entry.label, entry.text.render(self))
         self.write_epilogue()
 
         self.f.close()

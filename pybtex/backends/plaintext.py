@@ -32,7 +32,7 @@ class Writer(BackendBase):
     def format_tag(self, tag_name, text):
         return text
     
-    def write_item(self, entry):
-    	self.output("[%s] " % entry.label)
-        self.output(entry.text.render(self))
-	self.output('\n')
+    def write_entry(self, key, label, text):
+        self.output("[%s] " % label)
+        self.output(text)
+        self.output('\n')

@@ -37,6 +37,6 @@ class Writer(BackendBase):
     def write_epilogue(self):
         self.output('\n\n\\end{thebibliography}\n')
 
-    def write_item(self, entry):
-        self.output('\n\n\\bibitem[%s]{%s}\n' % (entry.label, entry.key))
-        self.output(entry.text.render(self))
+    def write_entry(self, key, label, text):
+        self.output('\n\n\\bibitem[%s]{%s}\n' % (label, key))
+        self.output(text)
