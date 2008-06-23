@@ -22,8 +22,8 @@ import re
 
 from pybtex.style.formatting import FormatterBase, Toplevel
 from pybtex.style.template import (
-    Join, List, Words, Field, Optional, FirstOf,
-    Names, Sentence, Tag, OptionalField
+    join, words, field, optional, first_of,
+    names, sentence, tag, optional_field
 )
 from pybtex.richtext import Text, Symbol
 
@@ -31,24 +31,24 @@ def dashify(text):
     dash_re = re.compile(r'-+')
     return Text(Symbol('ndash')).join(dash_re.split(text))
 
-pages = Field('pages', apply_func=dashify)
+pages = field('pages', apply_func=dashify)
 
-date = Words [OptionalField('month'), Field('year')]
+date = words [optional_field('month'), field('year')]
 
 class Formatter(FormatterBase):
     def format_names(self, role):
-        return Sentence(capfirst=False) [Names(role, sep=', ', sep2 = ' and ', last_sep=', and ')]
+        return sentence(capfirst=False) [names(role, sep=', ', sep2 = ' and ', last_sep=', and ')]
 
     def format_article(self, e):
         if e.fields['volume']:
-            vp = Join [Field('volume'), Optional [':', pages]]
+            vp = join [field('volume'), optional [':', pages]]
         else:
-            vp = Words ['pages', Optional [pages]]
+            vp = words ['pages', optional [pages]]
         format = Toplevel [
             self.format_names('author'),
-            Sentence [Field('title')],
-            Sentence [
-                Tag('emph') [Field('journal')], vp, date],
+            sentence [field('title')],
+            sentence [
+                tag('emph') [field('journal')], vp, date],
         ]
         return format.format_data(e)
         
@@ -61,74 +61,74 @@ class Formatter(FormatterBase):
                 word = 'editors'
             else:
                 word = 'editor'
-            return Words [editors, word]
+            return words [editors, word]
     
     def format_volume_and_series(self, e):
-        volume_and_series = Optional [
-            Sentence(capfirst=False, sep=' ') [
-                'Volume', Field('volume'), Optional [
-                    Words ['of', Field('series')]
+        volume_and_series = optional [
+            sentence(capfirst=False, sep=' ') [
+                'Volume', field('volume'), optional [
+                    words ['of', field('series')]
                 ]
             ]
         ]
-        number_and_series = Optional [
-            Sentence(capfirst=False, sep=' ') [
-                'Number', Field('number'), Optional [
-                    Words ['in', Field('series')]
+        number_and_series = optional [
+            sentence(capfirst=False, sep=' ') [
+                'Number', field('number'), optional [
+                    words ['in', field('series')]
                 ]
             ]
         ]
-        series = Optional [ Sentence(capfirst=False) [Field('series')] ]
-        return FirstOf [
+        series = optional [ sentence(capfirst=False) [field('series')] ]
+        return first_of [
                 volume_and_series,
                 number_and_series,
                 series,
             ]
     
     def format_chapter_and_pages(self, e):
-        return List [
-            Optional [Words ['chapter', Field('chapter')]],
-            Optional [Words ['pages', pages]],
+        return join(sep=', ') [
+            optional [words ['chapter', field('chapter')]],
+            optional [words ['pages', pages]],
         ]
 
     def format_book(self, e):
         format = Toplevel [
             self.format_author_or_editor(e),
-            Tag('emph') [Sentence [Field('title')]],
+            tag('emph') [sentence [field('title')]],
             self.format_volume_and_series(e),
-            Sentence [Field('publisher'), date],
+            sentence [field('publisher'), date],
         ]
         return format.format_data(e)
 
     def format_booklet(self, e):
         format = Toplevel [
-            Sentence [self.format_names('author')],
-            Sentence [Field('title')],
-            Sentence [
-                OptionalField('howpublished'),
-                OptionalField('address'),
+            sentence [self.format_names('author')],
+            sentence [field('title')],
+            sentence [
+                optional_field('howpublished'),
+                optional_field('address'),
                 date,
-                OptionalField('note'),
+                optional_field('note'),
             ]
         ]
         return format.format_data(e)
 
     def format_inbook(self, e):
         format = Toplevel [
-            Sentence [self.format_names('author')],
-            Sentence [
-                Tag('emph') [Field('title')],
+            sentence [self.format_names('author')],
+            sentence [
+                tag('emph') [field('title')],
                 self.format_chapter_and_pages(e),
             ],
             self.format_volume_and_series(e),
-            Sentence [
-                Field('publisher'),
-                OptionalField('address'),
-                Optional [
-                    Words [Field('edition'), 'edition']
+            sentence [
+                field('publisher'),
+                optional_field('address'),
+                optional [
+                    words [field('edition'), 'edition']
                 ],
                 date,
-                OptionalField('note'),
+                optional_field('note'),
             ]
         ]
         return format.format_data(e)

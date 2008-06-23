@@ -9,12 +9,12 @@
 ...         'year': '2000',
 ... }
 >>> e = Entry('book', fields=fields)
->>> book_format = Sentence(sep=', ') [
-...     Field('title'), Field('year'), Optional [Field('sdf')]
+>>> book_format = sentence(sep=', ') [
+...     field('title'), field('year'), optional [field('sdf')]
 ... ]
 >>> print book_format.format_data(e).plaintext()
 The Book, 2000.
->>> print Words ['one', 'two', Words ['three', 'four']].format_data(e).plaintext()
+>>> print words ['one', 'two', words ['three', 'four']].format_data(e).plaintext()
 one two three four
 """
 
@@ -102,8 +102,8 @@ def node(f):
     return Proto(f.__name__, f)
 
 @node
-def Join(children, data, sep='', sep2=None, last_sep=None):
-    """Join text fragments together"""
+def join(children, data, sep='', sep2=None, last_sep=None):
+    """join text fragments together"""
 
     if sep2 is None:
         sep2 = sep
@@ -118,22 +118,16 @@ def Join(children, data, sep='', sep2=None, last_sep=None):
         return richtext.Text(last_sep).join([richtext.Text(sep).join(parts[:-1]), parts[-1]])
 
 @node
-def List(children, data, sep=', '):
-    """Join text fragments with commas"""
+def words(children, data, sep=' '):
+    """join text fragments with spaces"""
 
-    return Join(sep) [children].format_data(data)
-
-@node
-def Words(children, data, sep=' '):
-    """Join text fragments with spaces"""
-
-    return Join(sep) [children].format_data(data)
+    return join(sep) [children].format_data(data)
 
 @node
-def Sentence(children, data, capfirst=True, add_period=True, sep=', '):
-    """Join text fragments, capitalyze the first letter, add a period to the end."""
+def sentence(children, data, capfirst=True, add_period=True, sep=', '):
+    """join text fragments, capitalyze the first letter, add a period to the end."""
 
-    text = Join(sep) [children].format_data(data)
+    text = join(sep) [children].format_data(data)
     if capfirst:
         text.capfirst()
     if add_period:
@@ -144,7 +138,7 @@ class FieldIsMissing(Exception):
     pass
 
 @node
-def Field(children, data, name, apply_func=None):
+def field(children, data, name, apply_func=None):
     """Return the contents of the bibliography entry field"""
 
     assert not children
@@ -158,16 +152,16 @@ def Field(children, data, name, apply_func=None):
         return field
 
 @node
-def Names(children, data, role, **kwargs):
+def names(children, data, role, **kwargs):
     """Return formatted names"""
 
     assert not children
     persons = data.persons[role]
-    return Join(**kwargs) [[person.text for person in persons]].format_data(data)
+    return join(**kwargs) [[person.text for person in persons]].format_data(data)
 
 @node
-def Optional(children, data):
-    """If child Field is missing, return None. Else return formatted children"""
+def optional(children, data):
+    """If child field is missing, return None. Else return formatted children"""
 
     try:
         return richtext.Text(*_format_list(children, data))
@@ -175,17 +169,17 @@ def Optional(children, data):
         return None
 
 @node
-def OptionalField(children, data, *args, **kwargs):
+def optional_field(children, data, *args, **kwargs):
     assert not children
-    return Optional [Field(*args, **kwargs)].format_data(data)
+    return optional [field(*args, **kwargs)].format_data(data)
 
 @node
-def Tag(children, data, name):
+def tag(children, data, name):
     parts = _format_list(children, data)
     return richtext.Tag(name, *_format_list(children, data))
 
 @node
-def FirstOf(children, data):
+def first_of(children, data):
     """Return first nonempty child"""
 
     for child in _format_list(children, data):

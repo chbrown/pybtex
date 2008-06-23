@@ -20,14 +20,14 @@
 """name formatting styles
 """
 from pybtex.richtext import Symbol
-from pybtex.style.template import Join, Words
+from pybtex.style.template import join, words
 
 def plain(person, abbr=False):
-    s = Words [
-        Join(sep=Symbol('nbsp')) [
-            Words [person.first(abbr)], Words [person.middle(abbr)]
+    s = words [
+        join(sep=Symbol('nbsp')) [
+            words [person.first(abbr)], words [person.middle(abbr)]
         ],
-        Words [
+        words [
             person.prelast(abbr) +
             person.last(abbr) +
             person.lineage(abbr)
