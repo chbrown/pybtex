@@ -40,17 +40,17 @@ class Formatter(FormatterBase):
         return sentence(capfirst=False) [names(role, sep=', ', sep2 = ' and ', last_sep=', and ')]
 
     def format_article(self, e):
-        vp = first_of [
+        volume_and_pages = first_of [
             join [field('volume'), optional [':', pages]],
             words ['pages', optional [pages]]
         ]
-        format = toplevel [
+        template = toplevel [
             self.format_names('author'),
             sentence [field('title')],
             sentence [
-                tag('emph') [field('journal')], vp, date],
+                tag('emph') [field('journal')], volume_and_pages, date],
         ]
-        return format.format_data(e)
+        return template.format_data(e)
         
     def format_author_or_editor(self, e):
         if e.persons['author']:
@@ -92,16 +92,16 @@ class Formatter(FormatterBase):
         ]
 
     def format_book(self, e):
-        format = toplevel [
+        template = toplevel [
             self.format_author_or_editor(e),
             tag('emph') [sentence [field('title')]],
             self.format_volume_and_series(e),
             sentence [field('publisher'), date],
         ]
-        return format.format_data(e)
+        return template.format_data(e)
 
     def format_booklet(self, e):
-        format = toplevel [
+        template = toplevel [
             sentence [self.format_names('author')],
             sentence [field('title')],
             sentence [
@@ -111,10 +111,10 @@ class Formatter(FormatterBase):
                 optional_field('note'),
             ]
         ]
-        return format.format_data(e)
+        return template.format_data(e)
 
     def format_inbook(self, e):
-        format = toplevel [
+        template = toplevel [
             sentence [self.format_names('author')],
             sentence [
                 tag('emph') [field('title')],
@@ -131,4 +131,4 @@ class Formatter(FormatterBase):
                 optional_field('note'),
             ]
         ]
-        return format.format_data(e)
+        return template.format_data(e)
