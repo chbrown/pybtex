@@ -20,7 +20,7 @@
 #from pybtex.utils import dashify
 import re
 
-from pybtex.style.formatting import FormatterBase, Toplevel
+from pybtex.style.formatting import FormatterBase, toplevel
 from pybtex.style.template import (
     join, words, field, optional, first_of,
     names, sentence, tag, optional_field
@@ -44,7 +44,7 @@ class Formatter(FormatterBase):
             vp = join [field('volume'), optional [':', pages]]
         else:
             vp = words ['pages', optional [pages]]
-        format = Toplevel [
+        format = toplevel [
             self.format_names('author'),
             sentence [field('title')],
             sentence [
@@ -92,7 +92,7 @@ class Formatter(FormatterBase):
         ]
 
     def format_book(self, e):
-        format = Toplevel [
+        format = toplevel [
             self.format_author_or_editor(e),
             tag('emph') [sentence [field('title')]],
             self.format_volume_and_series(e),
@@ -101,7 +101,7 @@ class Formatter(FormatterBase):
         return format.format_data(e)
 
     def format_booklet(self, e):
-        format = Toplevel [
+        format = toplevel [
             sentence [self.format_names('author')],
             sentence [field('title')],
             sentence [
@@ -114,7 +114,7 @@ class Formatter(FormatterBase):
         return format.format_data(e)
 
     def format_inbook(self, e):
-        format = Toplevel [
+        format = toplevel [
             sentence [self.format_names('author')],
             sentence [
                 tag('emph') [field('title')],

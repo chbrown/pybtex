@@ -24,7 +24,7 @@ from pybtex.style.template import node, join
 from pybtex.richtext import Symbol, Text
 
 @node
-def Toplevel(children, data):
+def toplevel(children, data):
     return join(sep=Symbol('newblock')) [children].format_data(data)
 
 class FormatterBase:
