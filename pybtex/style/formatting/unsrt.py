@@ -40,10 +40,10 @@ class Formatter(FormatterBase):
         return sentence(capfirst=False) [names(role, sep=', ', sep2 = ' and ', last_sep=', and ')]
 
     def format_article(self, e):
-        if e.fields['volume']:
-            vp = join [field('volume'), optional [':', pages]]
-        else:
-            vp = words ['pages', optional [pages]]
+        vp = first_of [
+            join [field('volume'), optional [':', pages]],
+            words ['pages', optional [pages]]
+        ]
         format = toplevel [
             self.format_names('author'),
             sentence [field('title')],
