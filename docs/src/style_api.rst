@@ -7,6 +7,25 @@ and is far from being finished yet.
 
 Here is what it looks like.
 
+Rich text
+=========
+
+Pybtex was designed to be able to output bibliographies in multiple formats.
+It means that bibliograhy formatting functions can't just return things like
+``\emph{editor}`` or ``<i>journal</i>``. We have a simple language for
+producing formatted text:
+
+.. sourcecode:: pycon
+
+    >>> from pybtex.richtext import Text, Tag
+    >>> from pybtex.backends import latex, html
+    >>> text = Text('This is an example of a ', Tag('emph', 'rich'), ' text.')
+    >>> print text.render(html.Writer())
+    This is an example of a <em>rich</em> text.
+    >>> print text.render(latex.Writer())
+    This is an example of a \emph{rich} text.
+
+
 Template language
 =================
 
@@ -16,12 +35,14 @@ For a Pythonic bibliography processor it is natural to use Python for writing
 styles.  A Pybtex style file is basically a Python module containing a class
 named ``Formatter``. This class has methods like ``format_article``,
 ``format_book``, etc. They accept a bibliography entry (an instance of
-``pybtex.core.Entry`` class) and return a formatted entry.
+``pybtex.core.Entry`` class) and return a formatted entry (an instance of
+``pybtex.richtes.Text``).
 
 .. sourcecode:: python
+    from pybtex.richtext import Text, Tag
     class Formatter(FormatterBase):
         def format_article(self, entry):
-            return 'Article %s' % entry.fields['title']
+            return Text('Article ', Tag('em', entry.fields['title']))
 
 To make things easier we designed a simple template language:
 
@@ -43,25 +64,6 @@ To make things easier we designed a simple template language:
                     tag('emph') [field('journal')], volume_and_pages, date],
             ]
             return template.format_data(e)
-
-
-Rich text
-=========
-
-Pybtex was designed to produce output in multiplt formats. It means that
-bibliograhy formatting functions can't just return things like
-``\emph{editor}`` or ``<i>journal</i>``. We have a simple language for
-producing formatted text:
-
-.. sourcecode:: pycon
-
-    >>> from pybtex.richtext import Text, Tag
-    >>> from pybtex.backends import latex
-    >>> renderer = latex.Writer()
-    >>> text = Text('This is an example of a ', Tag('emph', 'rich'), ' text.')
-    >>> print text.render(renderer)
-    This is an example of a \emph{rich} text.
-
 
 Is that all?
 ============
