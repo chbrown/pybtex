@@ -20,7 +20,7 @@
 import locale
 import codecs
 from pybtex.core import FormattedEntry
-from pybtex.style.language import node, Join
+from pybtex.style.template import node, Join
 from pybtex.richtext import Symbol, Text
 
 @node

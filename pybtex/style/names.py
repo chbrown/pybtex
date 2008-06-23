@@ -20,7 +20,7 @@
 """name formatting styles
 """
 from pybtex.richtext import Symbol
-from pybtex.style.language import Join, Words
+from pybtex.style.template import Join, Words
 
 def plain(person, abbr=False):
     s = Words [

@@ -21,8 +21,8 @@
 import re
 
 from pybtex.style.formatting import FormatterBase, Toplevel
-from pybtex.style.language import (
-        Join, List, Words, Field, Optional, FirstOf,
+from pybtex.style.template import (
+    Join, List, Words, Field, Optional, FirstOf,
     Names, Sentence, Tag, OptionalField
 )
 from pybtex.richtext import Text, Symbol
