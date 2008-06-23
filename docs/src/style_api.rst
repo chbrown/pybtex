@@ -10,34 +10,39 @@ Here is what it looks like.
 Template language
 =================
 
-BibTeX users probably know that it has a simple stack oriented language
-for defining bibliography styles. That is what is placed inside of ``.bst`` files.
-For a Pythonic bibliography processor it is natural to use Python for writing styles.
-Pybtex style file is just a Python module containing several functions with names
-like ``format_article``, ``format_book``, etc. Every function takes a bibliography
-entry as an argument and returns a formatted bibliography entry:
+BibTeX users probably know that it has a simple stack oriented language for
+defining bibliography styles. That is what is placed inside of ``.bst`` files.
+For a Pythonic bibliography processor it is natural to use Python for writing
+styles.  A Pybtex style file is basically a Python module containing a class
+named ``Formatter``. This class has methods like ``format_article``,
+``format_book``, etc. They accept a bibliography entry (an instance of
+``pybtex.core.Entry`` class) and return a formatted entry.
 
 .. sourcecode:: python
-
-    def format_article(entry):
-        return 'Article %s' % entry.fields['title']
+    class Formatter(FormatterBase):
+        def format_article(self, entry):
+            return 'Article %s' % entry.fields['title']
 
 To make things easier we designed a simple template language:
 
 .. sourcecode:: python
 
-    from pybtex.template import field, join, optional
+    from pybtex.style.formatting import FormatterBase, toplevel
+    from pybtex.style.template import field, join, optional
 
-    def format_article(entry):
-        template = join (' ') [
-            'Article',
-            field('title'),
-            'by',
-            field('author'),
-            optional [', ', field('pages')],
-            '.'
-        ]
-        return template.format(entry)
+    class Formatter(FormatterBase):
+        def format_article(self, entry):
+            if entry.fields['volume']:
+                volume_and_pages = join [field('volume'), optional [':', pages]]
+            else:
+                volume_and_pages = words ['pages', optional [pages]]
+            template = toplevel [
+                self.format_names('author'),
+                sentence [field('title')],
+                sentence [
+                    tag('emph') [field('journal')], volume_and_pages, date],
+            ]
+            return template.format_data(e)
 
 
 Rich text
