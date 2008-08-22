@@ -1,3 +1,10 @@
+"""BibTeX-like name formatting.
+
+>>> name = 'Charles Louis Xavier Joseph de la Vallee Poussin'
+>>> print format(name, '{vv~}{ll}{, jj}{, f.}')
+de~la Vallee~Poussin, C.~L. X.~J.
+"""
+
 from pyparsing import (
         Literal, Word, Forward, Combine, Group, Suppress, ZeroOrMore,
         Optional, StringEnd, CharsNotIn, alphas, removeQuotes,
@@ -115,9 +122,3 @@ group.setParseAction(NamePart)
 toplevel_text = CharsNotIn('{}').setParseAction(Text)
 name_format_grammar = ZeroOrMore(toplevel_text | group) + StringEnd()
 name_format_grammar.leaveWhitespace()
-
-if __name__ == '__main__':
-    format = '{vv~}{ll}{, jj}{, f.}'
-    name = 'Charles Louis Xavier Joseph de la Vallee Poussin'
-    print format_name(name, format)
-
