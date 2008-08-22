@@ -62,13 +62,6 @@ class Entry(object):
     def add_person(self, person, role):
         self.persons.setdefault(role, []).append(person)
 
-#    def __getattr__(self, name):
-#        try:
-#            return self.fields[name]
-#        except KeyError:
-#            return ""
-
-
 class Person:
     """Represents a person (usually human).
     """
