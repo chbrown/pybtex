@@ -159,7 +159,15 @@ class Tag(Text):
     """A tag is somethins like <foo>some text</foo> in HTML
     or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
     'some text' is tag's text.
+
+    >>> emph = Tag('emph', 'emphasized text')
+    >>> from pybtex.backends import latex, html
+    >>> print emph.render(latex.Writer())
+    \emph{emphasized text}
+    >>> print emph.render(html.Writer())
+    <em>emphasized text</em>
     """
+
     def __init__(self, name, *args):
         self.name = name
         Text.__init__(self, *args)
@@ -168,6 +176,18 @@ class Tag(Text):
         return backend.format_tag(self.name, text)
 
 class Symbol(object):
+    """A special symbol.
+
+    Examples of special symbols are non-breaking spaces and dashes.
+
+    >>> nbsp = Symbol('nbsp')
+    >>> from pybtex.backends import latex, html
+    >>> print nbsp.render(latex.Writer())
+    ~
+    >>> print nbsp.render(html.Writer())
+    &nbsp;
+    """
+
     def __init__(self, name):
         self.name = name
 
