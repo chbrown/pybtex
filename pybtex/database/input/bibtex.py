@@ -20,7 +20,12 @@
 """BibTeX parser"""
 
 import codecs, locale
-from pyparsing import *
+from pyparsing import (
+        Word, CaselessLiteral, CharsNotIn,
+        nums, alphas, alphanums, printables, delimitedList, downcaseTokens,
+        Suppress, Combine, Group, Dict,
+        Forward, ZeroOrMore
+)
 from pybtex.core import Entry, Person
 from pybtex.database import BibliographyData
 from pybtex.database.input import ParserBase
