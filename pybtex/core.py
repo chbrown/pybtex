@@ -47,7 +47,11 @@ class Entry(object):
             persons = self.parent.persons[key]
             return ' and '.join(unicode(person) for person in persons)
 
-    def __init__(self, type_, fields = {}, persons = {}):
+    def __init__(self, type_, fields = None, persons = None):
+        if fields is None:
+            fields = {}
+        if persons is None:
+            persons = {}
         self.type = type_
         self.fields = self.FieldDict(self, fields)
         self.persons = dict(persons)
