@@ -23,8 +23,8 @@
 import codecs
 from os import path
 
-import bst
-from interpreter import Interpreter
+from pybtex.bibtex import bst
+from pybtex.bibtex.interpreter import Interpreter
 from pybtex import auxfile
 from pybtex.bibtex.kpathsea import kpsewhich
 import locale
