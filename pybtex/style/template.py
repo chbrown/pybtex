@@ -39,7 +39,10 @@ class Proto(object):
         return repr(Node(*self.args, **self.kwargs))
 
     def format_data(self, *args, **kwargs):
-        return Node(*self.args, **self.kwargs).render(*args, **kwargs)
+        return Node(*self.args, **self.kwargs).format_data(*args, **kwargs)
+
+    def format(self):
+        return self.format_data(None)
 
 
 class Node(object):
