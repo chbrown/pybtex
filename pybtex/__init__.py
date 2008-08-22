@@ -21,7 +21,7 @@
 """
 
 from os import path
-import auxfile
+from pybtex import auxfile
 from pybtex.plugin import find_plugin
 import locale
 
@@ -39,22 +39,22 @@ def make_bibliography(aux_filename,
     aux_data = auxfile.parse_file(aux_filename)
 
     if bib_format is None:
-        from database.input import bibtex as bib_format
+        from pybtex.database.input import bibtex as bib_format
 
     try:
         label_style = kwargs['label_style']
     except KeyError:
-        from style.labels import number as label_style
+        from pybtex.style.labels import number as label_style
 
     try:
         name_style = kwargs['name_style']
     except KeyError:
-        from style.names import plain as name_style
+        from pybtex.style.names import plain as name_style
 
     try:
         output_backend = kwargs['output_backend']
     except KeyError:
-        from backends import latex as output_backend
+        from pybtex.backends import latex as output_backend
 
     abbreviate_names = kwargs.get('abbreviate_names', True)
 
