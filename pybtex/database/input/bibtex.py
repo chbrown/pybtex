@@ -119,9 +119,6 @@ class Parser(ParserBase):
 
         self.BibTeX_entry = string | preamble | entry
 
-    def set_encoding(self, s):
-        self._decode = codecs.getdecoder(s)
-
     def process_preamble(self, s, loc, toks):
         self.data.add_to_preamble(toks[0])
 
