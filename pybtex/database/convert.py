@@ -25,7 +25,9 @@ from pybtex.plugin import find_plugin
 class ConvertError(Exception):
     pass
 
-def convert(input, from_format, to_format, output=None, input_encoding=None, output_encoding=None, parser_options={}):
+def convert(input, from_format, to_format, output=None, input_encoding=None, output_encoding=None, parser_options=None):
+    if parser_options is None:
+        parser_options = {}
     input_format = find_plugin('database.input', from_format)
     output_format = find_plugin('database.output', to_format)
     
