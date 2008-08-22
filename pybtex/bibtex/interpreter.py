@@ -26,6 +26,13 @@ class BibTeXError(Exception):
 
 
 class Variable(object):
+
+    def _undefined(self):
+        raise NotImplementedError
+
+    default = property(_undefined)
+    value_type = property(_undefined)
+
     def __init__(self, value=None):
         self.set(value)
     def set(self, value):
