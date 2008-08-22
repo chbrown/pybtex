@@ -143,7 +143,8 @@ class Person:
     def get_part(self, type, abbr=False):
         names = getattr(self, '_' + type)
         if abbr:
-            names = [utils.abbreviate(name) for name in names]
+            from pybtex.textutils import abbreviate
+            names = [abbreviate(name) for name in names]
         return names
 
     #FIXME needs some thinking and cleanup
