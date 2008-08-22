@@ -138,7 +138,9 @@ class QuotedVar(Variable):
 
 
 class Function(object):
-    def __init__(self, body = []):
+    def __init__(self, body=None):
+        if body is None:
+            body = []
         self.body = body
     def execute(self, interpreter):
 #        print 'executing function', self.body
