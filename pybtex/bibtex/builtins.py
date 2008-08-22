@@ -22,7 +22,7 @@
 CAUTION: functions should PUSH results, not RETURN
 """
 
-import interpreter
+from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.database.input.bibtex import split_name_list
 from pybtex.core import Person
 from pybtex.bibtex.utils import bibtex_len
@@ -142,7 +142,7 @@ def chr_to_int(i):
     try:
         value = ord(s)
     except TypeError:
-        raise interpreter.BibTeXError('%s passed to chr.to.int$', s)
+        raise BibTeXError('%s passed to chr.to.int$', s)
     i.push(value)
 
 @builtin('cite$')
@@ -189,7 +189,7 @@ def int_to_chr(i):
     try:
         char = chr(n)
     except ValueError:
-        raise interpreter.BibTeXError('%i passed to int.to.chr$', n)
+        raise BibTeXError('%i passed to int.to.chr$', n)
     i.push(char)
 
 @builtin('int.to.str$')
@@ -199,7 +199,7 @@ def int_to_str(i):
 @builtin('missing$')
 def missing(i):
     f = i.pop()
-    if isinstance(f, interpreter.MissingField):
+    if i.is_missing_field(f):
         i.push(1)
     else:
         i.push(0)
@@ -251,7 +251,7 @@ def substring(i):
     elif start < 0:
         i.push(s[-start - len:-start])
     else:
-        raise interpreter.BibTeXError('start=0 passed to substring$')
+        raise BibTeXError('start=0 passed to substring$')
 
 @builtin('stack$')
 def stack(i):

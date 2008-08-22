@@ -17,12 +17,9 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-from builtins import builtins
+from pybtex.bibtex.exceptions import BibTeXError
+from pybtex.bibtex.builtins import builtins
 #from pybtex.database.input import bibtex
-
-
-class BibTeXError(Exception):
-    pass
 
 
 class Variable(object):
@@ -267,3 +264,7 @@ class Interpreter(object):
         #print 'STRINGS'
         for id in self.getToken():
             self.vars[id.value()] = String()
+
+    @staticmethod
+    def is_missing_field(field):
+        return isinstance(field, MissingField)
