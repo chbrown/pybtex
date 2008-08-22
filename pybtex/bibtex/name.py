@@ -1,4 +1,7 @@
-from pyparsing import *
+from pyparsing import (
+        Literal, Word, Forward, Combine, Group, Suppress, ZeroOrMore,
+        Optional, StringEnd, CharsNotIn, alphas, removeQuotes,
+)
 from pybtex.core import Person
 from pybtex.bibtex.utils import bibtex_len
 
