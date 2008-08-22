@@ -36,14 +36,13 @@ class Builtin(object):
     def __repr__(self):
         return '<builtin %s>' % self.f.__name__
 
+builtins = {}
+
 def builtin(name):
     def _builtin(f):
-        global builtins
         b = Builtin(f)
         builtins[name] = b
     return _builtin
-
-builtins = {}
 
 @builtin('>')
 def operator_more(i):
