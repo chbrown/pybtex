@@ -24,7 +24,8 @@ from pyparsing import (
         Word, CaselessLiteral, CharsNotIn,
         nums, alphas, alphanums, printables, delimitedList, downcaseTokens,
         Suppress, Combine, Group, Dict,
-        Forward, ZeroOrMore
+        Forward, ZeroOrMore,
+        ParseException,
 )
 from pybtex.core import Entry, Person
 from pybtex.database import BibliographyData
@@ -167,4 +168,5 @@ class Parser(ParserBase):
         except ParseException, e:
             print "%s: syntax error:" % filename
             print e
+            import sys
             sys.exit(1)
