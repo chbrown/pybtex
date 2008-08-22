@@ -2,6 +2,10 @@
 #vim:fileencoding=utf-8
 
 """
+A template engine for bibliography entries and more.
+
+Inspired by Brevé -- http://breve.twisty-industries.com/
+
 >>> from pybtex.core import Entry, Person
 >>> author = Person(first='First', last='Last', middle='Middle')
 >>> fields = {
@@ -81,9 +85,15 @@ class Node(object):
         return ''.join([self.name, params_repr, children_repr])
 
     def format_data(self, data):
+        """Format the given data into a piece of richtext.Text"""
+
         return self.f(self.children, data, *self.args, **self.kwargs)
 
     def format(self):
+        """A convenience function to be used instead of format_data
+        when no data is needed.
+        """
+
         return self.format_data(None)
 
 
@@ -103,7 +113,7 @@ def node(f):
 
 @node
 def join(children, data, sep='', sep2=None, last_sep=None):
-    """join text fragments together"""
+    """Join text fragments together."""
 
     if sep2 is None:
         sep2 = sep
@@ -119,13 +129,13 @@ def join(children, data, sep='', sep2=None, last_sep=None):
 
 @node
 def words(children, data, sep=' '):
-    """join text fragments with spaces"""
+    """Join text fragments with spaces or something else."""
 
     return join(sep) [children].format_data(data)
 
 @node
 def sentence(children, data, capfirst=True, add_period=True, sep=', '):
-    """join text fragments, capitalyze the first letter, add a period to the end."""
+    """Join text fragments, capitalyze the first letter, add a period to the end."""
 
     text = join(sep) [children].format_data(data)
     if capfirst:
@@ -139,7 +149,7 @@ class FieldIsMissing(Exception):
 
 @node
 def field(children, data, name, apply_func=None):
-    """Return the contents of the bibliography entry field"""
+    """Return the contents of the bibliography entry field."""
 
     assert not children
     try:
@@ -153,7 +163,7 @@ def field(children, data, name, apply_func=None):
 
 @node
 def names(children, data, role, **kwargs):
-    """Return formatted names"""
+    """Return formatted names."""
 
     assert not children
     persons = data.persons[role]
@@ -161,7 +171,9 @@ def names(children, data, role, **kwargs):
 
 @node
 def optional(children, data):
-    """If child field is missing, return None. Else return formatted children"""
+    """If children contain a missing bibliography field, return None.
+    Else return formatted children.
+    """
 
     try:
         return richtext.Text(*_format_list(children, data))
@@ -180,7 +192,7 @@ def tag(children, data, name):
 
 @node
 def first_of(children, data):
-    """Return first nonempty child"""
+    """Return first nonempty child."""
 
     for child in _format_list(children, data):
         if child:
