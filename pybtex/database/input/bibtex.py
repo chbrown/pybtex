@@ -24,7 +24,7 @@ from pyparsing import (
         Word, CaselessLiteral, CharsNotIn,
         nums, alphas, alphanums, printables, delimitedList, downcaseTokens,
         Suppress, Combine, Group, Dict,
-        Forward, ZeroOrMore,
+        Forward, ZeroOrMore, Optional,
         ParseException,
 )
 from pybtex.core import Entry, Person
