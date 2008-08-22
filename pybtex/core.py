@@ -60,11 +60,7 @@ class Entry(object):
         self.vars = {}
 
     def add_person(self, person, role):
-        try:
-            self.persons[role]
-        except KeyError:
-            self.persons[role] = []
-        self.persons[role].append(person)
+        self.persons.setdefault(role, []).append(person)
 
 #    def __getattr__(self, name):
 #        try:
