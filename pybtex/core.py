@@ -1,4 +1,4 @@
-# Copyright 2006 Andrey Golovizin
+# Copyright (C) 2006, 2007, 2008  Andrey Golovizin
 #
 # This file is part of pybtex.
 #
