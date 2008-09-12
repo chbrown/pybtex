@@ -17,10 +17,9 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-import re
-from pyparsing import (Literal, Suppress, QuotedString, Word,
-        alphas, alphanums, printables, Regex, lineno, line, col,
-        Keyword, Forward, ZeroOrMore, OneOrMore, Group,
+from pyparsing import (Suppress, QuotedString, Word,
+        alphas, printables, Regex, lineno, line, col,
+        Forward, ZeroOrMore, OneOrMore, Group,
         restOfLine, StringEnd, ParserElement, downcaseTokens)
 from pybtex.bibtex.interpreter import (Integer, String, QuotedVar,
         Identifier, FunctionLiteral, BibTeXError)
