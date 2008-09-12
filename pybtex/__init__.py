@@ -41,45 +41,24 @@ def make_bibliography(aux_filename,
     if bib_format is None:
         from pybtex.database.input import bibtex as bib_format
 
-    try:
-        label_style = kwargs['label_style']
-    except KeyError:
-        from pybtex.style.labels import number as label_style
-
-    try:
-        name_style = kwargs['name_style']
-    except KeyError:
-        from pybtex.style.names import plain as name_style
 
     try:
         output_backend = kwargs['output_backend']
     except KeyError:
         from pybtex.backends import latex as output_backend
 
-    abbreviate_names = kwargs.get('abbreviate_names', True)
 
     bib_filename = path.extsep.join([aux_data.data, bib_format.file_extension])
     bib_data = bib_format.Parser(bib_encoding).parse_file(bib_filename)
 
-    entries = prepare_entries(bib_data, aux_data.citations, label_style, name_style, abbreviate_names)
-    del bib_data
-
-    formatter = find_plugin('style.formatting', aux_data.style).Formatter()
+    formatter = find_plugin('style.formatting', aux_data.style).Formatter(
+            label_style=kwargs.get('label_style'),
+            name_style=kwargs.get('name_style'),
+            abbreviate_names = kwargs.get('abbreviate_names', True),
+    )
+    entries = dict((key, bib_data.entries[key]) for key in aux_data.citations)
     formatted_entries = formatter.format_entries(entries)
     del entries
 
     output_filename = path.extsep.join([filename, output_backend.file_extension])
     output_backend.Writer(output_encoding).write_bibliography(formatted_entries, output_filename)
-
-def prepare_entries(bib_data, citations, label_style, name_style, abbreviate_names):
-    """Format bibliography entries and return a list of FormattedEntry instances."""
-
-    for number, key in enumerate(citations):
-        entry = bib_data.entries[key]
-        entry.number = number + 1 # entry numbers start from 1
-        entry.key = key
-        entry.label = label_style(entry)
-        for persons in entry.persons.itervalues():
-            for person in persons:
-                person.text = name_style(person, abbreviate_names)
-        yield entry

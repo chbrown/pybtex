@@ -22,14 +22,35 @@ import codecs
 from pybtex.core import FormattedEntry
 from pybtex.style.template import node, join
 from pybtex.richtext import Symbol, Text
+from pybtex.plugin import find_plugin
 
 @node
 def toplevel(children, data):
     return join(sep=Symbol('newblock')) [children].format_data(data)
 
 class FormatterBase:
+    default_label_style = 'number'
+    default_name_style = 'plain'
+
+    def __init__(self, label_style=None, name_style=None, abbreviate_names=False):
+        def get(value, plugin_path, default_name):
+            if value is not None:
+                return value
+            else:
+                return find_plugin(plugin_path, default_name)
+
+        self.format_label = get(label_style, 'pybtex.style.labels', self.default_label_style)
+        self.format_name = get(name_style, 'pybtex.style.names', self.default_name_style)
+        self.abbreviate_names = abbreviate_names
+
     def format_entries(self, entries):
-        for entry in entries:
+        for number, (key, entry) in enumerate(entries.items()):
+            entry.number = number + 1
+            for persons in entry.persons.itervalues():
+                for person in persons:
+                    person.text = self.format_name(person, self.abbreviate_names)
+
             f = getattr(self, "format_" + entry.type)
             text = f(entry)
-            yield FormattedEntry(entry.key, text, entry.label)
+            label = self.format_label(entry)
+            yield FormattedEntry(key, text, label)
