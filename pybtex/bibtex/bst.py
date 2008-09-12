@@ -68,6 +68,18 @@ bstGrammar = OneOrMore(command) + StringEnd()
 
 # somewhat faster
 def strip_comment(line):
+    """Strip the commented part of the line."
+
+    >>> print strip_comment('a normal line')
+    a normal line
+    >>> print strip_comment('a normal line% and a comment')
+    a normal line
+    >>> print strip_comment('"100% compatibility" is a myth')
+    "100% compatibility" is a myth
+    >>> print strip_comment('"100% compatibility" is a myth% or not?')
+    "100% compatibility" is a myth
+
+    """
     quotes = 0
     pos = 0
     for char in line:
