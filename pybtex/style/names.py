@@ -28,9 +28,9 @@ def plain(person, abbr=False):
             words [person.first(abbr)], words [person.middle(abbr)]
         ],
         words [
-            person.prelast(abbr) +
-            person.last(abbr) +
-            person.lineage(abbr)
+            person.prelast() +
+            person.last() +
+            person.lineage()
         ]
     ]
     return s
