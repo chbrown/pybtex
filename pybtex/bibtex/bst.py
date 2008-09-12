@@ -67,23 +67,22 @@ bstGrammar = OneOrMore(command) + StringEnd()
 # bstGrammar.ignore(comment)
 
 # somewhat faster
-def strip_comment(s):
+def strip_comment(line):
     quotes = 0
     pos = 0
-    for char in s:
+    for char in line:
         if char == '"':
             quotes += 1
         elif char == '%':
             if quotes % 2 == 0:
                 break 
         pos += 1
-    return s[:pos]
+    return line[:pos]
 
 def parse_file(filename):
-    l = []
-    f = file(filename)
-    s = ''.join(strip_comment(line) for line in f)
-    return bstGrammar.parseString(s)
+    bst_file = open(filename)
+    bst = ''.join(strip_comment(line) for line in bst_file)
+    return bstGrammar.parseString(bst)
 
 
 if __name__ == '__main__':
