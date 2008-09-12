@@ -48,6 +48,8 @@ class BackendBase:
     def write_bibliography(self, entries, filename):
         self.f = codecs.open(filename, "w", self.encoding)
         self.output = self.f.write
+        entries = list(entries)
+
         #FIXME: determine label width proprely
         maxlen = max([len(e.label) for e in entries])
 

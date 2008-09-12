@@ -29,9 +29,7 @@ def toplevel(children, data):
 
 class FormatterBase:
     def format_entries(self, entries):
-        l = []
         for entry in entries:
             f = getattr(self, "format_" + entry.type)
             text = f(entry)
-            l.append(FormattedEntry(entry.key, text, entry.label))
-        return l
+            yield FormattedEntry(entry.key, text, entry.label)

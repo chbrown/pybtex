@@ -74,7 +74,6 @@ def make_bibliography(aux_filename,
 def prepare_entries(bib_data, citations, label_style, name_style, abbreviate_names):
     """Format bibliography entries and return a list of FormattedEntry instances."""
 
-    entries = []
     for number, key in enumerate(citations):
         entry = bib_data.entries[key]
         entry.number = number + 1 # entry numbers start from 1
@@ -83,5 +82,4 @@ def prepare_entries(bib_data, citations, label_style, name_style, abbreviate_nam
         for persons in entry.persons.itervalues():
             for person in persons:
                 person.text = name_style(person, abbreviate_names)
-        entries.append(entry)
-    return entries
+        yield entry
