@@ -54,7 +54,7 @@ def make_bibliography(aux_filename,
     formatter = find_plugin('style.formatting', aux_data.style).Formatter(
             label_style=kwargs.get('label_style'),
             name_style=kwargs.get('name_style'),
-            abbreviate_names = kwargs.get('abbreviate_names', True),
+            abbreviate_names=kwargs.get('abbreviate_names', True),
     )
     entries = dict((key, bib_data.entries[key]) for key in aux_data.citations)
     formatted_entries = formatter.format_entries(entries)
