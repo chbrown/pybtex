@@ -66,6 +66,23 @@ class Node(object):
         return self
 
     def __repr__(self):
+        """
+        >>> join(', ')
+        join(', ')
+        >>> join
+        join
+        >>> join ['a']
+        join ['a']
+        >>> join ['a', 'b', 'c']
+        join ['a', 'b', 'c']
+        >>> join(' ') ['a', 'b', 'c']
+        join(' ') ['a', 'b', 'c']
+        >>> join(sep=' ') ['a', 'b', 'c']
+        join(sep=' ') ['a', 'b', 'c']
+        >>> join(sep=' ') [tag('em') ['a', 'b', 'c']]
+        join(sep=' ') [tag('em') ['a', 'b', 'c']]
+
+        """
         params = []
         args_repr = ', '.join(repr(arg) for arg in self.args)
         if args_repr:
