@@ -23,14 +23,25 @@ from pybtex.richtext import Symbol
 from pybtex.style.template import join, words
 
 def plain(person, abbr=False):
-    s = words [
-        join(sep=Symbol('nbsp')) [
-            words [person.first(abbr)], words [person.middle(abbr)]
-        ],
-        words [
-            person.prelast() +
-            person.last() +
-            person.lineage()
-        ]
+    """
+    >>> from pybtex.core import Person
+    >>> name = Person(string="Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
+    >>> print plain(name).format().plaintext()
+    Charles Louis Xavier Joseph de<nbsp>la Vall{\'e}e Poussin
+    >>> print plain(name, abbr=True).format().plaintext()
+    C. L. X. J. de<nbsp>la Vall{\'e}e Poussin
+    >>> name = Person(first='First', last='Last', middle='Middle')
+    >>> print plain(name).format().plaintext()
+    First Middle Last
+    >>> print plain(name, abbr=True).format().plaintext()
+    F. M. Last
+
+    """
+    nbsp = Symbol('nbsp')
+    return words [
+        words [person.first(abbr)],
+        words [person.middle(abbr)],
+        join(sep=nbsp) [person.prelast()],
+        words [person.last()],
+        join(sep=nbsp) [person.lineage()]
     ]
-    return s
