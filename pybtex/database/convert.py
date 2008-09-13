@@ -21,26 +21,28 @@
 """
 from os import path
 from pybtex.plugin import find_plugin
+from pybtex.database.formats import format_for_extension
 
 class ConvertError(Exception):
     pass
 
-def convert(input, from_format, to_format, output=None, input_encoding=None, output_encoding=None, parser_options=None):
+def format_for_filename(filename):
+    ext = path.splitext(filename)[1].lstrip(path.extsep)
+    return format_for_extension[ext]
+
+def convert(input, output,
+        from_format=None, to_format=None,
+        input_encoding=None, output_encoding=None,
+        parser_options=None):
     if parser_options is None:
         parser_options = {}
+    if from_format is None:
+        from_format = format_for_filename(input)
+    if to_format is None:
+        to_format = format_for_filename(output)
     input_format = find_plugin('database.input', from_format)
     output_format = find_plugin('database.output', to_format)
     
-    base_filename, ext = path.splitext(input)
-    if not ext:
-        input = path.extsep.join([input, input_format.file_extension])
-
-    if output:
-        if not path.splitext(output)[1]:
-            output = path.extsep.join([output, output_format.file_extension])
-    else:
-        output = path.extsep.join([base_filename, output_format.file_extension])
-
     if input == output:
         raise ConvertError('input and output file can not be the same')
 
