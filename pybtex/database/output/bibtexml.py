@@ -43,24 +43,29 @@ class PrettyTreeBuilder(ET.TreeBuilder):
     def newline(self):
         self.data('\n')
 
+    def indent_line(self):
+        self.data(' ' * len(self.stack) * 4)
+
     def start(self, tag, attrs=None, newline=True):
         if attrs is None:
             attrs = {}
+        self.indent_line()
         self.stack.append(tag)
         ET.TreeBuilder.start(self, tag, attrs)
         if newline:
             self.newline()
 
-    def end(self, newline=True):
+    def end(self, indent=True):
         tag = self.stack.pop()
+        if indent:
+            self.indent_line()
         ET.TreeBuilder.end(self, tag)
-        if newline:
-            self.newline()
+        self.newline()
 
     def element(self, tag, data):
         self.start(tag, newline=False)
         self.data(data)
-        self.end()
+        self.end(indent=False)
 
 
 class Writer(WriterBase):
