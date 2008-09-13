@@ -17,63 +17,87 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
+try:
+    import cElementTree as ET
+except ImportError:
+    try:
+        from elementtree import ElementTree as ET
+    except ImportError:
+        from xml.etree import ElementTree as ET
+
 from pybtex.core import Entry
 from pybtex.database.output import WriterBase
-from elementtree.SimpleXMLWriter import XMLWriter
 
 file_extension = 'bibtexml'
 doctype = """<!DOCTYPE bibtex:file PUBLIC
     "-//BibTeXML//DTD XML for BibTeX v1.0//EN"
         "bibtexml.dtd" >
 """
+
+class PrettyTreeBuilder(ET.TreeBuilder):
+
+    def __init__(self):
+        ET.TreeBuilder.__init__(self)
+        self.stack = []
+
+    def newline(self):
+        self.data('\n')
+
+    def start(self, tag, attrs=None, newline=True):
+        if attrs is None:
+            attrs = {}
+        self.stack.append(tag)
+        ET.TreeBuilder.start(self, tag, attrs)
+        if newline:
+            self.newline()
+
+    def end(self, newline=True):
+        tag = self.stack.pop()
+        ET.TreeBuilder.end(self, tag)
+        if newline:
+            self.newline()
+
+    def element(self, tag, data):
+        self.start(tag, newline=False)
+        self.data(data)
+        self.end()
+
+
 class Writer(WriterBase):
     """Outputs BibTeXML markup"""
 
     def write(self, bib_data, filename):
-        def newline():
-            w.data('\n')
         def write_persons(persons, role):
-#            persons = entry.persons[role]
             if persons:
-                newline()
                 w.start('bibtex:' + role)
                 for person in persons:
-                    newline()
                     w.start('bibtex:person')
                     for type in ('first', 'middle', 'prelast', 'last', 'lineage'):
                         name = person.get_part_as_text(type)
                         if name:
-                            newline()
                             w.element('bibtex:' + type, name)
-                    newline()
                     w.end()
-                newline()
                 w.end()
 
         f = file(filename, 'w')
-        w = XMLWriter(f, self.encoding)
-        w.declaration()
-        bibtex_file = w.start('bibtex:file', attrib={'xmlns:bibtex': 'http://bibtexml.sf.net/'})
+        w = PrettyTreeBuilder()
+        bibtex_file = w.start('bibtex:file', {'xmlns:bibtex': 'http://bibtexml.sf.net/'})
+        w.newline()
+
         for key, entry in bib_data.entries.iteritems():
-            newline()
-            newline()
-            w.start('bibtex:entry', id=key)
-            newline()
+            w.start('bibtex:entry', dict(id=key))
             w.start('bibtex:' + entry.type)
             for field_name, field_value in entry.fields.iteritems():
-                w.data('\n')
                 w.element('bibtex:' + field_name, field_value)
             for role, persons in entry.persons.iteritems():
                 write_persons(persons, role)
-            newline()
             w.end()
-            newline()
             w.end()
-        newline()
-        newline()
-        w.comment('manual cleanup may be required')
-        w.close(bibtex_file)
-        w.flush()
+            w.newline()
+        w.end()
 
-        # XMLWriter does not add a newline at the end of file for some reason
-        f.write('\n')
+        tree = ET.ElementTree(w.close())
+        output_file = open(filename, 'w')
+        tree.write(output_file, self.encoding)
+        output_file.write('\n')
+        output_file.close()
