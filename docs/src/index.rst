@@ -8,8 +8,8 @@ You can start using it right now by simply typing ``pybtex`` where you would hav
 Please note that the correct spelling is just *Pybtex*, without any camel-casing,
 which we considered too annoying to type.
 
-.. For the impatient: here are the `quickstart instructions <quickstart.txt>`_.
-.. We also suggest reading `the Friendly Manual <manual.txt>`_.
+We also suggest reading `the Friendly Manual <manual.txt>`_, although it is
+still incomplete.
 
 Oh! Is it really BibTeX-compatible?
 ===================================
@@ -38,8 +38,10 @@ You can see the `feature overview <features.txt>`_ for more details.
 Hmm nice. Wrap it up, I'll take it! Where is the download link?
 ===============================================================
 
-Right here. Please go ahead and
-`download <http://sourceforge.net/project/showfiles.php?group_id=151578>`_
-a fresh copy of Pybtex.
-Also, everyone is encouraged to check out the sources from our
+The latest version is available from our
 `Bazaar repository <http://code.launchpad.net/~ero-sennin/pybtex/trunk>`_.
+If you prefer tarballs, you can
+`have some too <http://sourceforge.net/project/showfiles.php?group_id=151578>`_,
+but they are likely to become outdated rather soon.
+
+Have fun!
