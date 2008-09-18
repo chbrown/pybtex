@@ -24,6 +24,7 @@ import os
 from glob import glob1
 from setuptools import setup, find_packages
 from distutils.command.sdist import sdist
+from distutils.dep_util import newer
 
 progname = 'pybtex'
 from pybtex.__version__ import version
@@ -32,9 +33,12 @@ class Sdist(sdist):
     def run(self):
         from pybtex.database.convert import convert
         bibtex_yaml = os.path.join('examples', 'foo.yaml')
-        bibtex = os.path.join('examples', 'foo.bibtex')
+        bibtexml = os.path.join('examples', 'foo.bibtexml')
+        bibtex = os.path.join('examples', 'foo.bib')
         if not os.path.exists(bibtex) or newer(bibtex_yaml, bibtex):
-            convert(bibtex_yaml, 'bibyaml', 'bibtex')
+            convert(bibtex_yaml, bibtex)
+        if not os.path.exists(bibtexml) or newer(bibtex_yaml, bibtexml):
+            convert(bibtex_yaml, bibtexml)
 
         from docs import generate
         generate.main('local')
@@ -64,8 +68,8 @@ that TeX-like camel-casing, which we considered too annoying to type.""",
         'Topic :: Text Processing :: Markup :: LaTeX',
         'Topic :: Text Processing :: Markup :: XML'
     ],
-    packages=find_packages(),
-    setup_requires = [
+    packages=find_packages(exclude='docs'),
+    install_requires = [
         'pyparsing>=1.4.5',
         'PyYAML>=3.01'
     ],
