@@ -93,8 +93,14 @@ div#footer {
 
 div#footer-left {
         float: left;
+        width: 45%;
+}
+
+div#footer-right p {
+        text-align: right;
 }
 
 div#footer-right {
         float: right;
+        width: 45%;
 }
