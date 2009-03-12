@@ -166,7 +166,6 @@ def empty(i):
 
 @builtin('format.name$')
 def format_name(i):
-    #FIXME stub
     format = i.pop()
     n = i.pop()
     names = i.pop()
