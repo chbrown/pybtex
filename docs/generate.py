@@ -30,6 +30,9 @@ from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 
+from bzrlib import workingtree
+from bzrlib.osutils import format_date
+
 from mystyle import MyHiglightStyle
 
 e = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
@@ -42,6 +45,29 @@ PYGMENTS_FORMATTER = HtmlFormatter(style=MyHiglightStyle, cssclass='sourcecode')
 DATE_FORMAT = '%d %B %y (%a)'
 
 FULL_TEMPLATE = e.get_template('template.html')
+
+
+def get_bzr_timestamp(filename):
+    tree = workingtree.WorkingTree.open_containing(filename)[0]
+    tree.lock_read()
+    rel_path = tree.relpath(os.path.abspath(filename))
+    file_id = tree.inventory.path2id(rel_path)
+    last_revision = get_last_bzr_revision(tree.branch, file_id)
+    tree.unlock()
+    return last_revision.timestamp, last_revision.timezone
+    
+
+def get_last_bzr_revision(branch, file_id):
+    history = branch.repository.iter_reverse_revision_history(branch.last_revision())
+    last_revision_id = branch.last_revision()
+    current_inventory = branch.repository.get_revision_inventory(last_revision_id)
+    current_sha1 = current_inventory[file_id].text_sha1
+    for revision_id in history:
+        inv = branch.repository.get_revision_inventory(revision_id)
+        if not file_id in inv or inv[file_id].text_sha1 != current_sha1:
+            return branch.repository.get_revision(last_revision_id)
+        last_revision_id = revision_id
+
 
 def pygments_directive(name, arguments, options, content, lineno,
                       content_offset, block_text, state, state_machine):
@@ -152,9 +178,9 @@ def handle_file(filename, fp, dst, mode):
     title = os.path.splitext(os.path.basename(filename))[0]
     content = fp.read()
     parts = generate_documentation(content, (lambda x: './%s.html' % x))
-    mtime = datetime.fromtimestamp(os.stat(filename).st_mtime)
+    mtime, timezone = get_bzr_timestamp(filename)
     c = dict(parts)
-    c['modification_date'] = mtime.strftime(DATE_FORMAT)
+    c['modification_date'] = format_date(mtime, timezone, 'utc', date_fmt=DATE_FORMAT, show_offset=False)
     c['file_id'] = title
     c['mode'] = mode
     tmpl = FULL_TEMPLATE
