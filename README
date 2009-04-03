@@ -33,3 +33,7 @@ The resulting bibliography may be output in one of the following formats:
 Run the following:
 $ python setup.py install
 (you may need to be root for that).
+
+5. Testing
+To run the tests:
+$ python setup.py nosetests
