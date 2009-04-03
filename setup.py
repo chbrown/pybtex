@@ -68,7 +68,7 @@ that TeX-like camel-casing, which we considered too annoying to type.""",
         'Topic :: Text Processing :: Markup :: LaTeX',
         'Topic :: Text Processing :: Markup :: XML'
     ],
-    packages=find_packages(exclude='docs'),
+    packages=find_packages(exclude=['docs']),
     install_requires = [
         'pyparsing>=1.4.5',
         'PyYAML>=3.01'
