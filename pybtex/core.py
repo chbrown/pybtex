@@ -128,6 +128,17 @@ class Person:
                     self._last.append(part)
             process_first_middle(first_middle)
 
+    def __eq__(self, other):
+        if not isinstance(other, Person):
+            raise NotImplementedError
+        return (
+                self._first == other._first
+                and self._middle == other._middle
+                and self._prelast == other._prelast
+                and self._last == other._last
+                and self._lineage == other._lineage
+        )
+
     def __unicode__(self):
         return ('%s %s, %s, %s %s' %
                 (self.get_part_as_text('prelast'),
