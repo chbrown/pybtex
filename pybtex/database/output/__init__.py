@@ -26,6 +26,6 @@ class WriterBase:
             encoding = locale.getpreferredencoding()
         self.encoding = encoding
 
-    def write(self, bib_data, filename):
+    def write_file(self, bib_data, filename):
         with open(filename, 'w') as stream:
             self.write_stream(bib_data, stream)
