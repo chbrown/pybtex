@@ -1,0 +1,83 @@
+!!python/object:pybtex.database.BibliographyData
+_preamble: ['%%% pybtex example file']
+entries:
+  ruckenstein-diffusion: &id001 !!python/object:pybtex.core.Entry
+    fields: !!python/object/new:pybtex.core.FieldDict
+      dictitems: {journal: !!python/unicode 'Ind. Eng. Chem. Res.', language: !!python/unicode 'english',
+        pages: !!python/unicode '888-895', title: !!python/unicode 'Predicting the
+          Diffusion Coefficient in Supercritical Fluids', volume: !!python/unicode '36',
+        year: !!python/unicode '1997'}
+      state:
+        parent: *id001
+    persons:
+      author:
+      - !!python/object:pybtex.core.Person
+        _first: [Hongquin]
+        _last: [Liu]
+        _lineage: []
+        _middle: []
+        _prelast: []
+      - !!python/object:pybtex.core.Person
+        _first: [Eli]
+        _last: [Ruckenstein]
+        _lineage: []
+        _middle: []
+        _prelast: []
+    type: article
+    vars: {}
+  test-booklet: &id002 !!python/object:pybtex.core.Entry
+    fields: !!python/object/new:pybtex.core.FieldDict
+      dictitems: {address: !!python/unicode 'Moscow', howpublished: !!python/unicode 'Published
+          by Foo', language: !!python/unicode 'english', month: !!python/unicode 'January',
+        title: !!python/unicode 'Just a booklet', year: !!python/unicode '2006'}
+      state:
+        parent: *id002
+    persons:
+      author:
+      - !!python/object:pybtex.core.Person
+        _first: [First]
+        _last: [Last]
+        _lineage: [Jr.]
+        _middle: [Middle]
+        _prelast: [de]
+    type: booklet
+    vars: {}
+  test-inbook: &id003 !!python/object:pybtex.core.Entry
+    fields: !!python/object/new:pybtex.core.FieldDict
+      dictitems: {booktitle: !!python/unicode 'Some Good Book', edition: !!python/unicode 'Second',
+        language: !!python/unicode 'english', number: !!python/unicode '3', pages: !!python/unicode '44--59',
+        publisher: !!python/unicode 'Some Publisher', series: !!python/unicode 'Some
+          series', title: !!python/unicode 'Some Title', year: !!python/unicode '1933'}
+      state:
+        parent: *id003
+    persons:
+      author:
+      - !!python/object:pybtex.core.Person
+        _first: [Peter]
+        _last: [Jackson]
+        _lineage: []
+        _middle: []
+        _prelast: []
+    type: inbook
+    vars: {}
+  viktorov-metodoj: &id004 !!python/object:pybtex.core.Entry
+    fields: !!python/object/new:pybtex.core.FieldDict
+      dictitems: {language: !!python/unicode 'russian', publisher: "\u041B.: <<\u0425\
+          \u0438\u043C\u0438\u044F>>", title: "\u041C\u0435\u0442\u043E\u0434\u044B\
+          \ \u0432\u044B\u0447\u0438\u0441\u043B\u0435\u043D\u0438\u044F \u0444\u0438\
+          \u0437\u0438\u043A\u043E-\u0445\u0438\u043C\u0438\u0447\u0435\u0441\u043A\
+          \u0438\u0445 \u0432\u0435\u043B\u0438\u0447\u0438\u043D \u0438 \u043F\u0440\
+          \u0438\u043A\u043B\u0430\u0434\u043D\u044B\u0435 \u0440\u0430\u0441\u0447\
+          \u0451\u0442\u044B", year: !!python/unicode '1977'}
+      state:
+        parent: *id004
+    persons:
+      author:
+      - !!python/object:pybtex.core.Person
+        _first: ["\u041C\u0438\u0445\u0430\u0438\u043B"]
+        _last: ["\u0412\u0438\u043A\u0442\u043E\u0440\u043E\u0432"]
+        _lineage: []
+        _middle: ["\u041C\u0430\u0440\u043A\u043E\u0432\u0438\u0447"]
+        _prelast: []
+    type: book
+    vars: {}
