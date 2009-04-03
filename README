@@ -1,39 +1,46 @@
-Pybtex is a bibliography processor similar to BibTeX and written in Python.
+Synopsis
+--------
+
+::
+
+    latex foo.tex
+    pybtex foo.aux
+    latex foo.tex
+    latex foo.tex
 
 
-1. Synopsis
-$ latex foo.tex
-$ pybtex foo.aux
-$ latex foo.tex
-$ latex foo.tex
+Description
+-----------
 
-2. Description
 Pybtex reads citation information from a file and
-produces a formatted bibliography. In case of LaTeX the
-citaton information is read from .aux file and the
-bibliography is written to .bbl file.
+produces a formatted bibliography. BibTeX style files are supported.
+Alternatively it is possible to write styles in Python.
 
 Pybtex currently understands the following bibliography formats:
+
 - BibTeX
+
 - BibTeXML
+
 - YAML-based format
 
 The resulting bibliography may be output in one of the following formats:
+
 - LaTeX
+
+- HTML
+
 - plain text
 
-3. Requirements
-- Python-2.3.2 or later (http://python.org)
-- pyparsing-1.4 or later is required for reading .bib
-  files (http://pyparsing.sourceforge.net)
-- elementtree is required for reading BibTeXML
-  (http://effbot.org/zone/element-index.htm)
+Download and Install
+--------------------
 
-4. Installation
-Run the following:
-$ python setup.py install
-(you may need to be root for that).
+You are strongly encouraged to use our Bazaar repository instead of tarballs::
 
-5. Testing
-To run the tests:
-$ python setup.py nosetests
+    bzr branch http://code.launchpad.net/~ero-sennin/pybtex/trunk pybtex
+    cd pybtex
+    python setup.py install
+
+To run unit tests::
+
+    python setup.py nosetests
