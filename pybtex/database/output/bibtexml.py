@@ -71,7 +71,7 @@ class PrettyTreeBuilder(ET.TreeBuilder):
 class Writer(WriterBase):
     """Outputs BibTeXML markup"""
 
-    def write(self, bib_data, filename):
+    def write_stream(self, bib_data, stream):
         def write_persons(persons, role):
             if persons:
                 w.start('bibtex:' + role)
@@ -84,7 +84,6 @@ class Writer(WriterBase):
                     w.end()
                 w.end()
 
-        f = file(filename, 'w')
         w = PrettyTreeBuilder()
         bibtex_file = w.start('bibtex:file', {'xmlns:bibtex': 'http://bibtexml.sf.net/'})
         w.newline()
@@ -102,7 +101,5 @@ class Writer(WriterBase):
         w.end()
 
         tree = ET.ElementTree(w.close())
-        output_file = open(filename, 'w')
-        tree.write(output_file, self.encoding)
-        output_file.write('\n')
-        output_file.close()
+        tree.write(stream, self.encoding)
+        stream.write('\n')

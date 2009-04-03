@@ -17,9 +17,15 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
+from __future__ import with_statement
+
 class WriterBase:
     def __init__(self, encoding = None):
         if not encoding:
             import locale
             encoding = locale.getpreferredencoding()
         self.encoding = encoding
+
+    def write(self, bib_data, filename):
+        with open(filename, 'w') as stream:
+            self.write_stream(bib_data, stream)

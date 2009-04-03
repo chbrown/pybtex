@@ -28,7 +28,7 @@ class Writer(WriterBase):
     def quote(self, s):
         return '"%s"' % s.replace('"', "''")
 
-    def write(self, bib_data, filename):
+    def write_stream(self, bib_data, stream):
         def write_field(type, value):
             f.write(',\n    %s = %s' % (type, self.quote(value)))
         def format_name(person):
@@ -56,7 +56,7 @@ class Writer(WriterBase):
             if preamble:
                 f.write('@preamble{%s}\n\n' % self.quote(preamble))
 
-        f = codecs.open(filename, 'w', encoding=self.encoding)
+        f = codecs.getwriter(self.encoding)(stream)
         write_preamble(bib_data.preamble())
         for key, entry in bib_data.entries.iteritems():
             f.write('@%s' % entry.type)

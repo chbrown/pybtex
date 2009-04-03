@@ -29,7 +29,7 @@ doctype = """<!DOCTYPE bibtex:file PUBLIC
 class Writer(WriterBase):
     """Outputs YAML markup"""
 
-    def write(self, bib_data, filename):
+    def write_stream(self, bib_data, stream):
         def process_person_roles(entry):
             for role, persons in entry.persons.iteritems():
                 yield role, list(process_persons(persons))
@@ -55,6 +55,4 @@ class Writer(WriterBase):
         preamble = bib_data.preamble()
         if preamble:
             data['preamble'] = preamble
-        f = open(filename, 'w')
-        yaml.safe_dump(data, f, allow_unicode=True, default_flow_style=False, indent=4)
-        f.close()
+        yaml.safe_dump(data, stream, allow_unicode=True, default_flow_style=False, indent=4)
