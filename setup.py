@@ -45,12 +45,12 @@ class Sdist(sdist):
 
         sdist.run(self)
 
+README = open(os.path.join(os.path.dirname(__file__), 'README')).read()
+
 setup(name=progname,
     version=version,
-    description='BibTeX-compatible bibliography processor in Python',
-    long_description="""Pybtex is a drop-in replacement for BibTeX
-written in Python. Please note that the correct spelling is just *Pybtex*, without
-that TeX-like camel-casing, which we considered too annoying to type.""",
+    description='A BibTeX-compatible bibliography processor in Python',
+    long_description=README,
     author='Andrey Golovizin',
     author_email='golovizin@gmail.com',
     url='http://pybtex.sourceforge.net/',
