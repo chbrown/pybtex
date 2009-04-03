@@ -17,6 +17,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
+import codecs
 from pyparsing import (Suppress, QuotedString, Word,
         alphas, printables, Regex, lineno, line, col,
         Forward, ZeroOrMore, OneOrMore, Group,
@@ -91,8 +92,8 @@ def strip_comment(line):
         pos += 1
     return line[:pos]
 
-def parse_file(filename):
-    bst_file = open(filename)
+def parse_file(filename, encoding):
+    bst_file = codecs.open(filename, encoding)
     bst = ''.join(strip_comment(line) for line in bst_file)
     return bstGrammar.parseString(bst)
 
