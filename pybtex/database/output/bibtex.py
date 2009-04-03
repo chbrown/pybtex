@@ -68,4 +68,3 @@ class Writer(WriterBase):
             for type, value in entry.fields.iteritems():
                 write_field(type, value)
             f.write('\n}\n\n')
-        f.close()
