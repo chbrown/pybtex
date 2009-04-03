@@ -54,7 +54,6 @@ that TeX-like camel-casing, which we considered too annoying to type.""",
     author='Andrey Golovizin',
     author_email='golovizin@gmail.com',
     url='http://pybtex.sourceforge.net/',
-    download_url='http://sourceforge.net/project/showfiles.php?group_id=151578',
     license='GPL-2',
     platforms=['platform-independent'],
     classifiers=[
