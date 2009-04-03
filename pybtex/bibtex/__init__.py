@@ -33,7 +33,7 @@ import locale
 def make_bibliography(aux_filename,
         bib_format=None,
         bib_encoding=locale.getpreferredencoding(),
-        latex_encoding=locale.getpreferredencoding(),
+        output_encoding=locale.getpreferredencoding(),
         bst_encoding=locale.getpreferredencoding(),
         **kwargs):
     if bib_format is None:
@@ -44,5 +44,5 @@ def make_bibliography(aux_filename,
     base_filename = path.splitext(aux_filename)[0]
     bbl_filename = base_filename + path.extsep + 'bbl'
     bib_filename = base_filename + path.extsep + bib_format.file_extension
-    bbl_file = codecs.open(bbl_filename, 'w', encoding=latex_encoding)
+    bbl_file = codecs.open(bbl_filename, 'w', encoding=output_encoding)
     Interpreter(bib_format).run(bst_script, aux_data.citations, bib_filename, bbl_file)
