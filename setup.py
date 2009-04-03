@@ -74,5 +74,6 @@ that TeX-like camel-casing, which we considered too annoying to type.""",
         'PyYAML>=3.01'
     ],
     scripts=[os.path.join('scripts', progname), os.path.join('scripts', progname + "-convert")],
-    cmdclass={'sdist' : Sdist}
+    cmdclass={'sdist' : Sdist},
+    zip_safe=True,
     )
