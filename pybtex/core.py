@@ -33,19 +33,21 @@ class FormattedEntry:
         self.text = text
         self.label = label
 
+
+class FieldDict(dict):
+    def __init__(self, parent, *args, **kwargw):
+        self.parent = parent
+        dict.__init__(self, *args, **kwargw)
+    def __missing__(self, key):
+        persons = self.parent.persons[key]
+        return ' and '.join(unicode(person) for person in persons)
+
+
 class Entry(object):
     """Bibliography entry. Important members are:
     - persons (a dict of Person objects)
     - fields (all dict of string)
     """
-
-    class FieldDict(dict):
-        def __init__(self, parent, *args, **kwargw):
-            self.parent = parent
-            dict.__init__(self, *args, **kwargw)
-        def __missing__(self, key):
-            persons = self.parent.persons[key]
-            return ' and '.join(unicode(person) for person in persons)
 
     def __init__(self, type_, fields=None, persons=None):
         if fields is None:
@@ -53,16 +55,24 @@ class Entry(object):
         if persons is None:
             persons = {}
         self.type = type_
-        self.fields = self.FieldDict(self, fields)
+        self.fields = FieldDict(self, fields)
         self.persons = dict(persons)
 
         # for BibTeX interpreter
         self.vars = {}
 
+    def __eq__(self, other):
+        if not isinstance(other, Entry):
+            return super(Entry, self) == other
+        return (
+                self.fields == other.fields
+                and self.persons == other.persons
+        )
+
     def add_person(self, person, role):
         self.persons.setdefault(role, []).append(person)
 
-class Person:
+class Person(object):
     """Represents a person (usually human).
     """
     valid_roles = ['author', 'editor'] 
@@ -130,7 +140,7 @@ class Person:
 
     def __eq__(self, other):
         if not isinstance(other, Person):
-            raise NotImplementedError
+            return super(Person, self) == other
         return (
                 self._first == other._first
                 and self._middle == other._middle
