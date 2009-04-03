@@ -74,7 +74,7 @@ class Parser(ParserBase):
     def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):
         ParserBase.__init__(self, encoding)
 
-        self.macros = dict(macros)
+        self.default_macros = dict(macros)
         self.person_fields = person_fields
 
         lbrace = Suppress('{')
@@ -155,6 +155,8 @@ class Parser(ParserBase):
         f = codecs.open(filename, encoding=self.encoding)
         s = f.read()
         f.close()
+
+        self.macros = dict(self.default_macros)
         self.data = BibliographyData()
         try:
 #            entries = dict(entry[0][0] for entry in self.BibTeX_entry.scanString(s))
