@@ -246,8 +246,8 @@ class Interpreter(object):
 
     def command_read(self):
 #        print 'READ'
-        p = self.bib_format.Parser()
-        self.bib_data = p.parse_file(filename=self.bib_file, macros=self.macros, person_fields=[])
+        p = self.bib_format.Parser(macros=self.macros, person_fields=[])
+        self.bib_data = p.parse_file(filename=self.bib_file)
 #        for k, v in self.bib_data.iteritems():
 #            print k
 #            for field, value in v.fields.iteritems():

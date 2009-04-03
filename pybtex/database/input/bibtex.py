@@ -71,8 +71,11 @@ def split_name_list(s):
 
 
 class Parser(ParserBase):
-    def __init__(self, encoding=None, **kwargs):
+    def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):
         ParserBase.__init__(self, encoding)
+
+        self.macros = dict(macros)
+        self.person_fields = person_fields
 
         lbrace = Suppress('{')
         rbrace = Suppress('}')
@@ -145,11 +148,9 @@ class Parser(ParserBase):
     def process_macro(self, s, loc, toks):
         self.macros[toks[0][0].lower()] = toks[0][1]
 
-    def parse_file(self, filename, macros=month_names, person_fields=Person.valid_roles):
+    def parse_file(self, filename):
         """parse BibTeX file and return a tree
         """
-        self.macros = dict(macros)
-        self.person_fields = person_fields
         self.unnamed_entry_counter = 1
         f = codecs.open(filename, encoding=self.encoding)
         s = f.read()
