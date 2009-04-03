@@ -22,6 +22,14 @@ class BibliographyData(object):
         self.entries = {}
         self._preamble = []
 
+    def __eq__(self, other):
+        if not isinstance(other, BibliographyData):
+            return super(BibliographyData, self) == other
+        return (
+            self.entries == other.entries
+            and self._preamble == other._preamble
+        )
+
     def add_to_preamble(self, s):
         self._preamble.append(s)
 
