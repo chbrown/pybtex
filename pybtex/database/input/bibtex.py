@@ -148,13 +148,9 @@ class Parser(ParserBase):
     def process_macro(self, s, loc, toks):
         self.macros[toks[0][0].lower()] = toks[0][1]
 
-    def parse_file(self, filename):
-        """parse BibTeX file and return a tree
-        """
+    def parse_stream(self, stream):
         self.unnamed_entry_counter = 1
-        f = codecs.open(filename, encoding=self.encoding)
-        s = f.read()
-        f.close()
+        s = codecs.getreader(self.encoding)(stream).read()
 
         self.macros = dict(self.default_macros)
         self.data = BibliographyData()
@@ -163,7 +159,7 @@ class Parser(ParserBase):
             self.BibTeX_entry.searchString(s)
             return self.data
         except ParseException, e:
-            print "%s: syntax error:" % filename
+            print "%s: syntax error:" % getattr(stream, 'name', '<NO FILE>')
             print e
             import sys
             sys.exit(1)

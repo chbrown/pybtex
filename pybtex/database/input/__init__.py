@@ -17,6 +17,8 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
+from __future__ import with_statement
+
 default = 'bib'
 filetypes = {'bib' : 'bibtex'}
 import locale
@@ -26,3 +28,8 @@ class ParserBase:
         if encoding is None:
             encoding = locale.getpreferredencoding()
         self.encoding = encoding
+
+    def parse_file(self, filename):
+        with open(filename, 'r') as f:
+            result = self.parse_stream(f)
+        return result
