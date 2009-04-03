@@ -20,7 +20,10 @@
 """parse latex' aux file
 """
 
+from __future__ import with_statement
+
 import re
+import codecs
 
 class AuxData:
     def __init__(self):
@@ -36,14 +39,13 @@ class AuxData:
     def new_data(self, s):
         self.data = s
 
-def parse_file(filename):
+def parse_file(filename, encoding):
     """parse a file and return an AuxData object
     FIXME: add an option to specify aux file encoding in command line
     """
     command = re.compile(r'\\(citation|bibdata|bibstyle){(.*)}')
-    f = open(filename)
-    s = f.read()
-    f.close()
+    with codecs.open(filename, encoding) as f:
+        s = f.read()
     b = AuxData()
     actions = {
         "citation" : b.new_citation,

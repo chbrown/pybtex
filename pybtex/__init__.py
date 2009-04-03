@@ -36,7 +36,7 @@ def make_bibliography(aux_filename,
     """
 
     filename = path.splitext(aux_filename)[0]
-    aux_data = auxfile.parse_file(aux_filename)
+    aux_data = auxfile.parse_file(aux_filename, output_encoding)
 
     if bib_format is None:
         from pybtex.database.input import bibtex as bib_format

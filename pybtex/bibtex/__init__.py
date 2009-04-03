@@ -38,7 +38,7 @@ def make_bibliography(aux_filename,
         **kwargs):
     if bib_format is None:
         from pybtex.database.input import bibtex as bib_format
-    aux_data = auxfile.parse_file(aux_filename)
+    aux_data = auxfile.parse_file(aux_filename, output_encoding)
     bst_filename = kpsewhich(aux_data.style + path.extsep + 'bst')
     bst_script = bst.parse_file(bst_filename, bst_encoding)
     base_filename = path.splitext(aux_filename)[0]
