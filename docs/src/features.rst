@@ -24,7 +24,7 @@ from the following example:
 
 
 For detailed description of the BibTeX format please refer to the
-`BibTeX documentation <http://www.ctan.org/info?id=bibtex>`_.
+`BibTeX documentation <http://www.ctan.org/get/info/tex-references/html/bibtex-bib-files.html>`_.
 
 BibTeXML
 --------
