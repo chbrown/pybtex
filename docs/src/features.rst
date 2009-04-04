@@ -30,7 +30,7 @@ BibTeXML
 --------
 
 `BibTeXML <http://bibtexml.sourceforge.net>`_ format attempts to combine the simplicity of BibTeX format with the
-power of XML. Here is like the above BibTeX bibliography entry wolud look like:
+power of XML. Here is what the above BibTeX bibliography entry wolud look like:
 
 .. sourcecode:: xml
 
