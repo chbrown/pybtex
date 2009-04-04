@@ -39,7 +39,7 @@ Hmm nice. Wrap it up, I'll take it! Where is the download link?
 ===============================================================
 
 The latest version is available from our
-`Bazaar repository <http://code.launchpad.net/~ero-sennin/pybtex/trunk>`_.
+`Bazaar repository <https://code.launchpad.net/~ero-sennin/pybtex/trunk>`_.
 If you prefer
 `tarballs <http://pypi.python.org/pypi/pybtex>`_,
 you can have some too,
