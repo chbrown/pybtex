@@ -70,6 +70,9 @@ def split_name_list(s):
     return names
 
 
+def join_lines(s, loc, toks):
+    return [' '.join(tok.splitlines()) for tok in toks]
+
 class Parser(ParserBase):
     def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):
         ParserBase.__init__(self, encoding)
@@ -86,9 +89,9 @@ class Parser(ParserBase):
         at = Suppress('@')
         comma = Suppress(',')
 
-        quotedString = Combine(Suppress('"') + ZeroOrMore(CharsNotIn('"\n\r')) + Suppress('"'))
+        quotedString = Combine(Suppress('"') + ZeroOrMore(CharsNotIn('"')).setParseAction(join_lines) + Suppress('"'))
         bracedString = Forward()
-        bracedString << Combine(lbrace + ZeroOrMore(CharsNotIn('{}\n\r') | bracedString) + rbrace)
+        bracedString << Combine(lbrace + ZeroOrMore(CharsNotIn('{}').setParseAction(join_lines) | bracedString) + rbrace)
         bibTeXString = quotedString | bracedString
 
         macro_substitution = Word(alphanums).setParseAction(self.substitute_macro)
