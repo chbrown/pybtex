@@ -143,7 +143,7 @@ class Parser(ParserBase):
             else:
                 entry.fields[k] = v
 #        return (key, entry)
-        self.data.entries[key] = entry
+        self.data.add_entry(key, entry)
 
     def substitute_macro(self, s, loc, toks):
         return self.macros[toks[0].lower()]

@@ -39,8 +39,13 @@ class FieldDict(dict):
         self.parent = parent
         dict.__init__(self, *args, **kwargw)
     def __missing__(self, key):
-        persons = self.parent.persons[key]
-        return ' and '.join(unicode(person) for person in persons)
+        if key in self.parent.persons:
+            persons = self.parent.persons[key]
+            return ' and '.join(unicode(person) for person in persons)
+        elif 'crossref' in self:
+            return self.parent.get_crossref().fields[key]
+        else:
+            raise KeyError(key)
 
 
 class Entry(object):
@@ -49,7 +54,7 @@ class Entry(object):
     - fields (all dict of string)
     """
 
-    def __init__(self, type_, fields=None, persons=None):
+    def __init__(self, type_, fields=None, persons=None, collection=None):
         if fields is None:
             fields = {}
         if persons is None:
@@ -57,9 +62,13 @@ class Entry(object):
         self.type = type_
         self.fields = FieldDict(self, fields)
         self.persons = dict(persons)
+        self.collection = collection
 
         # for BibTeX interpreter
         self.vars = {}
+
+    def get_crossref(self):
+        return self.collection.entries[self.fields['crossref']]
 
     def __eq__(self, other):
         if not isinstance(other, Entry):

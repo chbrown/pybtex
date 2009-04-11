@@ -40,7 +40,7 @@ class Parser(ParserBase):
         data = BibliographyData()
         t = ET.parse(stream)
         entries = t.findall(bibtexns + 'entry')
-        data.entries.update(self.process_entry(entry) for entry in entries)
+        data.add_entries(self.process_entry(entry) for entry in entries)
         return data
 
     def process_entry(self, entry):

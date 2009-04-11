@@ -35,3 +35,11 @@ class BibliographyData(object):
 
     def preamble(self):
         return ''.join(self._preamble)
+
+    def add_entry(self, key, entry):
+        entry.collection = self
+        self.entries[key] = entry
+
+    def add_entries(self, entries):
+        for key, entry in entries:
+            self.add_entry(key, entry)

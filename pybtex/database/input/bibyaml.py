@@ -37,7 +37,7 @@ class Parser(ParserBase):
         except KeyError:
             pass
 
-        data.entries.update(entries)
+        data.add_entries(entries)
         return data
 
     def process_entry(self, entry):
