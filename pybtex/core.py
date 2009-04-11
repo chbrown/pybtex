@@ -176,12 +176,11 @@ class Person(object):
         )
 
     def __unicode__(self):
-        return ('%s %s, %s, %s %s' %
-                (self.get_part_as_text('prelast'),
-                self.get_part_as_text('last'),
-                self.get_part_as_text('lineage'),
-                self.get_part_as_text('first'),
-                self.get_part_as_text('middle')))
+        # von Last, Jr, First
+        von_last = ' '.join(self._prelast + self._last)
+        jr = ' '.join(self._lineage)
+        first = ' '.join(self._first + self._middle)
+        return ', '.join(filter(None, [von_last, jr, first]))
 
     def get_part_as_text(self, type):
         names = getattr(self, '_' + type)
