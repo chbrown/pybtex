@@ -93,7 +93,7 @@ def strip_comment(line):
     return line[:pos]
 
 def parse_file(filename, encoding):
-    bst_file = codecs.open(filename, encoding)
+    bst_file = codecs.open(filename, encoding=encoding)
     bst = ''.join(strip_comment(line) for line in bst_file)
     return bstGrammar.parseString(bst)
 

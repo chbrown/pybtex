@@ -44,7 +44,7 @@ def parse_file(filename, encoding):
     FIXME: add an option to specify aux file encoding in command line
     """
     command = re.compile(r'\\(citation|bibdata|bibstyle){(.*)}')
-    with codecs.open(filename, encoding) as f:
+    with codecs.open(filename, encoding=encoding) as f:
         s = f.read()
     b = AuxData()
     actions = {
