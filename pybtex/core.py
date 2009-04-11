@@ -74,6 +74,18 @@ class Entry(object):
 
 class Person(object):
     """Represents a person (usually human).
+
+    >>> p = Person('Avinash K. Dixit')
+    >>> print p.first()
+    ['Avinash']
+    >>> print p.middle()
+    ['K.']
+    >>> print p.prelast()
+    []
+    >>> print p.last()
+    ['Dixit']
+    >>> print p.lineage()
+    []
     """
     valid_roles = ['author', 'editor'] 
     style1_re = re.compile('^(.+),\s*(.+)$')
@@ -125,10 +137,15 @@ class Person(object):
             process_von_last(parts[0])
             process_first_middle(parts[1].split())
         else: # First von Last
+            # FIXME clean it up somehow
             first_middle = []
             first = True
 
-            for part in s.split():
+            parts = s.split()
+            for i, part in enumerate(parts):
+                last_part = i == len(parts) - 1
+                if last_part:
+                    first = False
                 if part.islower():
                     self._prelast.append(part)
                     first = False
