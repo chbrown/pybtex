@@ -95,6 +95,25 @@ class Person(object):
     ['Dixit']
     >>> print p.lineage()
     []
+    >>> print unicode(p)
+    Dixit, Avinash K.
+    >>> p == Person(unicode(p))
+    True
+    >>> p = Person('Dixit, Jr, Avinash K. ')
+    >>> print p.first()
+    ['Avinash']
+    >>> print p.middle()
+    ['K.']
+    >>> print p.prelast()
+    []
+    >>> print p.last()
+    ['Dixit']
+    >>> print p.lineage()
+    ['Jr']
+    >>> print unicode(p)
+    Dixit, Jr, Avinash K.
+    >>> p == Person(unicode(p))
+    True
     """
     valid_roles = ['author', 'editor'] 
     style1_re = re.compile('^(.+),\s*(.+)$')
