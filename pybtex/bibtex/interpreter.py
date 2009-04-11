@@ -244,10 +244,19 @@ class Interpreter(object):
         value = self.getToken()[0].value()
         self.macros[name] = value
 
+    def expand_wildcard_citations(self):
+        for citation in self.citations:
+            if citation == '*':
+                for key in self.bib_data.entries.keys():
+                    yield key
+            else:
+                yield citation
+
     def command_read(self):
 #        print 'READ'
         p = self.bib_format.Parser(macros=self.macros, person_fields=[])
         self.bib_data = p.parse_file(filename=self.bib_file)
+        self.citations = list(self.expand_wildcard_citations())
 #        for k, v in self.bib_data.iteritems():
 #            print k
 #            for field, value in v.fields.iteritems():
