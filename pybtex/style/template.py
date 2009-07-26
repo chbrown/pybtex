@@ -88,7 +88,7 @@ class Node(object):
         if args_repr:
             params.append(args_repr)
         kwargs_repr = ', '.join('%s=%s' % (key, repr(value))
-                for (key, value) in self.kwargs.items())
+                for (key, value) in self.kwargs.iteritems())
         if kwargs_repr:
             params.append(kwargs_repr)
         if params:

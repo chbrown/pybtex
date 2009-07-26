@@ -247,7 +247,7 @@ class Interpreter(object):
     def expand_wildcard_citations(self):
         for citation in self.citations:
             if citation == '*':
-                for key in self.bib_data.entries.keys():
+                for key in self.bib_data.entries.iterkeys():
                     yield key
             else:
                 yield citation
