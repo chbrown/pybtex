@@ -199,7 +199,7 @@ class Person(object):
         von_last = ' '.join(self._prelast + self._last)
         jr = ' '.join(self._lineage)
         first = ' '.join(self._first + self._middle)
-        return ', '.join(filter(None, [von_last, jr, first]))
+        return ', '.join(part for part in (von_last, jr, first) if part)
 
     def get_part_as_text(self, type):
         names = getattr(self, '_' + type)
