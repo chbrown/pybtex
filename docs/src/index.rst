@@ -21,7 +21,8 @@ although there are still some minor issues.
 Nevertheless, we are going to achieve 100% compatibility before releasing
 version 1.0.
 
-If something does not work for you, just let us know.
+If something does not work for you, just `let us know
+<http://sourceforge.net/tracker/?func=add&group_id=151578&atid=781406>`_.
 
 
 But why should I use it instead of BibTeX?
@@ -44,5 +45,8 @@ If you prefer
 `tarballs <http://pypi.python.org/pypi/pybtex>`_,
 you can have some too,
 but they are likely to become outdated rather soon.
+
+If something goes wrong, please `file a bug report
+<http://sourceforge.net/tracker/?func=add&group_id=151578&atid=781406>`_.
 
 Have fun!
