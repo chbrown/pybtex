@@ -39,7 +39,7 @@ You are strongly encouraged to use our `Bazaar repository <https://code.launchpa
 
     bzr branch lp:pybtex
     cd pybtex
-    python setup.py install
+    python setup.py develop
 
 To run unit tests::
 
