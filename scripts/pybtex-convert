@@ -54,4 +54,9 @@ def main():
         opt_parser.error(s)
 
 if __name__ == '__main__':
-    main()
+    from pybtex.exceptions import PybtexError
+    try:
+        main()
+    except PybtexError, error:
+        print 'ERROR: %s.' % error
+        sys.exit(1)
