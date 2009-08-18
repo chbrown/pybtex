@@ -73,7 +73,8 @@ class Formatter(FormatterBase):
         ]
         number_and_series = optional [
             sentence(capfirst=False, sep=' ') [
-                'Number', field('number'), optional [
+                join(sep=Symbol('nbsp')) ['Number', field('number')],
+                optional [
                     words ['in', field('series')]
                 ]
             ]
