@@ -29,7 +29,7 @@ import codecs
 class AuxData:
     def __init__(self):
         self.style = None
-        self.data = []
+        self.data = None
         self.citations = []
 
     def add_citation(self, s):
@@ -41,7 +41,7 @@ class AuxData:
         self.style = s
 
     def add_bibdata(self, s):
-        self.data.append(s)
+        self.data = s.split(',')
 
     def add(self, datatype, value):
         action = getattr(self, 'add_%s' % datatype)
