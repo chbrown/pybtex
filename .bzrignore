@@ -12,6 +12,7 @@ dist
 pybtex.egg-info
 *.e3s
 *.e3t
+*.orig
 MANIFEST
 docs/html
 pybtex/.ropeproject
