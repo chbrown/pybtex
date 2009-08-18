@@ -20,9 +20,9 @@
 class FindPluginError(Exception):
     pass
 
-def find_plugin(type, name):
-    m = __import__(type, globals(), locals(), [name])
+def find_plugin(plugin_path, name):
+    m = __import__(str(plugin_path), globals(), locals(), [str(name)])
     try:
         return getattr(m, name)
     except AttributeError:
-        raise FindPluginError('plugin %s not found in %s' % (name, type))
+        raise FindPluginError('plugin %s not found in %s' % (name, plugin_path))
