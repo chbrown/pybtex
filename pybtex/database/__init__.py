@@ -17,6 +17,13 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
+from pybtex.exceptions import PybtexError
+
+
+class BibliographyDataError(PybtexError):
+    pass
+
+
 class BibliographyData(object):
     def __init__(self):
         self.entries = {}
@@ -37,6 +44,8 @@ class BibliographyData(object):
         return ''.join(self._preamble)
 
     def add_entry(self, key, entry):
+        if key in self.entries:
+            raise BibliographyDataError('repeated bibliograhpy entry: %s' % key)
         entry.collection = self
         self.entries[key] = entry
 
