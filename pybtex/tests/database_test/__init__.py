@@ -16,7 +16,8 @@ class DatabaseIOTest(TestCase):
         stream = StringIO()
         writer.write_stream(self.reference_data, stream)
         stream.seek(0)
-        loaded_data = parser.parse_stream(stream)
+        parser.parse_stream(stream)
+        loaded_data = parser.data
         self.assertEqual(loaded_data, self.reference_data)
 
     def test_bibtex_inpub(self):
