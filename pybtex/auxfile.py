@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-"""parse latex' aux file
+"""parse LaTeX aux file
 """
 
 from __future__ import with_statement
@@ -25,33 +25,36 @@ from __future__ import with_statement
 import re
 import codecs
 
+
 class AuxData:
     def __init__(self):
         self.style = None
         self.data = None
         self.citations = []
-    def new_citation(self, s):
+
+    def add_citation(self, s):
         for c in s.split(','):
             if not c in self.citations:
                 self.citations.append(c)
-    def new_style(self, s):
+
+    def add_bibstyle(self, s):
         self.style = s
-    def new_data(self, s):
+
+    def add_bibdata(self, s):
         self.data = s
 
+    def add(self, datatype, value):
+        action = getattr(self, 'add_%s' % datatype)
+        action(value)
+
+
 def parse_file(filename, encoding):
-    """parse a file and return an AuxData object
-    FIXME: add an option to specify aux file encoding in command line
-    """
-    command = re.compile(r'\\(citation|bibdata|bibstyle){(.*)}')
+    """Parse a file and return an AuxData object."""
+
+    command_re = re.compile(r'\\(citation|bibdata|bibstyle){(.*)}')
     with codecs.open(filename, encoding=encoding) as f:
         s = f.read()
-    b = AuxData()
-    actions = {
-        "citation" : b.new_citation,
-        "bibstyle" : b.new_style,
-        "bibdata" : b.new_data
-    }
-    for i in command.findall(s):
-        actions[i[0]](i[1])
-    return b
+    data = AuxData()
+    for datatype, value in command_re.findall(s):
+        data.add(datatype, value)
+    return data
