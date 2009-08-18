@@ -44,7 +44,7 @@ class FormatterBase:
         self.abbreviate_names = abbreviate_names
 
     def format_entries(self, entries):
-        for number, (key, entry) in enumerate(entries.iteritems()):
+        for number, (key, entry) in enumerate(entries):
             entry.number = number + 1
             for persons in entry.persons.itervalues():
                 for person in persons:

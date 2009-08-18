@@ -55,7 +55,7 @@ def make_bibliography(aux_filename,
             name_style=kwargs.get('name_style'),
             abbreviate_names=kwargs.get('abbreviate_names', True),
     )
-    entries = dict((key, bib_data.entries[key]) for key in aux_data.citations)
+    entries = ((key, bib_data.entries[key]) for key in aux_data.citations)
     formatted_entries = formatter.format_entries(entries)
     del entries
 
