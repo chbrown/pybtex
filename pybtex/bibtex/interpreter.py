@@ -187,10 +187,10 @@ class Interpreter(object):
     def output(self, string):
         self.output_file.write(string)
 
-    def run(self, bst_script, citations, bib_file, bbl_file):
+    def run(self, bst_script, citations, bib_files, bbl_file):
         self.bst_script = iter(bst_script)
         self.citations = citations
-        self.bib_file = bib_file
+        self.bib_files = bib_files
         self.output_file = bbl_file
 
         for i in self.bst_script:
@@ -255,7 +255,7 @@ class Interpreter(object):
     def command_read(self):
 #        print 'READ'
         p = self.bib_format.Parser(macros=self.macros, person_fields=[])
-        self.bib_data = p.parse_file(filename=self.bib_file)
+        self.bib_data = p.parse_files(self.bib_files)
         self.citations = list(self.expand_wildcard_citations())
 #        for k, v in self.bib_data.iteritems():
 #            print k

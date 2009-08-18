@@ -48,8 +48,7 @@ def make_bibliography(aux_filename,
         from pybtex.backends import latex as output_backend
 
 
-    bib_filename = path.extsep.join([aux_data.data, bib_format.file_extension])
-    bib_data = bib_format.Parser(bib_encoding).parse_file(bib_filename)
+    bib_data = bib_format.Parser(bib_encoding).parse_files(aux_data.data, bib_format.file_extension)
 
     formatter = find_plugin('style.formatting', aux_data.style).Formatter(
             label_style=kwargs.get('label_style'),
