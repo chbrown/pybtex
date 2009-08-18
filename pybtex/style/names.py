@@ -39,9 +39,7 @@ def plain(person, abbr=False):
     """
     nbsp = Symbol('nbsp')
     return words [
-        words [person.first(abbr)],
-        words [person.middle(abbr)],
-        join(sep=nbsp) [person.prelast()],
-        words [person.last()],
-        join(sep=nbsp) [person.lineage()]
+        join(sep=nbsp) [person.first(abbr) + person.middle(abbr)],
+        join(sep=nbsp) [person.prelast() + person.last()],
+        join(sep=nbsp) [person.lineage()],
     ]
