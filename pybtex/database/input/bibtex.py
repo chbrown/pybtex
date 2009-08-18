@@ -28,7 +28,6 @@ from pyparsing import (
         ParseException,
 )
 from pybtex.core import Entry, Person
-from pybtex.database import BibliographyData
 from pybtex.database.input import ParserBase
 
 month_names = {
@@ -174,11 +173,9 @@ class Parser(ParserBase):
         s = codecs.getreader(self.encoding)(stream).read()
 
         self.macros = dict(self.default_macros)
-        self.data = BibliographyData()
         try:
 #            entries = dict(entry[0][0] for entry in self.BibTeX_entry.scanString(s))
             self.BibTeX_entry.searchString(s)
-            return self.data
         except ParseException, e:
             print "%s: syntax error:" % getattr(stream, 'name', '<NO FILE>')
             print e

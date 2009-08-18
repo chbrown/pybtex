@@ -20,7 +20,6 @@
 import yaml
 from pybtex.database.input import ParserBase
 from pybtex.core import Entry, Person
-from pybtex.database import BibliographyData
 
 file_extension = 'yaml'
 
@@ -28,17 +27,15 @@ class Parser(ParserBase):
     def parse_stream(self, stream):
         t = yaml.safe_load(stream)
 
-        data = BibliographyData()
         entries = ((key, self.process_entry(entry))
                 for (key, entry) in t['entries'].iteritems())
 
         try:
-            data.add_to_preamble(t['preamble'])
+            self.data.add_to_preamble(t['preamble'])
         except KeyError:
             pass
 
-        data.add_entries(entries)
-        return data
+        self.data.add_entries(entries)
 
     def process_entry(self, entry):
         e = Entry(entry['type']) 

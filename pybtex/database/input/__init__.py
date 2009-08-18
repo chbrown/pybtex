@@ -19,17 +19,29 @@
 
 from __future__ import with_statement
 
+import locale
+from os import path
+
+from pybtex.database import BibliographyData
+
 default = 'bib'
 filetypes = {'bib' : 'bibtex'}
-import locale
 
 class ParserBase:
     def __init__(self, encoding=None, **kwargs):
         if encoding is None:
             encoding = locale.getpreferredencoding()
         self.encoding = encoding
+        self.data = BibliographyData()
 
-    def parse_file(self, filename):
+    def parse_file(self, filename, fileext=None):
+        if fileext is not None:
+            filename = filename + path.extsep + fileext
         with open(filename, 'r') as f:
-            result = self.parse_stream(f)
-        return result
+            self.parse_stream(f)
+        return self.data
+
+    def parse_files(self, filenames, fileext=None):
+        for filename in filenames:
+            self.parse_file(filename, fileext)
+        return self.data
