@@ -25,9 +25,16 @@ from __future__ import with_statement
 import re
 import codecs
 
+from pybtex.exceptions import PybtexError
+
+
+class AuxDataError(PybtexError):
+    pass
+
 
 class AuxData:
-    def __init__(self):
+    def __init__(self, filename):
+        self.filename = filename
         self.style = None
         self.data = None
         self.citations = []
@@ -37,11 +44,15 @@ class AuxData:
             if not c in self.citations:
                 self.citations.append(c)
 
-    def add_bibstyle(self, s):
-        self.style = s
+    def add_bibstyle(self, style):
+        if self.style is not None:
+            raise AuxDataError(r'illegal, another \bibstyle command in %s' % self.filename)
+        self.style = style
 
-    def add_bibdata(self, s):
-        self.data = s.split(',')
+    def add_bibdata(self, bibdata):
+        if self.data is not None:
+            raise AuxDataError(r'illegal, another \bibdata command in %s' % self.filename)
+        self.data = bibdata.split(',')
 
     def add(self, datatype, value):
         action = getattr(self, 'add_%s' % datatype)
@@ -54,7 +65,7 @@ def parse_file(filename, encoding):
     command_re = re.compile(r'\\(citation|bibdata|bibstyle){(.*)}')
     with codecs.open(filename, encoding=encoding) as f:
         s = f.read()
-    data = AuxData()
+    data = AuxData(filename)
     for datatype, value in command_re.findall(s):
         data.add(datatype, value)
     return data
