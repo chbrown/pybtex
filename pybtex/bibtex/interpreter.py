@@ -176,7 +176,7 @@ class Interpreter(object):
 #        print 'pop <%s>' % value
         return value
 
-    def getToken(self):
+    def get_token(self):
         return self.bst_script.next()
 
     def add_variable(self, name, value):
@@ -203,36 +203,36 @@ class Interpreter(object):
         self.output_file.close()
 
     def command_entry(self):
-        for id in self.getToken():
+        for id in self.get_token():
             name = id.value()
             self.add_variable(name, Field(self, name))
         self.add_variable('crossref', Field(self, 'crossref'))
-        for id in self.getToken():
+        for id in self.get_token():
             name = id.value()
             self.add_variable(name, EntryInteger(self, name))
-        for id in self.getToken():
+        for id in self.get_token():
             name = id.value()
             self.add_variable(name, EntryString(self, name))
 
     def command_execute(self):
 #        print 'EXECUTE'
-        self.getToken()[0].execute(self)
+        self.get_token()[0].execute(self)
 
     def command_function(self):
-        name = self.getToken()[0].value()
-        body = self.getToken()
+        name = self.get_token()[0].value()
+        body = self.get_token()
         self.vars[name] = Function(body)
 
     def command_integers(self):
 #        print 'INTEGERS'
-        for id in self.getToken():
+        for id in self.get_token():
             self.vars[id.value()] = Integer()
 
     def command_iterate(self):
         self._iterate(self.citations)
 
     def _iterate(self, citations):
-        f = self.vars[self.getToken()[0].value()]
+        f = self.vars[self.get_token()[0].value()]
         for key in citations:
             self.current_entry_key = key
             self.current_entry = self.bib_data.entries[key]
@@ -240,8 +240,8 @@ class Interpreter(object):
         self.currentEntry = None
 
     def command_macro(self):
-        name = self.getToken()[0].value()
-        value = self.getToken()[0].value()
+        name = self.get_token()[0].value()
+        value = self.get_token()[0].value()
         self.macros[name] = value
 
     def expand_wildcard_citations(self):
@@ -273,7 +273,7 @@ class Interpreter(object):
 
     def command_strings(self):
         #print 'STRINGS'
-        for id in self.getToken():
+        for id in self.get_token():
             self.vars[id.value()] = String()
 
     @staticmethod
