@@ -23,6 +23,9 @@
 
 import re
 
+from pybtex.exceptions import PybtexError
+from pybtex.bibtex.utils import split_tex_string
+
 class FormattedEntry:
     """Formatted bibliography entry. Consists of
     - key (which is used for sorting);
@@ -138,7 +141,7 @@ class Person(object):
         self._last.extend(last.split())
         self._lineage.extend(lineage.split())
 
-    def parse_string(self, s):
+    def parse_string(self, name):
         """Extract various parts of the name from a string.
         Supported formats are:
          - von Last, First
@@ -158,23 +161,20 @@ class Person(object):
                     self._prelast.append(part)
                 else:
                     self._last.append(part)
-        match1 = self.style1_re.match(s)
-        match2 = self.style2_re.match(s)
-        if match2: # von Last, Jr, First
-            parts = match2.groups()
+        parts = split_tex_string(name, ',', strip=True)
+        if len(parts) == 3: # von Last, Jr, First
             process_von_last(parts[0])
             self._lineage.extend(parts[1].split())
             process_first_middle(parts[2].split())
-        elif match1: # von Last, First
-            parts = match1.groups()
+        elif len(parts) == 2: # von Last, First
             process_von_last(parts[0])
             process_first_middle(parts[1].split())
-        else: # First von Last
+        elif len(parts) == 1: # First von Last
             # FIXME clean it up somehow
             first_middle = []
             first = True
+            parts = split_tex_string(parts[0], ' ', strip=True)
 
-            parts = s.split()
             for i, part in enumerate(parts):
                 last_part = i == len(parts) - 1
                 if last_part:
@@ -187,6 +187,8 @@ class Person(object):
                 else:
                     self._last.append(part)
             process_first_middle(first_middle)
+        else:
+            raise PybtexError('Invalid name format: %s' % name)
 
     def __eq__(self, other):
         if not isinstance(other, Person):
