@@ -111,7 +111,7 @@ class Parser(ParserBase):
         bracedString << Combine(lbrace + ZeroOrMore(CharsNotIn('{}').setParseAction(join_lines) | bracedString) + rbrace)
         bibTeXString = quotedString | bracedString
 
-        name_chars = alphanums + '!$&*+-./:;<>?[]^_`|'
+        name_chars = alphanums + '!$&*+-./:;<>?[\\]^_`|~\x7f'
         macro_substitution = Word(name_chars).setParseAction(self.substitute_macro)
         name = Word(name_chars).setParseAction(downcaseTokens)
         value = Combine(delimitedList(bibTeXString | Word(nums) | macro_substitution, delim='#'), adjacent=False)
