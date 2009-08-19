@@ -20,6 +20,11 @@ Inspired by Brevé -- http://breve.twisty-industries.com/
 The Book, 2000.
 >>> print words ['one', 'two', words ['three', 'four']].format_data(e).plaintext()
 one two three four
+
+>>> print together ['very', 'long', 'road'].format().plaintext()
+very long<nbsp>road
+>>> print together ['a', 'very', 'long', 'road'].format().plaintext()
+a<nbsp>very long<nbsp>road
 """
 
 from pybtex import richtext
@@ -152,6 +157,22 @@ def words(children, data, sep=' '):
     """Join text fragments with spaces or something else."""
 
     return join(sep) [children].format_data(data)
+
+@node
+def together(children, data):
+    """
+    Keep words together.
+    """
+    from pybtex.bibtex.name import tie_or_space
+    tie = richtext.nbsp
+    space = richtext.Text(' ')
+    parts = [part for part in _format_list(children, data) if part]
+    if len(parts) <= 2:
+        return tie.join(parts)
+    else:
+        return richtext.Text(parts[0], tie_or_space(parts[0], tie, space),
+                space.join(parts[1:-1]), tie, parts[-1])
+
 
 @node
 def sentence(children, data, capfirst=True, add_period=True, sep=', '):

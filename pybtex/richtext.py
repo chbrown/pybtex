@@ -199,3 +199,5 @@ class Symbol(object):
 
     def render(self, backend):
         return backend.symbols[self.name]
+
+nbsp = Symbol('nbsp')
