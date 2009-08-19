@@ -137,6 +137,8 @@ class Text(list):
         """Join a list using this text (like string.join)"""
 
         joined = Text()
+        if not parts:
+            return joined
         for part in parts[:-1]:
             joined.extend([part, deepcopy(self)])
         joined.append(parts[-1])
