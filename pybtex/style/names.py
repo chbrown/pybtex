@@ -20,28 +20,29 @@
 """name formatting styles
 """
 from pybtex.richtext import Symbol
-from pybtex.style.template import join, words
+from pybtex.style.template import join, together
 
 def plain(person, abbr=False):
-    """
+    r"""
     >>> from pybtex.core import Person
-    >>> name = Person(string="Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
+    >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
     >>> print plain(name).format().plaintext()
-    Charles Louis Xavier Joseph de<nbsp>la Vall{\'e}e Poussin
+    de<nbsp>la Vall{\'e}e<nbsp>Poussin, Charles Louis Xavier<nbsp>Joseph
     >>> print plain(name, abbr=True).format().plaintext()
-    C. L. X. J. de<nbsp>la Vall{\'e}e Poussin
+    de<nbsp>la Vall{\'e}e<nbsp>Poussin, C.<nbsp>L. X.<nbsp>J.
     >>> name = Person(first='First', last='Last', middle='Middle')
     >>> print plain(name).format().plaintext()
-    First Middle Last
+    Last, First<nbsp>Middle
     >>> print plain(name, abbr=True).format().plaintext()
-    F. M. Last
+    Last, F.<nbsp>M.
 
     """
     nbsp = Symbol('nbsp')
-    return join [
-        words [
-            join(sep=nbsp) [person.first(abbr) + person.middle(abbr)],
-            join(sep=nbsp) [person.prelast() + person.last()],
+    return together(last_tie=False) [
+        together [person.prelast()],
+        join(sep=', ') [
+            together [person.last()],
+            together [person.lineage()],
+            together [person.first(abbr) + person.middle(abbr)],
         ],
-        join(sep=nbsp) [person.lineage()],
     ]
