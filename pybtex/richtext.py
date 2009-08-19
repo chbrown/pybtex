@@ -127,14 +127,20 @@ class Text(list):
     def apply_to_start(self, f):
         """Apply a function to the last part of the text"""
 
-        l, i = self.enumerate().next()
-        l[i] = f(l[i])
+        try:
+            l, i = self.enumerate().next()
+            l[i] = f(l[i])
+        except StopIteration:
+            pass
 
     def apply_to_end(self, f):
         """Apply a function to the last part of the text"""
 
-        l, i = self.reversed().next()
-        l[i] = f(l[i])
+        try:
+            l, i = self.reversed().next()
+            l[i] = f(l[i])
+        except StopIteration:
+            pass
 
     def join(self, parts):
         """Join a list using this text (like string.join)

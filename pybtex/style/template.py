@@ -195,6 +195,8 @@ def together(children, data, last_tie=True):
 def sentence(children, data, capfirst=True, add_period=True, sep=', '):
     """Join text fragments, capitalyze the first letter, add a period to the end.
 
+    >>> print sentence.format().plaintext()
+    <BLANKLINE>
     >>> print sentence(sep=' ') ['mary', 'had', 'a', 'little', 'lamb'].format().plaintext()
     Mary had a little lamb.
     >>> print sentence(capfirst=False, add_period=False) ['uno', 'dos', 'tres'].format().plaintext()
