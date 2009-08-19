@@ -20,11 +20,6 @@ Inspired by Brevé -- http://breve.twisty-industries.com/
 The Book, 2000.
 >>> print words ['one', 'two', words ['three', 'four']].format_data(e).plaintext()
 one two three four
-
->>> print together ['very', 'long', 'road'].format().plaintext()
-very long<nbsp>road
->>> print together ['a', 'very', 'long', 'road'].format().plaintext()
-a<nbsp>very long<nbsp>road
 """
 
 from pybtex import richtext
@@ -165,7 +160,12 @@ def words(children, data, sep=' '):
 @node
 def together(children, data, last_tie=True):
     """
-    Keep words together.
+    Try to keep words together, like BibTeX does.
+
+    >>> print together ['very', 'long', 'road'].format().plaintext()
+    very long<nbsp>road
+    >>> print together ['a', 'very', 'long', 'road'].format().plaintext()
+    a<nbsp>very long<nbsp>road
     """
     from pybtex.bibtex.names import tie_or_space
     tie = richtext.Text(richtext.nbsp)
