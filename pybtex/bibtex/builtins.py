@@ -26,7 +26,7 @@ from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.database.input.bibtex import split_name_list
 from pybtex.core import Person
 from pybtex.bibtex.utils import bibtex_len
-from pybtex.bibtex.name import format as format_bibtex_name
+from pybtex.bibtex.names import format as format_bibtex_name
 
 class Builtin(object):
     def __init__(self, f):

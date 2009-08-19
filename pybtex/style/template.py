@@ -163,7 +163,7 @@ def together(children, data, last_tie=True):
     """
     Keep words together.
     """
-    from pybtex.bibtex.name import tie_or_space
+    from pybtex.bibtex.names import tie_or_space
     tie = richtext.Text(richtext.nbsp)
     space = richtext.Text(' ')
     parts = [part for part in _format_list(children, data) if part]

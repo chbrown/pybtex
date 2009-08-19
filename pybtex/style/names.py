@@ -21,7 +21,7 @@
 """
 from pybtex.richtext import Symbol, Text, nbsp
 from pybtex.style.template import join, together, node, _format_list
-from pybtex.bibtex.name import tie_or_space
+from pybtex.bibtex.names import tie_or_space
 
 @node
 def name_part(children, data, before='', tie=False):
