@@ -137,7 +137,15 @@ class Text(list):
         l[i] = f(l[i])
 
     def join(self, parts):
-        """Join a list using this text (like string.join)"""
+        """Join a list using this text (like string.join)
+
+        >>> print Text(' ').join([]).plaintext()
+        <BLANKLINE>
+        >>> print Text(' ').join(['a', 'b', 'c']).plaintext()
+        a b c
+        >>> print Text(nbsp).join(['a', 'b', 'c']).plaintext()
+        a<nbsp>b<nbsp>c
+        """
 
         joined = Text()
         if not parts:
