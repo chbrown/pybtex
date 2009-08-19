@@ -19,8 +19,20 @@
 
 """name formatting styles
 """
-from pybtex.richtext import Symbol
-from pybtex.style.template import join, together
+from pybtex.richtext import Symbol, Text, nbsp
+from pybtex.style.template import join, together, node, _format_list
+from pybtex.bibtex.name import tie_or_space
+
+@node
+def name_part(children, data, before='', tie=False):
+    parts = together [children].format_data(data)
+    if not parts:
+        return Text()
+    if tie:
+        return Text(before, parts, tie_or_space(parts, nbsp, ' '))
+    else:
+        return Text(before, parts)
+
 
 def plain(person, abbr=False):
     r"""
@@ -37,12 +49,9 @@ def plain(person, abbr=False):
     Last, F.<nbsp>M.
 
     """
-    nbsp = Symbol('nbsp')
-    return together(last_tie=False) [
-        together [person.prelast()],
-        join(sep=', ') [
-            together [person.last()],
-            together [person.lineage()],
-            together [person.first(abbr) + person.middle(abbr)],
-        ],
+    return join [
+        name_part(tie=True) [person.prelast()],
+        name_part [person.last()],
+        name_part(before=', ') [person.lineage()],
+        name_part(before=', ') [person.first(abbr) + person.middle(abbr)],
     ]
