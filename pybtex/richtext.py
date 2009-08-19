@@ -77,6 +77,9 @@ class Text(list):
 
         list.__init__(self, parts)
 
+    def __len__(self):
+        return sum(len(part) for part in self)
+
     def append(self, item):
         """Appends some text or something.
         Empty strings and similar things are ignored.
@@ -192,6 +195,9 @@ class Symbol(object):
 
     def __init__(self, name):
         self.name = name
+
+    def __len__(self):
+        return 1
 
     def __repr__(self):
         return "Symbol('%s')" % self.name
