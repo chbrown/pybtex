@@ -36,16 +36,41 @@ def name_part(children, data, before='', tie=False):
 
 def plain(person, abbr=False):
     r"""
+    {ff~}{vv~}{ll}{, jj}
+
     >>> from pybtex.core import Person
     >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
     >>> print plain(name).format().plaintext()
-    de<nbsp>la Vall{\'e}e<nbsp>Poussin, Charles Louis Xavier<nbsp>Joseph
+    Charles Louis Xavier<nbsp>Joseph de<nbsp>la Vall{\'e}e<nbsp>Poussin
     >>> print plain(name, abbr=True).format().plaintext()
-    de<nbsp>la Vall{\'e}e<nbsp>Poussin, C.<nbsp>L. X.<nbsp>J.
+    C.<nbsp>L. X.<nbsp>J. de<nbsp>la Vall{\'e}e<nbsp>Poussin
+
     >>> name = Person(first='First', last='Last', middle='Middle')
     >>> print plain(name).format().plaintext()
-    Last, First<nbsp>Middle
+    First<nbsp>Middle Last
     >>> print plain(name, abbr=True).format().plaintext()
+    F.<nbsp>M. Last
+    """
+    return join [
+        name_part(tie=True) [person.first(abbr) + person.middle(abbr)],
+        name_part(tie=True) [person.prelast()],
+        name_part [person.last()],
+        name_part(before=', ') [person.lineage()]
+    ]
+
+def last_first(person, abbr=False):
+    r"""
+    >>> from pybtex.core import Person
+    >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
+    >>> print last_first(name).format().plaintext()
+    de<nbsp>la Vall{\'e}e<nbsp>Poussin, Charles Louis Xavier<nbsp>Joseph
+    >>> print last_first(name, abbr=True).format().plaintext()
+    de<nbsp>la Vall{\'e}e<nbsp>Poussin, C.<nbsp>L. X.<nbsp>J.
+
+    >>> name = Person(first='First', last='Last', middle='Middle')
+    >>> print last_first(name).format().plaintext()
+    Last, First<nbsp>Middle
+    >>> print last_first(name, abbr=True).format().plaintext()
     Last, F.<nbsp>M.
 
     """
