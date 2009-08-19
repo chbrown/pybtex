@@ -137,7 +137,16 @@ def node(f):
 
 @node
 def join(children, data, sep='', sep2=None, last_sep=None):
-    """Join text fragments together."""
+    """Join text fragments together.
+    >>> print join.format().plaintext()
+    <BLANKLINE>
+    >>> print join ['a', 'b', 'c', 'd', 'e'].format().plaintext()
+    abcde
+    >>> print join(sep=', ', sep2=' and ', last_sep=', and ') ['Tom', 'Jerry'].format().plaintext()
+    Tom and Jerry
+    >>> print join(sep=', ', sep2=' and ', last_sep=', and ') ['Billy', 'Willy', 'Dilly'].format().plaintext()
+    Billy, Willy, and Dilly
+    """
 
     if sep2 is None:
         sep2 = sep
