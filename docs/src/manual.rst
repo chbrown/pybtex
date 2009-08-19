@@ -41,8 +41,8 @@ Using the BibTeX parser
 
     >>> from pybtex.database.input import bibtex
     >>> parser = bibtex.Parser()
-    >>> bib_data = parser.parse_file('foo.bib')
+    >>> bib_data = parser.parse_file('examples/foo.bib')
     >>> bib_data.entries.keys()
-    ['BOOK1', 'BOOK2']
-    >>> bib_data.entries['BOOK1'].fields['title']
-    Book Title
+    [u'ruckenstein-diffusion', u'viktorov-metodoj', u'test-inbook', u'test-booklet']
+    >>> print bib_data.entries['ruckenstein-diffusion'].fields['title']
+    Predicting the Diffusion Coefficient in Supercritical Fluids
