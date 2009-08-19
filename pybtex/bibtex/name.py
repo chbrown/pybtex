@@ -95,6 +95,11 @@ def join(words, tie='~', space=' '):
     - before the last word
     Otherwise space is inserted.
     Should produce the same oubput as BibTeX.
+
+    >>> print join(['a', 'long', 'long', 'road'])
+    a~long long~road
+    >>> print join(['very', 'long', 'phrase'])
+    very long~phrase
     """
 
     if len(words) <= 2:
