@@ -47,7 +47,7 @@ month_names = {
 
 file_extension = 'bib'
 
-def split_name_list(s):
+def split_name_list(text, sep=' and '):
     """
     Split a list of names, separated by ' and '.
 
@@ -62,28 +62,18 @@ def split_name_list(s):
     >>> split_name_list('What a Strange and{ }Bizzare Name! and Peterson')
     ['What a Strange and{ }Bizzare Name!', 'Peterson']
     """
-    after_space = False
     brace_level = 0
     name_start = 0
     names = []
-    for pos, char in enumerate(s):
-        if char.isspace():
-            after_space = True
-        elif char == '{':
+    for pos, char in enumerate(text):
+        if char == '{':
             brace_level += 1
-            after_space = False
         elif char == '}':
             brace_level -= 1
-            after_space = False
-        elif (brace_level == 0
-                and after_space
-                and s[pos:pos + 3].lower() == 'and'
-                and s[pos + 3:pos+4].isspace()):
-            names.append(s[name_start:pos - 1])
-            name_start = pos + 4
-        else:
-            after_space = False
-    names.append(s[name_start:])
+        elif (brace_level == 0 and text[pos:pos + len(sep)].lower() == sep):
+            names.append(text[name_start:pos])
+            name_start = pos + len(sep)
+    names.append(text[name_start:])
     return names
 
 
