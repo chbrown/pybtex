@@ -39,6 +39,7 @@ named ``Formatter``. This class has methods like ``format_article``,
 ``pybtex.richtes.Text``).
 
 .. sourcecode:: python
+
     from pybtex.richtext import Text, Tag
     class Formatter(FormatterBase):
         def format_article(self, entry):
