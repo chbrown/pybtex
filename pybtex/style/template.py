@@ -29,6 +29,8 @@ a<nbsp>very long<nbsp>road
 
 from pybtex import richtext
 
+__test__ = {} # for doctest
+
 class Proto(object):
     def __init__(self, *args, **kwargs):
         self.args = args
@@ -134,6 +136,8 @@ def _format_list(list_, data):
     return [_format_data(part, data) for part in list_]
 
 def node(f):
+    if f.__doc__:
+        __test__[f.__name__] = f
     return Proto(f.__name__, f)
 
 @node
