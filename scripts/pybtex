@@ -54,7 +54,7 @@ def main():
 
     kwargs = {}
     if options.label_style:
-        kwargs['label_style'] = find_plugin('pybtex.style.labels', options.label_style)
+        kwargs['label_style'] = find_plugin('style.labels', options.label_style)
     if options.name_style:
         kwargs['name_style'] = find_plugin('style.names', options.name_style)
     if options.output_backend:
