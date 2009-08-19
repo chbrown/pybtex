@@ -144,44 +144,45 @@ class Person(object):
          - First von Last
         (see BibTeX manual for explanation)
         """
-        def process_first_middle(s):
+        def process_first_middle(parts):
             try:
-                self._first.append(s[0])
-                self._middle.extend(s[1:])
+                self._first.append(parts[0])
+                self._middle.extend(parts[1:])
             except IndexError:
                 pass
-        def process_von_last(s):
-            for part in split_tex_string(s):
-                if part.islower():
-                    self._prelast.append(part)
-                else:
-                    self._last.append(part)
+
+        def process_von_last(parts):
+            von, last = split_at(parts, lambda part: not part.islower())
+            self._prelast.extend(von)
+            self._last.extend(last)
+
+        def split_at(lst, pred):
+            """Split the given list into two parts.
+
+            The second part starts with the first item for which the given
+            predicate is True. If the predicate is False for all items, the
+            last element still comes to the last part. This is how BibTeX
+            parses names.
+
+            """
+            for i, item in enumerate(lst):
+                if pred(item):
+                    break
+            return lst[:i], lst[i:]
+
         parts = split_tex_string(name, ',')
         if len(parts) == 3: # von Last, Jr, First
-            process_von_last(parts[0])
+            process_von_last(split_tex_string(parts[0]))
             self._lineage.extend(split_tex_string(parts[1]))
             process_first_middle(split_tex_string(parts[2]))
         elif len(parts) == 2: # von Last, First
-            process_von_last(parts[0])
+            process_von_last(split_tex_string(parts[0]))
             process_first_middle(split_tex_string(parts[1]))
         elif len(parts) == 1: # First von Last
-            # FIXME clean it up somehow
-            first_middle = []
-            first = True
-            parts = split_tex_string(parts[0], ' ')
-
-            for i, part in enumerate(parts):
-                last_part = i == len(parts) - 1
-                if last_part:
-                    first = False
-                if part.islower() and not last_part:
-                    self._prelast.append(part)
-                    first = False
-                elif first:
-                    first_middle.append(part)
-                else:
-                    self._last.append(part)
+            parts = split_tex_string(name)
+            first_middle, von_last = split_at(parts, lambda part: part.islower())
             process_first_middle(first_middle)
+            process_von_last(von_last)
         else:
             raise PybtexError('Invalid name format: %s' % name)
 
