@@ -21,6 +21,8 @@ class Text(object):
         self.text = text[0]
     def format(self, person):
         return self.text
+    def to_python(self):
+        return repr(self.text)
 
 
 class NamePart(object):
@@ -78,6 +80,50 @@ class NamePart(object):
 
         return formatted_part + discretionary
 
+    def to_python(self):
+        from pybtex.style.names import name_part
+        class NamePart(object):
+            def __init__(self, part, abbr=False):
+                self.part = part
+                self.abbr = abbr
+            def __repr__(self):
+                abbr = 'abbr' if self.abbr else ''
+                return 'person.%s(%s)' % (self.part, abbr)
+
+        kwargs = {}
+        if self.pre_text:
+            kwargs['before'] = self.pre_text
+        if self.tie:
+            kwargs['tie'] = True
+
+        return repr(name_part(**kwargs) [
+            NamePart(self.types[self.format_char], self.abbreviate)
+        ])
+        
+
+class NameFormat(object):
+    def __init__(self, format):
+        self.format_string = format
+        self.parts = name_format_grammar.parseString(format)
+
+    def format(self, name):
+        person = Person(name)
+        return ''.join(part.format(person) for part in self.parts)
+
+    def to_python(self):
+        """Convert BibTeX name format to Python (inexactly)."""
+        from pybtex.style.names import join
+        parts = ',\n'.join(' ' * 8 + part.to_python() for part in self.parts)
+        comment = ' ' * 4 + (
+            '"""Format names similarly to %s in BibTeX."""' % self.format_string
+        )
+        body = ' ' * 4 + 'return join [\n%s,\n]' % parts
+        return '\n'.join([
+            'def format_names(person, abbr=False):',
+            comment,
+            body,
+        ])
+
 
 enough_chars = 3
 
@@ -110,9 +156,7 @@ def join(words, tie='~', space=' '):
                 tie + words[-1])
 
 def format(name, format):
-    f = name_format_grammar.parseString(format)
-    p = Person(name)
-    return ''.join(part.format(p) for part in f)
+    return NameFormat(format).format(name)
 
 lbrace = Literal('{')
 rbrace = Literal('}')
