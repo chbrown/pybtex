@@ -17,6 +17,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
 # USA
 
+
 """pybtex' core datatypes
 """
 
@@ -114,6 +115,10 @@ class Person(object):
     Dixit, Jr, Avinash K.
     >>> p == Person(unicode(p))
     True
+
+    >>> p = Person('abc')
+    >>> print p.first(), p.middle(), p.prelast(), p.last(), p.lineage()
+    [] [] [] ['abc'] []
     """
     valid_roles = ['author', 'editor'] 
     style1_re = re.compile('^(.+),\s*(.+)$')
@@ -174,7 +179,7 @@ class Person(object):
                 last_part = i == len(parts) - 1
                 if last_part:
                     first = False
-                if part.islower():
+                if part.islower() and not last_part:
                     self._prelast.append(part)
                     first = False
                 elif first:

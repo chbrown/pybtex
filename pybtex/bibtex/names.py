@@ -3,6 +3,9 @@
 >>> name = 'Charles Louis Xavier Joseph de la Vallee Poussin'
 >>> print format(name, '{vv~}{ll}{, jj}{, f.}')
 de~la Vallee~Poussin, C.~L. X.~J.
+>>> name = 'abc'
+>>> print format(name, '{vv~}{ll}{, jj}{, f.}')
+abc
 """
 
 from pyparsing import (
