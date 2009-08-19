@@ -46,12 +46,19 @@ def split_tex_string(string, sep, strip=True):
     brace_level = 0
     name_start = 0
     result = []
+    end = len(string) - 1
+    sep_len = len(sep)
     for pos, char in enumerate(string):
         if char == '{':
             brace_level += 1
         elif char == '}':
             brace_level -= 1
-        elif (brace_level == 0 and string[pos:pos + len(sep)].lower() == sep):
+        elif (
+            brace_level == 0 and
+            string[pos:pos + len(sep)].lower() == sep and
+            pos > 0 and
+            pos + len(sep) < end
+        ):
             result.append(string[name_start:pos])
             name_start = pos + len(sep)
     result.append(string[name_start:])
