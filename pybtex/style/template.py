@@ -159,19 +159,23 @@ def words(children, data, sep=' '):
     return join(sep) [children].format_data(data)
 
 @node
-def together(children, data):
+def together(children, data, last_tie=True):
     """
     Keep words together.
     """
     from pybtex.bibtex.name import tie_or_space
-    tie = richtext.nbsp
+    tie = richtext.Text(richtext.nbsp)
     space = richtext.Text(' ')
     parts = [part for part in _format_list(children, data) if part]
+    if not parts:
+        return richtext.Text()
     if len(parts) <= 2:
-        return tie.join(parts)
+        tie2 = tie if last_tie else tie_or_space(parts[0], tie, space)
+        return tie2.join(parts)
     else:
+        last_tie = tie if last_tie else tie_or_space(parts[-1], tie, space)
         return richtext.Text(parts[0], tie_or_space(parts[0], tie, space),
-                space.join(parts[1:-1]), tie, parts[-1])
+                space.join(parts[1:-1]), last_tie, parts[-1])
 
 
 @node
