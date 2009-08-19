@@ -36,7 +36,7 @@ def name_part(children, data, before='', tie=False):
 
 def plain(person, abbr=False):
     r"""
-    {ff~}{vv~}{ll}{, jj}
+    Format names similarly to {ff~}{vv~}{ll}{, jj} in BibTeX.  
 
     >>> from pybtex.core import Person
     >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
@@ -60,6 +60,8 @@ def plain(person, abbr=False):
 
 def last_first(person, abbr=False):
     r"""
+    Format names similarly to {vv~}{ll}{, jj}{, f.} in BibTeX.
+
     >>> from pybtex.core import Person
     >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
     >>> print last_first(name).format().plaintext()
