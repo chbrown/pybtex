@@ -50,6 +50,8 @@ def plain(person, abbr=False):
     First<nbsp>Middle Last
     >>> print plain(name, abbr=True).format().plaintext()
     F.<nbsp>M. Last
+    >>> print plain(Person('de Last, Jr., First Middle')).format().plaintext()
+    First<nbsp>Middle de<nbsp>Last, Jr.
     """
     return join [
         name_part(tie=True) [person.first(abbr) + person.middle(abbr)],
