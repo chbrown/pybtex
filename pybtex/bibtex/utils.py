@@ -40,7 +40,7 @@ def split_name_list(string):
     """
     return split_tex_string(string, ' and ')
 
-def split_tex_string(string, sep, strip=False):
+def split_tex_string(string, sep, strip=True):
     """Split a string using the given separator, ignoring separators at brace level > 0."""
 
     brace_level = 0

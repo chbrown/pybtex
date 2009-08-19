@@ -161,7 +161,7 @@ class Person(object):
                     self._prelast.append(part)
                 else:
                     self._last.append(part)
-        parts = split_tex_string(name, ',', strip=True)
+        parts = split_tex_string(name, ',')
         if len(parts) == 3: # von Last, Jr, First
             process_von_last(parts[0])
             self._lineage.extend(parts[1].split())
@@ -173,7 +173,7 @@ class Person(object):
             # FIXME clean it up somehow
             first_middle = []
             first = True
-            parts = split_tex_string(parts[0], ' ', strip=True)
+            parts = split_tex_string(parts[0], ' ')
 
             for i, part in enumerate(parts):
                 last_part = i == len(parts) - 1
