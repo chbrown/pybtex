@@ -22,3 +22,39 @@ def bibtex_len(s):
     """
     #FIXME stub
     return len(s)
+
+def split_name_list(string):
+    """
+    Split a list of names, separated by ' and '.
+
+    >>> split_name_list('Johnson and Peterson')
+    ['Johnson', 'Peterson']
+    >>> split_name_list('Armand and Peterson')
+    ['Armand', 'Peterson']
+    >>> split_name_list('Armand and anderssen')
+    ['Armand', 'anderssen']
+    >>> split_name_list('What a Strange{ }and Bizzare Name! and Peterson')
+    ['What a Strange{ }and Bizzare Name!', 'Peterson']
+    >>> split_name_list('What a Strange and{ }Bizzare Name! and Peterson')
+    ['What a Strange and{ }Bizzare Name!', 'Peterson']
+    """
+    return split_tex_string(string, ' and ')
+
+def split_tex_string(string, sep):
+    """Split a string using the given separator, ignoring separators at brace level > 0."""
+
+    brace_level = 0
+    name_start = 0
+    result = []
+    for pos, char in enumerate(string):
+        if char == '{':
+            brace_level += 1
+        elif char == '}':
+            brace_level -= 1
+        elif (brace_level == 0 and string[pos:pos + len(sep)].lower() == sep):
+            result.append(string[name_start:pos])
+            name_start = pos + len(sep)
+    result.append(string[name_start:])
+    return result
+
+

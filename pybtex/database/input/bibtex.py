@@ -29,6 +29,7 @@ from pyparsing import (
 )
 from pybtex.core import Entry, Person
 from pybtex.database.input import ParserBase
+from pybtex.bibtex.utils import split_name_list
 
 month_names = {
     'jan': 'January',
@@ -46,36 +47,6 @@ month_names = {
 }
 
 file_extension = 'bib'
-
-def split_name_list(text, sep=' and '):
-    """
-    Split a list of names, separated by ' and '.
-
-    >>> split_name_list('Johnson and Peterson')
-    ['Johnson', 'Peterson']
-    >>> split_name_list('Armand and Peterson')
-    ['Armand', 'Peterson']
-    >>> split_name_list('Armand and anderssen')
-    ['Armand', 'anderssen']
-    >>> split_name_list('What a Strange{ }and Bizzare Name! and Peterson')
-    ['What a Strange{ }and Bizzare Name!', 'Peterson']
-    >>> split_name_list('What a Strange and{ }Bizzare Name! and Peterson')
-    ['What a Strange and{ }Bizzare Name!', 'Peterson']
-    """
-    brace_level = 0
-    name_start = 0
-    names = []
-    for pos, char in enumerate(text):
-        if char == '{':
-            brace_level += 1
-        elif char == '}':
-            brace_level -= 1
-        elif (brace_level == 0 and text[pos:pos + len(sep)].lower() == sep):
-            names.append(text[name_start:pos])
-            name_start = pos + len(sep)
-    names.append(text[name_start:])
-    return names
-
 
 def join_lines(s, loc, toks):
     return [' '.join(tok.splitlines()) for tok in toks]
