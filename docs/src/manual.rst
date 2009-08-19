@@ -30,6 +30,25 @@ As of now the only pythonic style available is
 ``pybtex/style/formatting/unsrt.py``. It is a partial and very incomplete port
 of ``unsrt.bst``.
 
+Using Pybtex as a bibliography files converter
+==============================================
+
+Pybtex has a simple ``pybtex-convert`` utility, which can convert bibliography
+files between supported formats.
+
+.. sourcecode:: bash
+
+    $ pybtex-convert foo.bib foo.yaml
+
+The conversion is not always lossless due to limitations of storage formats:
+
+- Native BibTeX format stores personal names as single strings, while BibTexML
+  and Pybtex' YAML format store first name, last name, and other name parts
+  seprately.
+
+- BibTeXML format does not support LaTeX preambles.
+
+- PyYAML does not preserve the order of keys (this may be fixed some day).
 
 Using Pybtex programmatically
 =============================
