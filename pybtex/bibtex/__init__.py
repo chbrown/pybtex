@@ -20,13 +20,6 @@
 """BibTeX unnamed stack language interpreter and related stuff
 """
 
-import codecs
-from os import path
-
-from pybtex.bibtex import bst
-from pybtex.bibtex.interpreter import Interpreter
-from pybtex import auxfile
-from pybtex.bibtex.kpathsea import kpsewhich
 import locale
 
 
@@ -35,7 +28,18 @@ def make_bibliography(aux_filename,
         bib_encoding=locale.getpreferredencoding(),
         output_encoding=locale.getpreferredencoding(),
         bst_encoding=locale.getpreferredencoding(),
-        **kwargs):
+        **kwargs
+    ):
+
+    import codecs
+    from os import path
+
+    from pybtex.bibtex import bst
+    from pybtex.bibtex.interpreter import Interpreter
+    from pybtex import auxfile
+    from pybtex.bibtex.kpathsea import kpsewhich
+
+
     if bib_format is None:
         from pybtex.database.input import bibtex as bib_format
     aux_data = auxfile.parse_file(aux_filename, output_encoding)

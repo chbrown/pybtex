@@ -20,10 +20,8 @@
 """bibliography processor
 """
 
-from os import path
-from pybtex import auxfile
-from pybtex.plugin import find_plugin
 import locale
+
 
 def make_bibliography(aux_filename,
         bib_format=None,
@@ -34,6 +32,10 @@ def make_bibliography(aux_filename,
     """This functions extracts all nessessary information from .aux file
     and writes the bibliography.
     """
+
+    from os import path
+    from pybtex import auxfile
+    from pybtex.plugin import find_plugin
 
     filename = path.splitext(aux_filename)[0]
     aux_data = auxfile.parse_file(aux_filename, output_encoding)
