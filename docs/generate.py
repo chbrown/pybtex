@@ -47,7 +47,7 @@ from pygments.formatters import HtmlFormatter
 from bzrlib import workingtree
 from bzrlib.osutils import format_date
 
-from .mystyle import MyHiglightStyle
+from mystyle import MyHiglightStyle
 
 e = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
 

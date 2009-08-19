@@ -151,7 +151,7 @@ class Person(object):
             except IndexError:
                 pass
         def process_von_last(s):
-            for part in s.split():
+            for part in split_tex_string(s):
                 if part.islower():
                     self._prelast.append(part)
                 else:
@@ -159,11 +159,11 @@ class Person(object):
         parts = split_tex_string(name, ',')
         if len(parts) == 3: # von Last, Jr, First
             process_von_last(parts[0])
-            self._lineage.extend(parts[1].split())
-            process_first_middle(parts[2].split())
+            self._lineage.extend(split_tex_string(parts[1]))
+            process_first_middle(split_tex_string(parts[2]))
         elif len(parts) == 2: # von Last, First
             process_von_last(parts[0])
-            process_first_middle(parts[1].split())
+            process_first_middle(split_tex_string(parts[1]))
         elif len(parts) == 1: # First von Last
             # FIXME clean it up somehow
             first_middle = []
