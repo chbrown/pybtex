@@ -135,9 +135,7 @@ sample_names = [
 ]
 
 def parse_name_test():
-    for name, (bibtex_first, prelast, last, lineage) in sample_names:
+    for name, correct_result in sample_names:
         person = Person(name)
-        assert person.bibtex_first() == bibtex_first, person.bibtex_first()
-        assert person.prelast() == prelast
-        assert person.last() == last
-        assert person.lineage() == lineage
+        result = (person.bibtex_first(), person.prelast(), person.last(), person.lineage())
+        assert result == correct_result
