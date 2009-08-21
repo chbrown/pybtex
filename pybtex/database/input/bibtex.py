@@ -94,7 +94,7 @@ class Parser(ParserBase):
         if kwargs.get('allow_keyless_entries', False):
             entry_body = bibtexGroup(Optional(entry_key + comma, None) + Group(fields))
         else:
-            entry_body = bibtexGroup(entry_key + comma + Group(fields))
+            entry_body = bibtexGroup(entry_key + comma + Group(fields) + Optional(comma))
         entry = entry_header + entry_body
         entry.setParseAction(self.process_entry)
 
