@@ -21,9 +21,13 @@ class BibliographyDataError(PybtexError):
 
 
 class BibliographyData(object):
-    def __init__(self):
+    def __init__(self, entries=None, preamble=None):
         self.entries = {}
         self._preamble = []
+        if entries:
+            self.entries.update(entries)
+        if preamble:
+            self.preamble.extend(preamble)
 
     def __eq__(self, other):
         if not isinstance(other, BibliographyData):
