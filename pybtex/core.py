@@ -130,11 +130,11 @@ class Person(object):
         string = string.strip()
         if string:
             self.parse_string(string)
-        self._first.extend(first.split())
-        self._middle.extend(middle.split())
-        self._prelast.extend(prelast.split())
-        self._last.extend(last.split())
-        self._lineage.extend(lineage.split())
+        self._first.extend(split_tex_string(first))
+        self._middle.extend(split_tex_string(middle))
+        self._prelast.extend(split_tex_string(prelast))
+        self._last.extend(split_tex_string(last))
+        self._lineage.extend(split_tex_string(lineage))
 
     def parse_string(self, name):
         """Extract various parts of the name from a string.
