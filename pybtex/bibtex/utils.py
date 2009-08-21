@@ -37,9 +37,25 @@ def split_name_list(string):
     return split_tex_string(string, ' and ')
 
 def split_tex_string(string, sep=None, strip=True, filter_empty=False):
-    """Split a string using the given separator, ignoring separators at brace level > 0.
+    """Split a string using the given separator.
+
+    Everything at brace level > 0 is ignored.
+    Separators at the edges of the string are ignored.
+
     >>> split_tex_string('')
     []
+    >>> split_tex_string('     ')
+    []
+    >>> split_tex_string('   ', ' ', strip=False, filter_empty=False)
+    [' ', ' ']
+    >>> split_tex_string('.a.b.c.', '.')
+    ['.a', 'b', 'c.']
+    >>> split_tex_string('.a.b.c.{d.}.', '.')
+    ['.a', 'b', 'c', '{d.}.']
+    >>> split_tex_string('Matsui      Fuuka')
+    ['Matsui', 'Fuuka']
+    >>> split_tex_string('{Matsui      Fuuka}')
+    ['{Matsui      Fuuka}']
     >>> split_tex_string('a')
     ['a']
     >>> split_tex_string('on a')
