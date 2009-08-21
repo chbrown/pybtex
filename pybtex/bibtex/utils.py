@@ -36,7 +36,7 @@ def split_name_list(string):
     """
     return split_tex_string(string, ' and ')
 
-def split_tex_string(string, sep=' ', strip=True):
+def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     """Split a string using the given separator, ignoring separators at brace level > 0.
     >>> split_tex_string('')
     []
@@ -46,6 +46,9 @@ def split_tex_string(string, sep=' ', strip=True):
     ['on', 'a']
     """
 
+    if sep is None:
+        sep = ' '
+        filter_empty = True
     brace_level = 0
     name_start = 0
     result = []
@@ -68,6 +71,7 @@ def split_tex_string(string, sep=' ', strip=True):
     if name_start < string_len:
         result.append(string[name_start:])
     if strip:
-        return [part.strip() for part in result]
-    else:
-        return result
+        result = [part.strip() for part in result]
+    if filter_empty:
+        result = [part for part in result if part]
+    return result
