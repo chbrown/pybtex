@@ -1,6 +1,7 @@
 from pybtex.core import Person
 
 # name, (bibtex_first, prelast, last, lineage
+# as parsed by the bibtex program itself
 sample_names = [
     ('A. E.                   Siegman', (['A.', 'E.'], [], ['Siegman'], [])),
     ('A. G. W. Cameron', (['A.', 'G.', 'W.'], [], ['Cameron'], [])),
