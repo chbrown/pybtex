@@ -17,7 +17,7 @@
 
 import codecs, locale
 from pyparsing import (
-        Word, CaselessLiteral, CharsNotIn,
+        Word, Literal, CaselessLiteral, CharsNotIn,
         nums, alphas, alphanums, printables, delimitedList, downcaseTokens,
         Suppress, Combine, Group, Dict,
         Forward, ZeroOrMore, Optional,
@@ -63,9 +63,10 @@ class Parser(ParserBase):
         at = Suppress('@')
         comma = Suppress(',')
 
-        quotedString = Combine(Suppress('"') + ZeroOrMore(CharsNotIn('"')).setParseAction(join_lines) + Suppress('"'))
-        bracedString = Forward()
-        bracedString << Combine(lbrace + ZeroOrMore(CharsNotIn('{}').setParseAction(join_lines) | bracedString) + rbrace)
+        innerBracedString = Forward()
+        innerBracedString << Combine(Literal('{') + ZeroOrMore(CharsNotIn('{}').setParseAction(join_lines) | innerBracedString) + Literal('}'))
+        quotedString = Combine(Suppress('"') + ZeroOrMore(CharsNotIn('"{').setParseAction(join_lines) | innerBracedString) + Suppress('"'))
+        bracedString = Combine(lbrace + ZeroOrMore(CharsNotIn('{}').setParseAction(join_lines) | innerBracedString) + rbrace)
         bibTeXString = quotedString | bracedString
 
         name_chars = alphanums + '!$&*+-./:;<>?[\\]^_`|~\x7f'
