@@ -152,7 +152,13 @@ class Person(object):
                 pass
 
         def process_von_last(parts):
-            von, last = split_at(parts, lambda part: not part.islower())
+            i = 0
+            for i, part in enumerate(reversed(parts[:-1])):
+                if part.islower():
+                    break
+            pos = len(parts) - i - 1
+            von = parts[:pos]
+            last = parts[pos:]
             self._prelast.extend(von)
             self._last.extend(last)
 
