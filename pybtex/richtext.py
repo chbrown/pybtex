@@ -212,6 +212,14 @@ class Text(list):
         >>> text.add_period()
         >>> print text.render(html)
         That's all, <em>folks.</em>
+
+        >>> text = Text("That's all, ", Tag('emph', 'folks'))
+        >>> text.add_period('!')
+        >>> print text.render(html)
+        That's all, <em>folks</em>!
+        >>> text.add_period('!')
+        >>> print text.render(html)
+        That's all, <em>folks</em>!
         """
 
         end = self.get_end()
