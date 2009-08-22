@@ -76,6 +76,21 @@ class Text(list):
     def __len__(self):
         return sum(len(part) for part in self)
 
+    def __add__(self, other):
+        """Concatenate this Text with another Text or string.
+        >>> t = Text('a')
+        >>> print (t + 'b').plaintext()
+        ab
+        >>> print (t + t).plaintext()
+        aa
+        >>> print t.plaintext()
+        a
+        """
+
+        if isinstance(other, basestring):
+            other = [other]
+        return self.from_list(super(Text, self).__add__(other))
+
     def from_list(self, lst):
         return Text(*lst)
 
@@ -222,7 +237,7 @@ class Text(list):
 
         end = self.get_end()
         if end and not textutils.is_terminated(end):
-            return self.from_list(self + [period])
+            return self + period
         else:
             return self
 
