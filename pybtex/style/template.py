@@ -219,9 +219,9 @@ def sentence(children, data, capfirst=True, add_period=True, sep=', '):
 
     text = join(sep) [children].format_data(data)
     if capfirst:
-        text.capfirst()
+        text = text.capfirst()
     if add_period:
-        text.add_period()
+        text = text.add_period()
     return text
 
 class FieldIsMissing(Exception):
