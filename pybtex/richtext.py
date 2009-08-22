@@ -134,7 +134,7 @@ class Text(list):
                 except AttributeError:
                     yield f(child) if condition(index, length) else child
                 else:
-                    yield child.map(f) if condition(index, length) else child
+                    yield child.map(f, condition) if condition(index, length) else child
         return self.from_list(iter_map_with_condition())
 
     def upper(self):
@@ -191,7 +191,6 @@ class Text(list):
 
     def capfirst(self):
         """Capitalize the first letter of the text"""
-
         return self.apply_to_start(textutils.capfirst)
 
     def add_period(self, period='.'):
