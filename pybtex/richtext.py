@@ -23,8 +23,7 @@ Usage:
 this is a \emph{very} rich text
 >>> print t.plaintext()
 this is a very rich text
->>> t.capfirst()
->>> t.add_period()
+>>> t = t.capfirst().add_period()
 >>> print t.render(backend)
 This is a \emph{very} rich text.
 >>> print t.plaintext()
@@ -37,7 +36,7 @@ Some \emph{nested \texttt{Text objects}}.
 >>> print t.plaintext()
 Some nested Text objects.
 >>> from string import upper, lower
->>> t.apply(upper)
+>>> t = t.map(upper)
 >>> print t.render(backend)
 SOME \emph{NESTED \texttt{TEXT OBJECTS}}.
 >>> print t.plaintext()
@@ -57,6 +56,7 @@ one<nbsp>two<nbsp>three
 
 from copy import deepcopy
 from pybtex import textutils
+import string
 
 class Text(list):
     """
@@ -75,6 +75,9 @@ class Text(list):
 
     def __len__(self):
         return sum(len(part) for part in self)
+
+    def from_list(self, lst):
+        return Text(*lst)
 
     def append(self, item):
         """Appends some text or something.
@@ -120,23 +123,33 @@ class Text(list):
         for l, i in self.enumerate():
             l[i] = f(l[i])
 
+    def map(self, f, condition=None):
+        if condition is None:
+            condition = lambda index, length: True
+        def iter_map_with_condition():
+            length = len(self)
+            for index, child in enumerate(self):
+                try:
+                    child_map = child.map
+                except AttributeError:
+                    yield f(child) if condition(index, length) else child
+                else:
+                    yield child.map(f) if condition(index, length) else child
+        return self.from_list(iter_map_with_condition())
+
+    def upper(self):
+        return self.map(string.upper)
+
+    def upper_end(self):
+        return self.change_end(string.upper)
+
     def apply_to_start(self, f):
         """Apply a function to the last part of the text"""
-
-        try:
-            l, i = self.enumerate().next()
-            l[i] = f(l[i])
-        except StopIteration:
-            pass
+        return self.map(f, lambda index, length: index == 0)
 
     def apply_to_end(self, f):
         """Apply a function to the last part of the text"""
-
-        try:
-            l, i = self.reversed().next()
-            l[i] = f(l[i])
-        except StopIteration:
-            pass
+        return self.map(f, lambda index, length: index == length - 1)
 
     def get_beginning(self):
         try:
@@ -179,7 +192,7 @@ class Text(list):
     def capfirst(self):
         """Capitalize the first letter of the text"""
 
-        self.apply_to_start(textutils.capfirst)
+        return self.apply_to_start(textutils.capfirst)
 
     def add_period(self, period='.'):
         """Add a period to the end of text, if necessary.
@@ -188,43 +201,37 @@ class Text(list):
         >>> html = pybtex.backends.html.Writer()
 
         >>> text = Text("That's all, folks")
-        >>> text.add_period()
-        >>> print text.plaintext()
+        >>> print text.add_period().plaintext()
         That's all, folks.
 
         >>> text = Tag('emph', Text("That's all, folks"))
-        >>> text.add_period()
-        >>> print text.render(html)
+        >>> print text.add_period().render(html)
         <em>That's all, folks.</em>
-        >>> text.add_period() # second perios must not be added
-        >>> print text.render(html)
+        >>> print text.add_period().add_period().render(html)
         <em>That's all, folks.</em>
 
         >>> text = Text("That's all, ", Tag('emph', 'folks'))
-        >>> text.add_period()
-        >>> print text.render(html)
+        >>> print text.add_period().render(html)
         That's all, <em>folks</em>.
-        >>> text.add_period()
-        >>> print text.render(html)
+        >>> print text.add_period().add_period().render(html)
         That's all, <em>folks</em>.
 
         >>> text = Text("That's all, ", Tag('emph', 'folks.'))
-        >>> text.add_period()
-        >>> print text.render(html)
+        >>> print text.add_period().render(html)
         That's all, <em>folks.</em>
 
         >>> text = Text("That's all, ", Tag('emph', 'folks'))
-        >>> text.add_period('!')
-        >>> print text.render(html)
+        >>> print text.add_period('!').render(html)
         That's all, <em>folks</em>!
-        >>> text.add_period('!')
-        >>> print text.render(html)
+        >>> print text.add_period('!').add_period('.').render(html)
         That's all, <em>folks</em>!
         """
 
         end = self.get_end()
         if end and not textutils.is_terminated(end):
-            self.append(period)
+            return self.from_list(self + [period])
+        else:
+            return self
 
 class Tag(Text):
     """A tag is somethins like <foo>some text</foo> in HTML
@@ -239,9 +246,13 @@ class Tag(Text):
     <em>emphasized text</em>
     """
 
+    def from_list(self, lst):
+        return Tag(self.name, *lst)
+
     def __init__(self, name, *args):
         self.name = name
         Text.__init__(self, *args)
+
     def render(self, backend):
         text = super(Tag, self).render(backend)
         return backend.format_tag(self.name, text)
