@@ -267,6 +267,15 @@ def optional_field(children, data, *args, **kwargs):
 
 @node
 def tag(children, data, name):
+    """Wrap text into a tag.
+
+    >>> import pybtex.backends.html
+    >>> html = pybtex.backends.html.Writer()
+    >>> print tag('emph') ['important'].format().render(html)
+    <em>important</em>
+    >>> print sentence ['ready', 'set', tag('emph') ['go']].format().render(html)
+    Ready, set, <em>go</em>.
+    """
     parts = _format_list(children, data)
     return richtext.Tag(name, *_format_list(children, data))
 
