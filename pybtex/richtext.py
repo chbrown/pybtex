@@ -138,12 +138,10 @@ class Text(list):
         def iter_map_with_condition():
             length = len(self)
             for index, child in enumerate(self):
-                try:
-                    child_map = child.map
-                except AttributeError:
-                    yield f(child) if condition(index, length) else child
-                else:
+                if hasattr(child, 'map'):
                     yield child.map(f, condition) if condition(index, length) else child
+                else:
+                    yield f(child) if condition(index, length) else child
         return self.from_list(iter_map_with_condition())
 
     def upper(self):
