@@ -138,6 +138,22 @@ class Text(list):
         except StopIteration:
             pass
 
+    def get_beginning(self):
+        try:
+            l, i = self.enumerate().next()
+        except StopIteration:
+            pass
+        else:
+            return l[i]
+
+    def get_end(self):
+        try:
+            l, i = self.reversed().next()
+        except StopIteration:
+            pass
+        else:
+            return l[i]
+
     def join(self, parts):
         """Join a list using this text (like string.join)
 
@@ -165,10 +181,12 @@ class Text(list):
 
         self.apply_to_start(textutils.capfirst)
 
-    def add_period(self):
+    def add_period(self, period='.'):
         """Add a period to the end of text, if necessary"""
 
-        self.apply_to_end(textutils.add_period)
+        end = self.get_end()
+        if end and not textutils.is_terminated(end):
+            self.append(period)
 
 class Tag(Text):
     """A tag is somethins like <foo>some text</foo> in HTML
