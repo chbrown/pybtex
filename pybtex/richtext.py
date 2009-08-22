@@ -182,7 +182,37 @@ class Text(list):
         self.apply_to_start(textutils.capfirst)
 
     def add_period(self, period='.'):
-        """Add a period to the end of text, if necessary"""
+        """Add a period to the end of text, if necessary.
+
+        >>> import pybtex.backends.html
+        >>> html = pybtex.backends.html.Writer()
+
+        >>> text = Text("That's all, folks")
+        >>> text.add_period()
+        >>> print text.plaintext()
+        That's all, folks.
+
+        >>> text = Tag('emph', Text("That's all, folks"))
+        >>> text.add_period()
+        >>> print text.render(html)
+        <em>That's all, folks.</em>
+        >>> text.add_period() # second perios must not be added
+        >>> print text.render(html)
+        <em>That's all, folks.</em>
+
+        >>> text = Text("That's all, ", Tag('emph', 'folks'))
+        >>> text.add_period()
+        >>> print text.render(html)
+        That's all, <em>folks</em>.
+        >>> text.add_period()
+        >>> print text.render(html)
+        That's all, <em>folks</em>.
+
+        >>> text = Text("That's all, ", Tag('emph', 'folks.'))
+        >>> text.add_period()
+        >>> print text.render(html)
+        That's all, <em>folks.</em>
+        """
 
         end = self.get_end()
         if end and not textutils.is_terminated(end):
