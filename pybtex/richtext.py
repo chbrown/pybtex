@@ -117,12 +117,6 @@ class Text(list):
             except AttributeError:
                 yield self, n
 
-    def apply(self, f):
-        """Apply a function to each part of the text."""  
-
-        for l, i in self.enumerate():
-            l[i] = f(l[i])
-
     def map(self, f, condition=None):
         if condition is None:
             condition = lambda index, length: True
