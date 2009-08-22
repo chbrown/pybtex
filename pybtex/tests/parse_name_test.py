@@ -25,7 +25,6 @@ sample_names = [
     (['B.', 'V.', 'Venkata', 'Krishna'], [], ['Sastry'], [])),
     ('Benedict L{\\o}fstedt', (['Benedict'], [], ['L{\\o}fstedt'], [])),
     ('Bogus{\\l}aw Jackowski', (['Bogus{\\l}aw'], [], ['Jackowski'], [])),
-    ('Bogus{\\l}aw Jackowski', (['Bogus{\\l}aw'], [], ['Jackowski'], [])),
     ('Christina A. L.\\ Thiele',
     (['Christina', 'A.', 'L.\\'], [], ['Thiele'], [])),
     ("D. Men'shikov", (['D.'], [], ["Men'shikov"], [])),
