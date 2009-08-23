@@ -1,0 +1,138 @@
+- Added support for multiple bibliography databases.
+
+- Pythonic bibliography formatter: added helper functions to simplify writing
+  BibTeX-like name formatting styles in Python. Added a tool for automatic
+  conversion of BibTeX ``{ll}{, ff}``-like patterns into Python.
+
+- BibTeX parser: added missing characters to the caracter set of the valid
+  identifiers.
+
+- BibTeX parser: a comma is now allowed between the last field and the closing
+  brace.
+
+- BibTeX name parser: when splitting name parts into words, whitespace at brace
+  level > 0 is now ignored.
+
+- BibTeX name parser: fixed parsing of single-word lowercase names and complex
+  von names, like in "Andrea de Leeuw van Weenen".
+
+- Fixed broken ``--label-style`` and ``--name-style`` options.
+
+
+Version 0.9
+-----------
+(released on August 08th 2009, bzr revision 439)
+
+- Implemented ``\citation{*}``.  
+
+- Implemented crossrefs.
+
+- BibTeX .bib parser now supports newlines inside strings.
+
+- Fixed: .bib filename from .aux file was ignored.
+
+- Fixed incorrect argument passing to codecs.open().
+
+- Fixed incorrect whitespace handling in the name parsing code.
+
+
+Version 20090402
+----------------
+(released on February 04th 2009, bzr revision 422)
+
+- Fixed yet more encoding-related bugs.
+
+- Cleaned up some old nasty code, updated the documentation, added more tests.
+
+
+Version 20080918
+----------------
+(released on September 18th 2008, bzr revision 395)
+
+- Added HTML backend. The pythonic bibliography formatter can now produce LaTeX,
+  HTML, and plaintext.
+
+- BibTeXML writer now indents the resulting XML.
+
+- Removed the dependency on external elementtree.
+
+- Improved the interface of the ``pybtex-convert`` script. It is just
+  ``convert foo.bib foo.yaml`` now.
+
+- Fixed several bugs in the BibTeX interpreter.
+
+- Fixed several encoding-related bugs.
+
+
+Version 20070513
+----------------
+(released on May 13th 2007, bzr revision 323)
+
+- Added an interpreter for the BibTeX stack language. Pybtex now supports
+  BibTeX style files.
+
+- Added a YAML bibliography format (both input and output).
+
+- Improved processing of names with {braces}.
+
+- Added support for ``@preamble`` to both BibTeX parser and writer.
+
+- Introduced an experimental pythonic template language to make bibliography
+  formatting easier with a more functional-oriented approach.
+
+- Added support for incollection entries to the experimentl pythonic bibliography
+  style.
+
+- cElementTree is now used for BibTeXML parsing, if present.
+
+- Added some documentation files (finally).
+
+
+Version 20060416
+----------------
+(released on April 16th 2006, bzr revision 168)
+
+- Added BibTeX and BibTeXML formatters for bibliography databases. Added a
+  database conversion tool.
+
+- Improved name splitting in the BibTeX parser.
+
+- Locale encoding is now used by default.
+
+- Added ``richtext.Check`` class to simplify formatting of optional bibliography
+  fields.
+
+- Added support for booklet and inbook entry types to the experimentl pythonic
+  bibliography style.
+
+
+Version 20060402
+----------------
+(released on April 2nd 2006, bzr revision 140)
+
+- Added initial Unicode support and input/output encodings.
+
+- Introduced output backends to make bibliography styles markup-independent.
+  Added LaTeX and Plaintext backends.
+
+- Improved BibTeXML parser, add support for pre-parsed names (``<bibtex:first>``,
+  ``<bibtex:middle>`` and so on).
+
+- Added default macros for month names to the BibTeX parser.
+
+- Added an experimental ``richtext.Phrase`` (former ``Pack`` class (former
+  ``Packer`` class)) class to make creating sentences and delimited lists
+  easier.
+
+- Added experimental support for pluggable name and label styles to the
+  pythonic bibliogrphy formatter.
+
+- Made Pybtex work on Windows by renaming aux.py to auxfile.py. Duh.
+
+
+Version 0.1
+-----------
+(released on March 4th 2006)
+
+Initial release. This version already has a basic BibTeX .bib parser, BibTeXML
+parser and a proof-of-concept pythonic bibliography formatter.
