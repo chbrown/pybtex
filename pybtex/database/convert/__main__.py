@@ -26,6 +26,13 @@ from pybtex.cmdline import CommandLine
 class PybtexConvertCommandLine(CommandLine):
     prog = 'pybtex-convert'
     args = '[options] in_filename out_filename' 
+    description = 'convert between bibliography database formats'
+    long_description = """
+
+pybtex-convert converts bibliography database files between supported formats (currently BibTeX, BibTeXML and YAML).
+
+    """.strip()
+
     num_args = 2
 
     options = (

@@ -23,6 +23,19 @@ from pybtex.cmdline import CommandLine
 class PybtexCommandLine(CommandLine):
     prog = 'pybtex'
     args = '[options] auxfile.aux'
+    description = 'BibTeX-compatible bibliography processor in Python'
+    long_description = """
+
+Pybtex reads citation information from a LaTeX .aux file and produces a
+formatted bibliography. Pybtex understands BibTeX .bib and .bst style files and
+can be used as a drop-in replacement for BibTeX.
+
+Besides BibTeX .bib files, BibTeXML and YAML bibliography files are also
+supported.
+
+It is also possible to define bibliography formatting styles in Python.
+
+    """.strip()
     num_args = 1
 
     options = (

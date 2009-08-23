@@ -20,12 +20,15 @@ import optparse
 
 from pybtex.__version__ import version
 
+from pybtex.textutils import capfirst, add_period
+
 
 class CommandLine(object):
     options = ()
     option_defaults = None
     prog = None
     args = None
+    description = ''
     num_args = 0
 
     def __init__(self):
@@ -40,7 +43,12 @@ class CommandLine(object):
             sys.exit(1)
 
     def make_option_parser(self):
-        opt_parser = optparse.OptionParser(prog=self.prog, usage='%prog ' + self.args, version='%%prog-%s' % version)
+        opt_parser = optparse.OptionParser(
+            prog=self.prog,
+            usage='%prog ' + self.args,
+            description=capfirst(add_period(self.description)),
+            version='%%prog-%s' % version
+        )
         for option_group, option_list in self.options:
             if option_group is None:
                 container = opt_parser
