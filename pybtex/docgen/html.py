@@ -31,8 +31,7 @@ from docutils.parsers.rst import directives
 from docutils.core import publish_parts
 from docutils.writers import html4css1
 
-from jinja import Environment, PackageLoader
-from jinja.filters import stringfilter
+from jinja2 import Environment, PackageLoader
 
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
@@ -51,8 +50,6 @@ PYGMENTS_FORMATTER = HtmlFormatter(style=MyHiglightStyle, cssclass='sourcecode')
 #            .read().decode('utf-8')
 
 DATE_FORMAT = '%d %B %y (%a)'
-
-FULL_TEMPLATE = e.get_template('template.html')
 
 
 def get_bzr_timestamp(filename):
@@ -91,13 +88,12 @@ pygments_directive.content = 1
 directives.register_directive('sourcecode', pygments_directive)
 
 
-@stringfilter
 def mark_tail(phrase, keyword, pattern = '%s<span class="tail"> %s</span>'):
     """Finds and highlights a 'tail' in the sentense.
 
     A tail consists of several lowercase words and a keyword.
 
-    >>> print mark_tail('Pybtex', 'The Manual of Pybtex')
+    >>> print mark_tail('The Manual of Pybtex', 'Pybtex')
     The Manual<span class="tail"> of Pybtex</span>
 
     Look at the generated documentation for further explanation.
@@ -171,9 +167,9 @@ def generate_documentation(data, link_style):
         }
     )
     return {
-        'title':        parts['title'].encode('utf-8'),
-        'body':         parts['body'].encode('utf-8'),
-        'toc':          parts['toc']
+        'title':        parts['title'],
+        'body':         parts['body'],
+        'toc':          parts['toc'],
     }
 
 
@@ -186,7 +182,7 @@ def handle_file(filename, fp, dst, for_site):
     c['modification_date'] = format_date(mtime, timezone, 'utc', date_fmt=DATE_FORMAT, show_offset=False)
     c['file_id'] = title
     c['for_site'] = for_site
-    tmpl = FULL_TEMPLATE
+    tmpl = e.get_template('template.html')
     result = file(os.path.join(dst, title + '.html'), 'w')
     result.write(tmpl.render(c).encode('utf-8'))
     result.close()
