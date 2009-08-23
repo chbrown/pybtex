@@ -2,6 +2,14 @@
 Pybtex!
 =======
 
+.. TODO: remove hardcoded version number from here
+.. pull-quote::
+
+    Current version is `Pybtex 0.9
+    <file:///home/and/src/sbox/pybtex/trunk/docs/html/p/pybtex/pybtex-0.9.tar.bz2>`_
+    (`download <http://pypi.python.org/pypi/pybtex>`_, `see what's new <history.txt>`_)
+
+
 Pybtex is a drop-in replacement for BibTeX written in Python.
 You can start using it right now by simply typing ``pybtex`` where you would have typed ``bibtex``.
 
