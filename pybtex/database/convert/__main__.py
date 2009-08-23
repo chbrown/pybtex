@@ -49,7 +49,7 @@ pybtex-convert converts bibliography database files between supported formats
             make_option(
                 '--allow-keyless-bibtex-entries',
                 action='store_true', dest='allow_keyless_entries',
-                help='allow BibTeX entries without keys'
+                help='allow BibTeX entries without keys and generate unnamed-<number> keys for them'
             ),
         )),
         ('encoding options', (
