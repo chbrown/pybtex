@@ -220,7 +220,7 @@ def run(src_dir, dst_dir, for_site, sources=(), handle_file=handle_file):
 
 def generate_html(doc_dir, for_site=False, *sources):
     src_dir = os.path.realpath(os.path.join(doc_dir, 'rst'))
-    dst_dir = os.path.realpath(os.path.join(doc_dir, 'html'))
+    dst_dir = os.path.realpath(os.path.join(doc_dir, 'site' if for_site else 'html'))
     run(src_dir, dst_dir, for_site, sources)
 
 

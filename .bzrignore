@@ -8,6 +8,7 @@ examples/*.blg
 examples/*.txt
 examples/*.html
 docs/html
+docs/site
 docs/man1/*.1
 build
 dist
