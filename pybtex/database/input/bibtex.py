@@ -92,7 +92,7 @@ class Parser(ParserBase):
         entry_header = at + Word(alphas).setParseAction(downcaseTokens)
         entry_key = Word(printables.replace(',', ''))
         if kwargs.get('allow_keyless_entries', False):
-            entry_body = bibtexGroup(Optional(entry_key + comma, None) + Group(fields))
+            entry_body = bibtexGroup(Optional(entry_key + comma, None) + Group(fields) + Optional(comma))
         else:
             entry_body = bibtexGroup(entry_key + comma + Group(fields) + Optional(comma))
         entry = entry_header + entry_body
