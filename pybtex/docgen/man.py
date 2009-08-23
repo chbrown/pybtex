@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Copyright (C) 2009  Andrey Golovizin
 # 
 # This program is free software: you can redistribute it and/or modify
@@ -25,12 +24,8 @@ from datetime import datetime
 
 from pybtex.__version__ import version
 
-def get_filename(main_obj):
-    """Provides name of manpage"""
-    return "%s.1" % (main_obj.prog)
 
-
-def infogen(outfile, main_obj):
+def write_manpage(outfile, main_obj):
     """Assembles a man page"""
     now = datetime.utcnow()
     params = {
@@ -118,15 +113,15 @@ man_head = """\
 %(cmd)s - %(description)s
 """
 
-def make_man(main_obj):
-    with open(get_filename(main_obj), 'w') as man_file:
-        infogen(man_file, main_obj)
+def generate_manpage(man_dir, main_obj):
+    man_filename = os.path.join(man_dir, '%s.1' % main_obj.prog)
+    with open(man_filename, 'w') as man_file:
+        write_manpage(man_file, main_obj)
 
-def main():
+
+def generate_manpages(doc_dir):
+    man_dir = os.path.join(doc_dir, 'man1')
     from pybtex.__main__ import main as pybtex
     from pybtex.database.convert.__main__ import main as pybtex_convert
-    make_man(pybtex)
-    make_man(pybtex_convert)
-
-if __name__ == '__main__':
-    main()
+    generate_manpage(man_dir, pybtex)
+    generate_manpage(man_dir, pybtex_convert)

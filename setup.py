@@ -36,12 +36,13 @@ class Sdist(sdist):
         if not os.path.exists(bibtexml) or newer(bibtex_yaml, bibtexml):
             convert(bibtex_yaml, bibtexml)
 
-        from docs import generate
-        generate.main('local')
+        from pybtex.docgen import generate_docs
+        generate_docs(os.path.join(ROOT, 'docs'), ('html', 'manpages'))
 
         sdist.run(self)
 
-README = open(os.path.join(os.path.dirname(__file__), 'README')).read()
+ROOT = os.path.abspath(os.path.dirname(__file__))
+README = open(os.path.join(ROOT, 'README')).read()
 
 setup(name=progname,
     version=version,

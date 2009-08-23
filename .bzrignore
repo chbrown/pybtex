@@ -7,6 +7,8 @@ examples/*.log
 examples/*.blg
 examples/*.txt
 examples/*.html
+docs/html
+docs/man1/*.1
 build
 dist
 pybtex.egg-info
@@ -14,8 +16,6 @@ pybtex.egg-info
 *.e3t
 *.orig
 MANIFEST
-docs/html
 pybtex/.ropeproject
 .ropeproject
 .coverage
-man1/*.1

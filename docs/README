@@ -1,4 +1,4 @@
-Run the following command to generate the documentation:
+To generate HTML documentation and man pages, run:
 
 $ ./generate.py
 
@@ -8,9 +8,7 @@ It requires:
 - Jinja (tested with 1.0)
 - Pygments (tested with 7.1)
 
-For the curious: the contents of our site at http://pybtex.sourceforge.net/
-are generated as follows:
+For the curious: the site at http://pybtex.sourceforge.net/ is generated and
+updated as follows:
 
 $ ./generate.py site
-
-Can you see the difference? ;)
