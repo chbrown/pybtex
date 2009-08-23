@@ -17,10 +17,5 @@
 
 
 if __name__ == '__main__':
-    from pybtex.exceptions import PybtexError
     from pybtex.__main__ import main
-    try:
-        main()
-    except PybtexError, error:
-        print 'ERROR: %s.' % error
-        sys.exit(1)
+    main()

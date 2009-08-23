@@ -30,6 +30,14 @@ class CommandLine(object):
     def __init__(self):
         self.opt_parser = self.make_option_parser()
 
+    def __call__(self):
+        from pybtex.exceptions import PybtexError
+        try:
+            self.main()
+        except PybtexError, error:
+            print >>sys.stderr, 'ERROR: %s.' % error
+            sys.exit(1)
+
     def make_option_parser(self):
         opt_parser = optparse.OptionParser(prog=self.prog, usage='%prog ' + self.args, version='%%prog-%s' % version)
         for option_group, option_list in self.options:
@@ -55,4 +63,3 @@ class CommandLine(object):
             sys.exit(1)
 
         self.run(options, args)
-

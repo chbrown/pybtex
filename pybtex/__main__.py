@@ -76,13 +76,7 @@ class PybtexCommandLine(CommandLine):
 
         engine.make_bibliography(filename, **kwargs)
 
-def main():
-    PybtexCommandLine().main()
+main = PybtexCommandLine()
 
 if __name__ == '__main__':
-    from pybtex.exceptions import PybtexError
-    try:
-        main()
-    except PybtexError, error:
-        print 'ERROR: %s.' % error
-        sys.exit(1)
+    main()
