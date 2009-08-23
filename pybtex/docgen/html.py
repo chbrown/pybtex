@@ -53,6 +53,9 @@ DATE_FORMAT = '%d %B %y (%a)'
 
 
 def get_bzr_timestamp(filename):
+    if os.path.basename(filename) == 'history.rst':
+        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(filename)))
+        filename = os.path.join(root_dir, 'CHANGES')
     tree = workingtree.WorkingTree.open_containing(filename)[0]
     tree.lock_read()
     rel_path = tree.relpath(os.path.abspath(filename))
