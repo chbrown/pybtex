@@ -17,60 +17,67 @@
 
 import sys
 import optparse
-from pybtex.__version__ import version
 from os import path
+from optparse import make_option
+from pybtex.cmdline import CommandLine
+
+class PybtexCommandLine(CommandLine):
+    prog = 'pybtex'
+    args = '[options] auxfile.aux'
+
+    options = (
+        (None, (
+            make_option('-f', '--bibliography-format', dest='bib_format'),
+            make_option('-b', '--output-backend', dest='output_backend'),
+            make_option('-e', '--engine', dest='engine'),
+            make_option('--label-style', dest='label_style'),
+            make_option('--name-style', dest='name_style'),
+            make_option('--abbreviate-names', action='store_true', dest='abbreviate_names'),
+        )),
+        ('encoding options', (
+            make_option('--bibtex-encoding', dest='bib_encoding'),
+            make_option('--bst-encoding', dest='bst_encoding'),
+            make_option('--output-encoding', dest='output_encoding'),
+        )),
+    )
+    option_defaults = {
+        'engine': 'bibtex',
+    }
+
+    def run(self, options, args):
+        from pybtex.plugin import find_plugin
+
+        filename = args[0]
+        ext = path.splitext(filename)[1]
+        if not ext:
+            filename = path.extsep.join([filename, 'aux'])
+
+        kwargs = {}
+        if options.label_style:
+            kwargs['label_style'] = find_plugin('style.labels', options.label_style)
+        if options.name_style:
+            kwargs['name_style'] = find_plugin('style.names', options.name_style)
+        if options.output_backend:
+            kwargs['output_backend'] = find_plugin('backends', options.output_backend)
+        if options.bib_format:
+            kwargs['bib_format'] = find_plugin('database.input', options.bib_format)
+        kwargs['abbreviate_names'] = bool(options.abbreviate_names)
+        for option in ('bib_encoding', 'output_encoding', 'bst_encoding'):
+            value = getattr(options, option)
+            if value:
+                kwargs[option] = value
+
+        if options.engine == 'bibtex':
+            from pybtex import bibtex as engine
+        elif options.engine == 'pybtex':
+            import pybtex as engine
+        else:
+            opt_parser.error('unknown engine %s' % options.engine)
+
+        engine.make_bibliography(filename, **kwargs)
 
 def main():
-    opt_parser = optparse.OptionParser(prog='pybtex', usage='%prog auxfile[.aux] [options]', version='%%prog-%s' % version)
-    opt_parser.add_option('-f', '--bibliography-format', dest='bib_format')
-    opt_parser.add_option('-b', '--output-backend', dest='output_backend')
-    opt_parser.add_option('-e', '--engine', dest='engine')
-    opt_parser.add_option('--label-style', dest='label_style')
-    opt_parser.add_option('--name-style', dest='name_style')
-    opt_parser.add_option('--abbreviate-names', action='store_true', dest='abbreviate_names')
-    encoding = opt_parser.add_option_group('encoding options')
-    encoding.add_option('--bibtex-encoding', dest='bib_encoding')
-    encoding.add_option('--bst-encoding', dest='bst_encoding')
-    encoding.add_option('--output-encoding', dest='output_encoding')
-    opt_parser.set_defaults(engine='bibtex')
-
-    (options, args) = opt_parser.parse_args()
-
-    if not args:
-        opt_parser.print_help()
-        sys.exit(1)
-
-    from pybtex import make_bibliography
-    from pybtex.plugin import find_plugin
-
-    filename = args[0]
-    ext = path.splitext(filename)[1]
-    if not ext:
-        filename = path.extsep.join([filename, 'aux'])
-
-    kwargs = {}
-    if options.label_style:
-        kwargs['label_style'] = find_plugin('style.labels', options.label_style)
-    if options.name_style:
-        kwargs['name_style'] = find_plugin('style.names', options.name_style)
-    if options.output_backend:
-        kwargs['output_backend'] = find_plugin('backends', options.output_backend)
-    if options.bib_format:
-        kwargs['bib_format'] = find_plugin('database.input', options.bib_format)
-    kwargs['abbreviate_names'] = bool(options.abbreviate_names)
-    for option in ('bib_encoding', 'output_encoding', 'bst_encoding'):
-        value = getattr(options, option)
-        if value:
-            kwargs[option] = getattr(options, option)
-
-    if options.engine == 'bibtex':
-        from pybtex import bibtex as engine
-    elif options.engine == 'pybtex':
-        import pybtex as engine
-    else:
-        opt_parser.error('unknown engine %s' % options.engine)
-
-    engine.make_bibliography(filename, **kwargs)
+    PybtexCommandLine().main()
 
 if __name__ == '__main__':
     from pybtex.exceptions import PybtexError
