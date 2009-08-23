@@ -176,7 +176,12 @@ def generate_documentation(data, link_style):
 def handle_file(filename, fp, dst, for_site):
     title = os.path.splitext(os.path.basename(filename))[0]
     content = fp.read()
+
+    cwd = os.getcwd()
+    os.chdir(os.path.dirname(filename))
     parts = generate_documentation(content, (lambda x: './%s.html' % x))
+    os.chdir(cwd)
+
     mtime, timezone = get_bzr_timestamp(filename)
     c = dict(parts)
     c['modification_date'] = format_date(mtime, timezone, 'utc', date_fmt=DATE_FORMAT, show_offset=False)
