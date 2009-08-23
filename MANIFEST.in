@@ -4,5 +4,4 @@ include pybtex/docgen/template.html
 recursive-include docs/html *.html *.css
 recursive-include docs/rst *.rst *.css
 recursive-include docs/man1 *.1
-recursive-include docs *.py
 recursive-include pybtex/tests *.yaml
