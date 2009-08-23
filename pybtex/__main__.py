@@ -30,7 +30,7 @@ Pybtex reads citation information from a LaTeX .aux file and produces a
 formatted bibliography. Pybtex understands BibTeX .bib and .bst style files and
 can be used as a drop-in replacement for BibTeX.
 
-Besides BibTeX .bib files, BibTeXML and YAML bibliography files are also
+Besides BibTeX .bib files, BibTeXML and YAML bibliography files are
 supported.
 
 It is also possible to define bibliography formatting styles in Python.
