@@ -18,3 +18,4 @@ docs/html
 pybtex/.ropeproject
 .ropeproject
 .coverage
+man1/*.1
