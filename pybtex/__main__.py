@@ -27,17 +27,40 @@ class PybtexCommandLine(CommandLine):
 
     options = (
         (None, (
-            make_option('-f', '--bibliography-format', dest='bib_format'),
-            make_option('-b', '--output-backend', dest='output_backend'),
-            make_option('-e', '--engine', dest='engine'),
-            make_option('--label-style', dest='label_style'),
-            make_option('--name-style', dest='name_style'),
-            make_option('--abbreviate-names', action='store_true', dest='abbreviate_names'),
-        )),
-        ('encoding options', (
-            make_option('--bibtex-encoding', dest='bib_encoding'),
-            make_option('--bst-encoding', dest='bst_encoding'),
-            make_option('--output-encoding', dest='output_encoding'),
+            make_option(
+                '-f', '--bibliography-format', dest='bib_format',
+                help='bibliograpy format (bibtex, bibtexml, bibyaml)',
+                metavar='FORMAT',
+            ),
+            make_option(
+                '-b', '--output-backend', dest='output_backend',
+                help='output backend (latex, html, plaintext)',
+                metavar='BACKEND',
+            ),
+            make_option(
+                '-e', '--engine', dest='engine',
+                help='formatter engine to use (bibtex or pybtex)',
+            ),
+            make_option(
+                '--label-style', dest='label_style',
+                help='label formatting style',
+                metavar='STYLE',
+            ),
+            make_option(
+                '--name-style', dest='name_style',
+                help='name formatting style',
+                metavar='STYLE',
+            ),
+            make_option(
+                '--abbreviate-names',
+                action='store_true', dest='abbreviate_names',
+                help='use abbreviated name formatting style',
+            ),
+    )),
+        ('Encoding options', (
+            make_option('--bibtex-encoding', dest='bib_encoding', metavar='ENCODING'),
+            make_option('--bst-encoding', dest='bst_encoding', metavar='ENCODING'),
+            make_option('--output-encoding', dest='output_encoding', metavar='ENCODING'),
         )),
     )
     option_defaults = {

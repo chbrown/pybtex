@@ -30,13 +30,31 @@ class PybtexConvertCommandLine(CommandLine):
 
     options = (
         (None, (
-            make_option('-f', '--from', action='store', type='string', dest='from_format'),
-            make_option('-t', '--to', action='store', type='string', dest='to_format'),
-            make_option('--allow-keyless-bibtex-entries', action='store_true', dest='allow_keyless_entries'),
+            make_option(
+                '-f', '--from', action='store', type='string', dest='from_format',
+                help='input format', metavar='FORMAT',
+            ),
+            make_option(
+                '-t', '--to', action='store', type='string', dest='to_format',
+                help='output format', metavar='FORMAT',
+            ),
+            make_option(
+                '--allow-keyless-bibtex-entries',
+                action='store_true', dest='allow_keyless_entries',
+                help='allow BibTeX entries without keys'
+            ),
         )),
         ('encoding options', (
-            make_option('--input-encoding', action='store', type='string', dest='input_encoding'),
-            make_option('--output-encoding', action='store', type='string', dest='output_encoding'),
+            make_option(
+                '--input-encoding',
+                action='store', type='string', dest='input_encoding',
+                metavar='ENCODING',
+            ),
+            make_option(
+                '--output-encoding',
+                action='store', type='string', dest='output_encoding',
+                metavar='ENCODING',
+            ),
         )),
     )
     option_defaults = {
