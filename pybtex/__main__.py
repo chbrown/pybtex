@@ -24,6 +24,7 @@ from pybtex.cmdline import CommandLine
 class PybtexCommandLine(CommandLine):
     prog = 'pybtex'
     args = '[options] auxfile.aux'
+    num_args = 1
 
     options = (
         (None, (

@@ -26,6 +26,7 @@ class CommandLine(object):
     option_defaults = None
     prog = None
     args = None
+    num_args = 0
 
     def __init__(self):
         self.opt_parser = self.make_option_parser()
@@ -58,7 +59,7 @@ class CommandLine(object):
 
     def main(self):
         options, args = self.opt_parser.parse_args()
-        if not args:
+        if len(args) != self.num_args:
             self.opt_parser.print_help()
             sys.exit(1)
 

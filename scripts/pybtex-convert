@@ -1,62 +1,21 @@
 #!/usr/bin/env python
 
-# Copyright 2006 Andrey Golovizin
-#
-# This file is part of pybtex.
-#
-# pybtex is free software; you can redistribute it and/or modify
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
-# option) any later version.
-#
-# pybtex is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# General Public License for more details.
-#
+# Copyright (C) 2006, 2007, 2008, 2009  Andrey Golovizin
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
 # You should have received a copy of the GNU General Public License
-# along with pybtex; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
-# USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-import optparse
-from pybtex.__version__ import version
-
-def main():
-    opt_parser = optparse.OptionParser(prog='pybtex-convert',
-            usage='%prog in_filename out_filename [options]',
-            version='%%prog-%s' % version)
-    opt_parser.add_option('-f', '--from', action='store', type='string', dest='from_format')
-    opt_parser.add_option('-t', '--to', action='store', type='string', dest='to_format')
-    opt_parser.add_option('--allow-keyless-bibtex-entries', action='store_true', dest='allow_keyless_entries')
-    encoding = opt_parser.add_option_group('encoding options')
-    encoding.add_option('--input-encoding', action='store', type='string', dest='input_encoding')
-    encoding.add_option('--output-encoding', action='store', type='string', dest='output_encoding')
-    opt_parser.set_defaults(allow_keyless_entries=False)
-
-    (options, args) = opt_parser.parse_args()
-
-    if len(args) != 2:
-        opt_parser.print_help()
-        sys.exit(1)
-
-    from pybtex.database.convert import convert, ConvertError
-
-    try:
-        convert(args[0], args[1],
-                options.from_format,
-                options.to_format,
-                input_encoding=options.input_encoding,
-                output_encoding=options.output_encoding,
-                parser_options = {'allow_keyless_entries': options.allow_keyless_entries})
-    except ConvertError, s:
-        opt_parser.error(s)
 
 if __name__ == '__main__':
-    from pybtex.exceptions import PybtexError
-    try:
-        main()
-    except PybtexError, error:
-        print 'ERROR: %s.' % error
-        sys.exit(1)
+    from pybtex.database.convert.__main__ import main
+    main()
