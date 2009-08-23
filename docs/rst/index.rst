@@ -7,7 +7,7 @@ Pybtex!
 
     Current version is `Pybtex 0.9
     <file:///home/and/src/sbox/pybtex/trunk/docs/html/p/pybtex/pybtex-0.9.tar.bz2>`_
-    (`download <http://pypi.python.org/pypi/pybtex>`_, `see what's new <history.txt>`_)
+    (download_, `see what's new <history.txt>`_)
 
 
 Pybtex is a drop-in replacement for BibTeX written in Python.
@@ -46,13 +46,35 @@ You can see the `feature overview <features.txt>`_ for more details.
 
 Hmm nice. Wrap it up, I'll take it! Where is the download link?
 ===============================================================
+.. _download:
 
-The latest version is available from our
-`Bazaar repository <https://code.launchpad.net/~ero-sennin/pybtex/trunk>`_.
-If you prefer
-`tarballs <http://pypi.python.org/pypi/pybtex>`_,
-you can have some too,
-but they are likely to become outdated rather soon.
+The tarballs thay are available from the
+`PyPI page <http://pypi.python.org/pypi/pybtex>`_.
+That said, the most stable and well documented version of Pybtex is known to be the
+`Bazaar trunk <https://code.launchpad.net/~ero-sennin/pybtex/trunk>`_.
+
+To get the very latest Pybtex from the trunk:
+
+.. sourcecode:: bash
+
+    bzr branch lp:pybtex
+    cd pybtex
+    python setup.py develop
+
+And do not forget to run the tests (need `nose
+<http://somethingaboutorange.com/mrl/projects/nose/>`_):
+
+.. sourcecode:: bash
+
+    python setup.py nosetests
+
+Pybtex can be also installed with Easy Install:
+
+.. sourcecode:: bash
+
+    easy_install pybtex
+
+But you won't get any documentation this way.
 
 If something goes wrong, please `file a bug report
 <http://sourceforge.net/tracker/?func=add&group_id=151578&atid=781406>`_.
