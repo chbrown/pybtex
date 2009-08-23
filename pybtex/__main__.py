@@ -15,10 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-import optparse
 from os import path
 from optparse import make_option
+
 from pybtex.cmdline import CommandLine
 
 class PybtexCommandLine(CommandLine):
