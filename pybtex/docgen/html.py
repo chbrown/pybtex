@@ -231,4 +231,4 @@ def generate_html(doc_dir, for_site=False, *sources):
 def generate_site(doc_dir):
     generate_html(doc_dir, for_site=True)
     os.system('rsync -rv --delete --exclude hg/ %s ero-sennin,pybtex@web.sourceforge.net:/home/groups/p/py/pybtex/htdocs'
-            % os.path.join(doc_dir, ''))
+            % os.path.join(doc_dir, 'site/'))
