@@ -154,7 +154,15 @@ class DownloadLinks(Directive):
         link_block = nodes.block_quote('', paragraph, classes=["pull-quote"])
         return [link_block]
 
-directives.register_directive('download-links', DownloadLinks)
+class NoopDirective(Directive):
+    has_content = False
+    def run(self):
+        return []
+
+
+def register_directives(for_site=False):
+    directives.register_directive('sourcecode', pygments_directive)
+    directives.register_directive('download-links', DownloadLinks if for_site else NoopDirective)
 
 
 def mark_tail(phrase, keyword, pattern = '%s<span class="tail"> %s</span>'):
