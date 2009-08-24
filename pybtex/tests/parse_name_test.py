@@ -35,6 +35,7 @@ sample_names = [
     ("Fr{\\'e}d{\\'e}ric Boulanger",
     (["Fr{\\'e}d{\\'e}ric"], [], ['Boulanger'], [])),
     ('Ford, Jr., Henry', (['Henry'], [], ['Ford'], ['Jr.'])),
+    ('mr Ford, Jr., Henry', (['Henry'], ['mr'], ['Ford'], ['Jr.'])),
     ('Fukui Rei', (['Fukui'], [], ['Rei'], [])),
     ('G. Gr{\\"a}tzer', (['G.'], [], ['Gr{\\"a}tzer'], [])),
     ('George Gr{\\"a}tzer', (['George'], [], ['Gr{\\"a}tzer'], [])),
