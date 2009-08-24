@@ -1,3 +1,7 @@
+Version 0.10
+------------
+(released on August 24th 2009)
+
 - Added support for multiple bibliography databases.
 
 - Pythonic bibliography formatter: added helper functions to simplify writing

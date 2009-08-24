@@ -5,8 +5,8 @@ Pybtex!
 .. TODO: remove hardcoded version number from here
 .. pull-quote::
 
-    Current version is `Pybtex 0.9
-    <file:///home/and/src/sbox/pybtex/trunk/docs/html/p/pybtex/pybtex-0.9.tar.bz2>`_
+    Current version is `Pybtex 0.10
+    <file:///home/and/src/sbox/pybtex/trunk/docs/html/p/pybtex/pybtex-0.10.tar.bz2>`_
     (download_, `see what's new <history.txt>`_)
 
 
