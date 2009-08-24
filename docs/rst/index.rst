@@ -48,9 +48,9 @@ Hmm nice. Wrap it up, I'll take it! Where is the download link?
 ===============================================================
 .. _download:
 
-The tarballs thay are available from the
-`PyPI page <http://pypi.python.org/pypi/pybtex>`_.
-That said, the most stable and well documented version of Pybtex is known to be the
+The tarballs thay are available from the `PyPI page
+<http://pypi.python.org/pypi/pybtex>`_.  That said, the most stable and
+feature complete and well documented version of Pybtex is known to be the
 `Bazaar trunk <https://code.launchpad.net/~ero-sennin/pybtex/trunk>`_.
 
 To get the very latest Pybtex from the trunk:
