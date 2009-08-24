@@ -6,7 +6,7 @@ Pybtex!
 .. pull-quote::
 
     Current version is `Pybtex 0.10
-    <file:///home/and/src/sbox/pybtex/trunk/docs/html/p/pybtex/pybtex-0.10.tar.bz2>`_
+    <http://pypi.python.org/packages/source/p/pybtex/pybtex-0.10.tar.bz2#md5=3b7a6f1015a3de284e043afe9fd0f6d2>`_
     (download_, `see what's new <history.txt>`_)
 
 
