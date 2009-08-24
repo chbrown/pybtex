@@ -27,7 +27,7 @@ from cgi import escape
 from glob import glob
 
 from docutils import nodes
-from docutils.parsers.rst import directives
+from docutils.parsers.rst import directives, Directive
 from docutils.core import publish_parts
 from docutils.writers import html4css1
 
@@ -40,7 +40,8 @@ from pygments.formatters import HtmlFormatter
 from bzrlib import workingtree
 from bzrlib.osutils import format_date
 
-from mystyle import MyHiglightStyle
+from pybtex.__version__ import version
+from .mystyle import MyHiglightStyle
 
 e = Environment(loader=PackageLoader('pybtex', 'docgen'))
 
@@ -89,6 +90,35 @@ def pygments_directive(name, arguments, options, content, lineno,
 pygments_directive.arguments = (1, 0, 1)
 pygments_directive.content = 1
 directives.register_directive('sourcecode', pygments_directive)
+
+
+class DownloadLinks(Directive):
+    has_content = False
+
+    def run(self):
+        tarball_uri = 'http://pypi.python.org/packages/source/p/pybtex/pybtex-%s.tar.bz2' % version
+
+        current_version_is = nodes.Text('Current version is ')
+        pybtex_xx = nodes.reference('', 'Pybtex %s' % version,
+            name='Pybtex %s' % version,
+            refuri=tarball_uri)
+        download = nodes.reference('', 'download', name='download',
+            refname='download')
+        see_whats_new = nodes.reference('', "see what's new",
+            name="see what's new", refuri='history.txt')
+        content = (
+            current_version_is,
+            pybtex_xx,
+            nodes.Text(' ('),
+            download, nodes.Text(', '),
+            see_whats_new,
+            nodes.Text(')')
+        )
+        paragraph = nodes.paragraph('', '', *content)
+        link_block = nodes.block_quote('', paragraph, classes=["pull-quote"])
+        return [link_block]
+
+directives.register_directive('download-links', DownloadLinks)
 
 
 def mark_tail(phrase, keyword, pattern = '%s<span class="tail"> %s</span>'):

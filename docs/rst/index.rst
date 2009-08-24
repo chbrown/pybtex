@@ -3,11 +3,8 @@ Pybtex!
 =======
 
 .. TODO: remove hardcoded version number from here
-.. pull-quote::
 
-    Current version is `Pybtex 0.10
-    <http://pypi.python.org/packages/source/p/pybtex/pybtex-0.10.tar.bz2#md5=3b7a6f1015a3de284e043afe9fd0f6d2>`_
-    (download_, `see what's new <history.txt>`_)
+.. download-links::
 
 
 Pybtex is a drop-in replacement for BibTeX written in Python.
