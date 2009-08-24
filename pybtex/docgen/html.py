@@ -89,7 +89,6 @@ def pygments_directive(name, arguments, options, content, lineno,
     return [nodes.raw('', parsed, format="html")]
 pygments_directive.arguments = (1, 0, 1)
 pygments_directive.content = 1
-directives.register_directive('sourcecode', pygments_directive)
 
 
 class DownloadLinks(Directive):
@@ -118,7 +117,15 @@ class DownloadLinks(Directive):
         link_block = nodes.block_quote('', paragraph, classes=["pull-quote"])
         return [link_block]
 
-directives.register_directive('download-links', DownloadLinks)
+class NoopDirective(Directive):
+    has_content = False
+    def run(self):
+        return []
+
+
+def register_directives(for_site=False):
+    directives.register_directive('sourcecode', pygments_directive)
+    directives.register_directive('download-links', DownloadLinks if for_site else NoopDirective)
 
 
 def mark_tail(phrase, keyword, pattern = '%s<span class="tail"> %s</span>'):
@@ -253,6 +260,7 @@ def run(src_dir, dst_dir, for_site, sources=(), handle_file=handle_file):
 
 
 def generate_html(doc_dir, for_site=False, *sources):
+    register_directives(for_site)
     src_dir = os.path.realpath(os.path.join(doc_dir, 'rst'))
     dst_dir = os.path.realpath(os.path.join(doc_dir, 'site' if for_site else 'html'))
     run(src_dir, dst_dir, for_site, sources)
