@@ -265,13 +265,11 @@ def swap(i):
 
 @builtin('text.length$')
 def text_length(i):
-    # FIXME special characters and braces
     s = i.pop()
     i.push(bibtex_len(s))
 
 @builtin('text.prefix$')
 def text_prefix(i):
-    # FIXME special characters and braces
     l = i.pop()
     s = i.pop()
     i.push(bibtex_prefix(s, l))
@@ -309,6 +307,5 @@ def width(i):
 
 @builtin('write$')
 def write(i):
-    #FIXME encodings
     s = i.pop()
     i.output(s)
