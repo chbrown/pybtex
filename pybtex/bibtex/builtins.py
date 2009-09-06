@@ -21,7 +21,7 @@ CAUTION: functions should PUSH results, not RETURN
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.utils import split_name_list
 from pybtex.core import Person
-from pybtex.bibtex.utils import bibtex_len, bibtex_prefix, bibtex_purify
+from pybtex.bibtex.utils import bibtex_len, bibtex_prefix, bibtex_purify, bibtex_substring
 from pybtex.bibtex.names import format as format_bibtex_name
 
 class Builtin(object):
@@ -233,15 +233,10 @@ def skip(i):
 
 @builtin('substring$')
 def substring(i):
-    len = i.pop()
+    length = i.pop()
     start = i.pop()
-    s = i.pop()
-    if start > 0:
-        i.push(s[start - 1:start - 1 + len])
-    elif start < 0:
-        i.push(s[-start - len:-start])
-    else:
-        raise BibTeXError('start=0 passed to substring$')
+    string = i.pop()
+    i.push(bibtex_substring(string, start, length))
 
 @builtin('stack$')
 def stack(i):

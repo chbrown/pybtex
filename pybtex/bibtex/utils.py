@@ -15,6 +15,41 @@
 
 from itertools import tee
 
+
+def bibtex_substring(string, start, length):
+    """
+    Return a substring of the given length, starting from the given position.
+
+    start and length are 1-based. If start is < 0, it is counted from the end
+    of the string.
+
+    >>> print bibtex_substring('abcdef', 1, 3)
+    abc
+    >>> print bibtex_substring('abcdef', 2, 3)
+    bcd
+    >>> print bibtex_substring('abcdef', 2, 1000)
+    bcdef
+    >>> print bibtex_substring('abcdef', -1, 1)
+    f
+    >>> print bibtex_substring('abcdef', -1, 2)
+    ef
+    >>> print bibtex_substring('abcdef', -2, 3)
+    cde
+    >>> print bibtex_substring('abcdef', -2, 1000)
+    abcde
+    """
+
+    if start > 0:
+        start0 = start - 1
+        end0 = start0 + length
+    elif start < 0:
+        end0 = len(string) + start + 1
+        start0 = end0 - length
+    else:
+        raise BibTeXError('start=0 passed to substring$')
+    return string[start0:end0]
+
+
 def bibtex_len(string):
     r"""Return the number of characters in the string.
 
