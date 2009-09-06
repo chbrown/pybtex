@@ -21,7 +21,7 @@ CAUTION: functions should PUSH results, not RETURN
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.utils import split_name_list
 from pybtex.core import Person
-from pybtex.bibtex.utils import bibtex_len, bibtex_prefix
+from pybtex.bibtex.utils import bibtex_len, bibtex_prefix, bibtex_purify
 from pybtex.bibtex.names import format as format_bibtex_name
 
 class Builtin(object):
@@ -220,13 +220,8 @@ def preamble(i):
 
 @builtin('purify$')
 def purify(i):
-    #FIXME need to strip TeX control sequences starting with backslash
     s = i.pop()
-    l = []
-    for char in s:
-        if char.isalpha() or char.isdigit() or char.isspace():
-            l.append(char)
-    i.push(''.join(l))
+    i.push(bibtex_purify(s))
 
 @builtin('quote$')
 def quote(i):

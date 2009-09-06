@@ -90,6 +90,42 @@ def bibtex_prefix(string, num_chars):
     return ''.join(prefix())
 
 
+def bibtex_purify(string):
+    r"""Strip special characters from the string.
+
+    >>> print bibtex_purify('Abc 1234')
+    Abc 1234
+    >>> print bibtex_purify('Abc  1234')
+    Abc  1234
+    >>> print bibtex_purify('Abc-Def')
+    Abc Def
+    >>> print bibtex_purify('Abc-~-Def')
+    Abc   Def
+    >>> print bibtex_purify('{XXX YYY}')
+    XXX YYY
+    >>> print bibtex_purify('{XXX {YYY}}')
+    XXX YYY
+    >>> print bibtex_purify(r'XXX {\YYY} XXX')
+    XXX  XXX
+    >>> print bibtex_purify(r'{XXX {\YYY} XXX}')
+    XXX YYY XXX
+    >>> print bibtex_purify(r'\\abc def')
+    abc def
+    >>> print bibtex_purify('a@#$@#$b@#$@#$c')
+    abc
+    """
+
+    def purify_iter():
+        for char, brace_level in scan_bibtex_string(string):
+            if brace_level == 1 and char.startswith('\\'):
+                pass
+            elif char.isalnum():
+                yield char
+            elif char.isspace() or char in '-~':
+                yield ' '
+    return ''.join(purify_iter())
+
+
 class LookAheadIterator(object):
     def __init__(self, seq):
         self.iterable = iter(seq)
