@@ -16,6 +16,7 @@
 r"""(simple but) rich text formatting tools
 
 Usage:
+
 >>> from pybtex.backends import latex
 >>> backend = latex.Writer()
 >>> t = Text('this ', 'is a ', Tag('emph', 'very'), Text(' rich', ' text'))
@@ -60,24 +61,29 @@ import string
 
 class Text(list):
     """
-    Rich text is basically a list of
+    Rich text is basically a list of:
+
     - plain strings
     - Tag objects
     - other Text objects
+
     Text is used as an internal formatting language of Pybtex,
     being rendered to to HTML or LaTeX markup or whatever in the end.
     """
 
     def __init__(self, *parts):
-        r"""Create a Text consisting of one or more parts."""
+        """Create a Text consisting of one or more parts."""
 
         list.__init__(self, parts)
 
     def __len__(self):
+        """Return the number of characters in this Text."""
         return sum(len(part) for part in self)
 
     def __add__(self, other):
-        """Concatenate this Text with another Text or string.
+        """
+        Concatenate this Text with another Text or string.
+
         >>> t = Text('a')
         >>> print (t + 'b').plaintext()
         ab
