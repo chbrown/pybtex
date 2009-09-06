@@ -85,9 +85,7 @@ def execute(code, database=None):
 
 
 def format_name(name, format):
-    entry = Entry('article', fields={'name': name, 'format': format})
-    database = BibliographyData(entries={'test_entry': entry})
-    return execute('name #1 format format.name$', database)
+    return execute('"%s" #1 "%s" format.name$' % (name, format))
 
 
 def parse_name(name):
