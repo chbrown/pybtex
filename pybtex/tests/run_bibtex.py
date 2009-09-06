@@ -97,15 +97,12 @@ def parse_name(name):
 
 
 def main():
-    names = [
-        'Vasily Petrovitch Schubin',
-        'Johan Peter Maria Mueller',
-        r'Charles Louis Xavier Joseph de la Vall{\'e}e Poussin',
-    ]
-
-    for name in names:
-        print format_name(name, '{f.}{ ll~}')
-        print unicode(parse_name(name))
+    args = sys.argv[1:2]
+    if len(args) != 1:
+        print "usage: run_bibtex 'some bibtex code'"
+        sys.exit(1)
+    code = args[0]
+    print execute(code)
 
 
 if __name__ == '__main__':
