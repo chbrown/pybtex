@@ -117,6 +117,9 @@ class Person(object):
     >>> p = Person('abc')
     >>> print p.first(), p.middle(), p.prelast(), p.last(), p.lineage()
     [] [] [] ['abc'] []
+    >>> p = Person('Viktorov, Michail~Markovitch')
+    >>> print p.first(), p.middle(), p.prelast(), p.last(), p.lineage()
+    ['Michail'] ['Markovitch'] [] ['Viktorov'] []
     """
     valid_roles = ['author', 'editor'] 
     style1_re = re.compile('^(.+),\s*(.+)$')

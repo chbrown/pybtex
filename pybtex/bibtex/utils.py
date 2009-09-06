@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from itertools import tee
+import re
 
 
 def bibtex_substring(string, start, length):
@@ -240,7 +240,7 @@ def split_name_list(string):
     return split_tex_string(string, ' and ')
 
 def split_tex_string(string, sep=None, strip=True, filter_empty=False):
-    """Split a string using the given separator.
+    """Split a string using the given separator (regexp).
 
     Everything at brace level > 0 is ignored.
     Separators at the edges of the string are ignored.
@@ -251,9 +251,9 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     []
     >>> split_tex_string('   ', ' ', strip=False, filter_empty=False)
     [' ', ' ']
-    >>> split_tex_string('.a.b.c.', '.')
+    >>> split_tex_string('.a.b.c.', r'\.')
     ['.a', 'b', 'c.']
-    >>> split_tex_string('.a.b.c.{d.}.', '.')
+    >>> split_tex_string('.a.b.c.{d.}.', r'\.')
     ['.a', 'b', 'c', '{d.}.']
     >>> split_tex_string('Matsui      Fuuka')
     ['Matsui', 'Fuuka']
@@ -266,27 +266,26 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     """
 
     if sep is None:
-        sep = ' '
+        sep = '[\s~]+'
         filter_empty = True
+    sep_re = re.compile(sep)
     brace_level = 0
     name_start = 0
     result = []
     string_len = len(string)
-    sep_len = len(sep)
     pos = 0
     for pos, char in enumerate(string):
         if char == '{':
             brace_level += 1
         elif char == '}':
             brace_level -= 1
-        elif (
-            brace_level == 0 and
-            string[pos:pos + len(sep)].lower() == sep and
-            pos > 0 and
-            pos + len(sep) < string_len
-        ):
-            result.append(string[name_start:pos])
-            name_start = pos + len(sep)
+        elif brace_level == 0 and pos > 0:
+            match = sep_re.match(string[pos:])
+            if match:
+                sep_len = len(match.group())
+                if pos + sep_len < string_len:
+                    result.append(string[name_start:pos])
+                    name_start = pos + sep_len
     if name_start < string_len:
         result.append(string[name_start:])
     if strip:
