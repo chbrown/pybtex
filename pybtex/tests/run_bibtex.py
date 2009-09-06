@@ -68,20 +68,26 @@ def run_bibtex(style, database, citations=None):
         rmtree(tmpdir)
 
 
-def format_name(name, format):
-    entry = Entry('article', fields={'name': name, 'format': format})
-    database = BibliographyData(entries={'test_entry': entry})
+def execute(code, database=None):
+    if database is None:
+        database = BibliographyData(entries={'test_entry': Entry('article')})
     bst = """
         ENTRY {name format} {} {}
         FUNCTION {article}
         {
-            name #1 format format.name$ write$ newline$
+            %s write$ newline$
         }
         READ
         ITERATE {call.type$}
-    """.strip()
+    """.strip() % code
     [result] = run_bibtex(bst, database).splitlines()
     return result
+
+
+def format_name(name, format):
+    entry = Entry('article', fields={'name': name, 'format': format})
+    database = BibliographyData(entries={'test_entry': entry})
+    return execute('name #1 format format.name$', database)
 
 
 def parse_name(name):
