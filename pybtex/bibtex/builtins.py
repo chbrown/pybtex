@@ -21,7 +21,7 @@ CAUTION: functions should PUSH results, not RETURN
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.utils import split_name_list
 from pybtex.core import Person
-from pybtex.bibtex.utils import bibtex_len
+from pybtex.bibtex.utils import bibtex_len, bibtex_prefix
 from pybtex.bibtex.names import format as format_bibtex_name
 
 class Builtin(object):
@@ -274,7 +274,7 @@ def text_prefix(i):
     # FIXME special characters and braces
     l = i.pop()
     s = i.pop()
-    i.push(s[:l])
+    i.push(bibtex_prefix(s, l))
 
 @builtin('top$')
 def top(i):

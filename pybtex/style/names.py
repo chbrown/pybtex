@@ -17,7 +17,14 @@
 """
 from pybtex.richtext import Symbol, Text, nbsp
 from pybtex.style.template import join, together, node, _format_list
-from pybtex.bibtex.names import tie_or_space
+
+
+def tie_or_space(word, tie='~', space = ' ', enough_chars=3):
+    if len(word) < enough_chars:
+        return tie
+    else:
+        return space
+    
 
 @node
 def name_part(children, data, before='', tie=False):

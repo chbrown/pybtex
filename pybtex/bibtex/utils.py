@@ -13,11 +13,143 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-def bibtex_len(s):
-    """Return the number of characters in s, taking TeX' special chars into accoount.
+from itertools import tee
+
+def bibtex_len(string):
+    r"""Return the number of characters in the string.
+
+    Braces are ignored. "Special characters" are ignored. A "special character"
+    is a substring at brace level 1, if the first character after the opening
+    brace is a backslash, like in "de la Vall{\'e}e Poussin".
+
+    >>> print bibtex_len(r"de la Vall{\'e}e Poussin")
+    20
+    >>> print bibtex_len(r"de la Vall{e}e Poussin")
+    20
+    >>> print bibtex_len(r"de la Vallee Poussin")
+    20
+    >>> print bibtex_len(r'\ABC 123')
+    8
+    >>> print bibtex_len(r'{\abc}')
+    1
+    >>> print bibtex_len(r'{\abc')
+    1
+    >>> print bibtex_len(r'}\abc')
+    4
+    >>> print bibtex_len(r'\abc}')
+    4
+    >>> print bibtex_len(r'\abc{')
+    4
+    >>> print bibtex_len(r'level 0 {1 {2}}')
+    11
+    >>> print bibtex_len(r'level 0 {\1 {2}}')
+    9
+    >>> print bibtex_len(r'level 0 {1 {\2}}')
+    12
     """
-    #FIXME stub
-    return len(s)
+    length = 0
+    for char, brace_level in scan_bibtex_string(string):
+        if char not in '{}':
+            length += 1
+    return length
+
+
+def bibtex_prefix(string, num_chars):
+    """Return the firxt num_char characters of the string.
+
+    Braces and "special characters" are ignored, as in bibtex_len.  If the
+    resulting prefix ends at brace level > 0, missing closing braces are
+    appended.
+
+    >>> print bibtex_prefix('abc', 1)
+    a
+    >>> print bibtex_prefix('abc', 5)
+    abc
+    >>> print bibtex_prefix('ab{c}d', 3)
+    ab{c}
+    >>> print bibtex_prefix('ab{cd}', 3)
+    ab{c}
+    >>> print bibtex_prefix('ab{cd', 3)
+    ab{c}
+    >>> print bibtex_prefix(r'ab{\cd}', 3)
+    ab{\cd}
+    >>> print bibtex_prefix(r'ab{\cd', 3)
+    ab{\cd}
+
+    """
+    def prefix():
+        length = 0
+        for char, brace_level in scan_bibtex_string(string):
+            yield char
+            if char not in '{}':
+                length += 1
+            if length >= num_chars:
+                break
+        for i in range(brace_level):
+            yield '}'
+    return ''.join(prefix())
+
+
+class LookAheadIterator(object):
+    def __init__(self, seq):
+        self.iterable = iter(seq)
+        self.buffer = []
+
+    def __iter__(self):
+        return self
+
+    def peek(self):
+        if self.buffer:
+            return self.buffer[0]
+        else:
+            try:
+                self.buffer.append(self.iterable.next())
+            except StopIteration:
+                return None
+            else:
+                return self.buffer[0]
+
+    def poke(self, token):
+        self.buffer.insert(0, token)
+
+    def next(self):
+        if self.buffer:
+            return self.buffer.pop()
+        else:
+            return self.iterable.next()
+
+
+def scan_bibtex_string(string):
+    """ Yield (char, brace_level) tuples.
+
+    "Special characters", as in bibtex_len, are treated as a single character
+
+    """
+
+    def scan(chars, level=0):
+        results = find_closing_brace(chars, level)
+        if level == 1 and chars.peek() == '\\':
+            return group(results, level)
+        else:
+            return results
+
+    def group(results, level):
+        yield ''.join(char for char, _ in results), level
+    
+    def find_closing_brace(chars, level):
+        for char in chars:
+            if char == '{':
+                yield char, level + 1
+                for item in scan(chars, level + 1):
+                    yield item
+            elif char == '}' and level > 0:
+                chars.poke(char)
+                return
+            else:
+                yield char, level
+    
+    return scan(LookAheadIterator(string))
+
 
 def split_name_list(string):
     """
