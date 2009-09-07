@@ -17,6 +17,7 @@ from __future__ import with_statement
 
 from os import path
 
+import pybtex.io
 from pybtex.database import BibliographyData
 
 default = 'bib'
@@ -30,7 +31,7 @@ class ParserBase:
     def parse_file(self, filename, fileext=None):
         if fileext is not None:
             filename = filename + path.extsep + fileext
-        with open(filename, 'r') as f:
+        with pybtex.io.open_plain(filename, 'r') as f:
             self.parse_stream(f)
         return self.data
 

@@ -24,5 +24,5 @@ class WriterBase:
         self.encoding = encoding
 
     def write_file(self, bib_data, filename):
-        with open(filename, 'w') as stream:
+        with pybtex.io.open_plain(filename, 'w') as stream:
             self.write_stream(bib_data, stream)
