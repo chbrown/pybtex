@@ -72,6 +72,10 @@ It is also possible to define bibliography formatting styles in Python.
             ),
     )),
         ('Encoding options', (
+            make_option(
+                '-e', '--encoding', dest='encoding', metavar='ENCODING',
+                help='default encoding',
+            ),
             make_option('--bibtex-encoding', dest='bib_encoding', metavar='ENCODING'),
             make_option('--bst-encoding', dest='bst_encoding', metavar='ENCODING'),
             make_option('--output-encoding', dest='output_encoding', metavar='ENCODING'),
@@ -100,7 +104,7 @@ It is also possible to define bibliography formatting styles in Python.
             kwargs['bib_format'] = find_plugin('database.input', options.bib_format)
         kwargs['abbreviate_names'] = bool(options.abbreviate_names)
         for option in ('bib_encoding', 'output_encoding', 'bst_encoding'):
-            value = getattr(options, option)
+            value = getattr(options, option) or options.encoding
             if value:
                 kwargs[option] = value
 
