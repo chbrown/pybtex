@@ -171,7 +171,10 @@ class Interpreter(object):
 #        print 'stack:', self.stack
 
     def pop(self):
-        value = self.stack.pop()
+        try:
+            value = self.stack.pop()
+        except IndexError:
+            raise BibTeXError('pop from empty stack')
 #        print 'pop <%s>' % value
         return value
 

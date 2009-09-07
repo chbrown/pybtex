@@ -241,11 +241,8 @@ def substring(i):
 
 @builtin('stack$')
 def stack(i):
-    try:
-        while True:
-            print >>pybtex.io.stdout, i.pop()
-    except IndexError:
-        pass
+    while i.stack:
+        print >>pybtex.io.stdout, i.pop()
 
 @builtin('swap$')
 def swap(i):
