@@ -13,7 +13,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-class FindPluginError(Exception):
+from pybtex.exceptions import PybtexError
+
+class FindPluginError(PybtexError):
     pass
 
 def find_plugin(plugin_path, name):
