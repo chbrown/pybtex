@@ -1,6 +1,6 @@
 Version 0.11
 ------------
-(not yet released)
+(released on September 7th 2009)
 
 - Made text.lentgh$ and text.prefix$ BibTeX built-in functions treat braces and
   TeX special characters properly (like the original BibTeX functions do).
