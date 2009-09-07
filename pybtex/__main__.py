@@ -51,8 +51,9 @@ It is also possible to define bibliography formatting styles in Python.
                 metavar='BACKEND',
             ),
             make_option(
-                '-e', '--engine', dest='engine',
-                help='formatter engine to use (bibtex or pybtex)',
+                '-l', '--style-language', dest='style_language',
+                help='style definition language to use (bibtex or python)',
+                metavar='LANGUAGE',
             ),
             make_option(
                 '--label-style', dest='label_style',
@@ -77,7 +78,7 @@ It is also possible to define bibliography formatting styles in Python.
         )),
     )
     option_defaults = {
-        'engine': 'bibtex',
+        'style_language': 'bibtex',
     }
 
     def run(self, options, args):
@@ -103,12 +104,12 @@ It is also possible to define bibliography formatting styles in Python.
             if value:
                 kwargs[option] = value
 
-        if options.engine == 'bibtex':
+        if options.style_language == 'bibtex':
             from pybtex import bibtex as engine
-        elif options.engine == 'pybtex':
+        elif options.style_language == 'python':
             import pybtex as engine
         else:
-            opt_parser.error('unknown engine %s' % options.engine)
+            self.opt_parser.error('unknown style language %s' % options.style_language)
 
         engine.make_bibliography(filename, **kwargs)
 

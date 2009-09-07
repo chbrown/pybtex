@@ -33,7 +33,7 @@ sources in the ``pybtex/style`` subdirectory, then run:
 
 .. sourcecode:: bash
 
-    pybtex -e pybtex foo
+    pybtex -l python foo
 
 As of now the only pythonic style available is
 ``pybtex/style/formatting/unsrt.py``. It is a partial and very incomplete port
