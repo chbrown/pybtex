@@ -16,10 +16,11 @@
 """convert bibliography database from one format to another
 """
 from os import path
+from pybtex.exceptions import PybtexError
 from pybtex.plugin import find_plugin
 from pybtex.database.formats import format_for_extension
 
-class ConvertError(Exception):
+class ConvertError(PybtexError):
     pass
 
 def format_for_filename(filename):
