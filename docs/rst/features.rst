@@ -8,9 +8,9 @@ Bibliography formats
 BibTeX
 ------
 
-BibTeX format is very simple and easy to learn. Those who have used BibTeX
-should be already familiar with it. The others will probably catch the idea
-from the following example:
+BibTeX format is quite simple. Those who have used BibTeX should be already
+familiar with it. The others will probably catch the idea from the following
+example:
 
 .. sourcecode:: bibtex
 
@@ -23,14 +23,15 @@ from the following example:
     }
 
 
-For detailed description of the BibTeX format please refer to the
+For the detailed description of the BibTeX format please refer to the
 `BibTeX documentation <http://www.ctan.org/get/info/tex-references/html/bibtex-bib-files.html>`_.
 
 BibTeXML
 --------
 
-`BibTeXML <http://bibtexml.sourceforge.net>`_ format attempts to combine the simplicity of BibTeX format with the
-power of XML. Here is what the above BibTeX bibliography entry wolud look like:
+`BibTeXML <http://bibtexml.sourceforge.net>`_ format attempts to combine the
+simplicity of BibTeX format with the power of XML. Here is what the above
+BibTeX bibliography entry wolud look like:
 
 .. sourcecode:: xml
 
