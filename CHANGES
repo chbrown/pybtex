@@ -1,3 +1,23 @@
+Version 0.11
+------------
+(not yet released)
+
+- Made text.lentgh$ and text.prefix$ BibTeX built-in functions treat braces and
+  TeX special characters properly (like the original BibTeX functions do).
+
+- Changed purify$ to replace ties and hyphens by spaces.
+
+- Fixed a bug in substring$ with negative start values.
+
+- Fix .bst file grammar to allow underscores in identifiers.
+
+- BibTeX name parser: ties are now treated as whitespace when splitting name
+  parts.
+
+- Implemented BibTeX-like text wrapping - the resulting .bbl output should now
+  be byte-for-byte identical to that of BibTeX in most cases.
+
+
 Version 0.10
 ------------
 (released on August 24th 2009)
