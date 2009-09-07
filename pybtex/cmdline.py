@@ -40,7 +40,7 @@ class CommandLine(object):
         try:
             self.main()
         except PybtexError, error:
-            print >>pybtex.io.stderr, 'ERROR: %s.' % error
+            print >>pybtex.io.stderr, 'ERROR: %s' % capfirst(add_period(unicode(error)))
             sys.exit(1)
 
     def make_option_parser(self):
