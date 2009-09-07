@@ -16,6 +16,40 @@
 import re
 
 
+whitespace_re = re.compile('(\s)')
+
+def wrap(string, width=79):
+    def wrap_chunks(chunks, width, initial_indent='', subsequent_indent='  '):
+        space_len = 1
+        line = []
+        lines = []
+        current_width = 0
+        indent = initial_indent
+
+        def output(line, indent):
+            if line:
+                if line[0] == ' ':
+                    line.pop(0)
+                lines.append(indent + ''.join(line).rstrip())
+
+        for chunk in chunks:
+            max_width = width - len(indent)
+            chunk_len = len(chunk)
+            if current_width + chunk_len <= max_width:
+                line.append(chunk)
+                current_width += chunk_len
+            else:
+                output(line, indent)
+                indent = subsequent_indent
+                line = [chunk]
+                current_width = chunk_len
+        output(line, indent)
+        return lines
+
+    chunks = whitespace_re.split(string)
+    return '\n'.join(wrap_chunks(chunks, width))
+
+
 def bibtex_substring(string, start, length):
     """
     Return a substring of the given length, starting from the given position.

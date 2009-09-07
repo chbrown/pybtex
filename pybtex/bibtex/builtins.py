@@ -203,7 +203,7 @@ def missing(i):
 def newline(i):
     # FIXME bibtex does some automatic line breaking
     # needs more investigation
-    i.output('\n')
+    i.newline()
 
 @builtin('num.names$')
 def num_names(i):

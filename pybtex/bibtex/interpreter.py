@@ -15,6 +15,7 @@
 
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.builtins import builtins
+from pybtex.bibtex.utils import wrap
 #from pybtex.database.input import bibtex
 
 
@@ -161,6 +162,7 @@ class Interpreter(object):
         self.add_variable('entry.max$', Integer(10000))
         self.add_variable('sort.key$', EntryString(self, 'sort.key$'))
         self.macros = {}
+        self.output_buffer = []
 
     def push(self, value):
 #        print 'push <%s>' % value
@@ -181,7 +183,13 @@ class Interpreter(object):
         self.vars[name] = value
 
     def output(self, string):
-        self.output_file.write(string)
+        self.output_buffer.append(string)
+
+    def newline(self):
+        output = wrap(''.join(self.output_buffer))
+        self.output_file.write(output)
+        self.output_file.write('\n')
+        self.output_buffer = []
 
     def run(self, bst_script, citations, bib_files, bbl_file):
         self.bst_script = iter(bst_script)
