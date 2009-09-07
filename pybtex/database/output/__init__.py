@@ -15,11 +15,12 @@
 
 from __future__ import with_statement
 
+import pybtex.io
+
 class WriterBase:
     def __init__(self, encoding = None):
         if not encoding:
-            import locale
-            encoding = locale.getpreferredencoding()
+            encoding = pybtex.io.get_default_encoding()
         self.encoding = encoding
 
     def write_file(self, bib_data, filename):

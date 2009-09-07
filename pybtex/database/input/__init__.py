@@ -15,7 +15,6 @@
 
 from __future__ import with_statement
 
-import locale
 from os import path
 
 from pybtex.database import BibliographyData
@@ -25,8 +24,6 @@ filetypes = {'bib' : 'bibtex'}
 
 class ParserBase:
     def __init__(self, encoding=None, **kwargs):
-        if encoding is None:
-            encoding = locale.getpreferredencoding()
         self.encoding = encoding
         self.data = BibliographyData()
 

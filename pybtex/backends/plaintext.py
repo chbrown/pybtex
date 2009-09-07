@@ -14,7 +14,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from pybtex.backends import BackendBase
-import codecs
 
 file_extension = 'txt'
 

@@ -13,13 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import locale
-import codecs
+import pybtex.io
 
 class BackendBase:
     def __init__(self, encoding=None):
-        if encoding is None:
-            encoding = locale.getpreferredencoding()
         self.encoding = encoding
 
     def write_prologue(self, maxlen):
@@ -42,7 +39,7 @@ class BackendBase:
         raise NotImplementedError
 
     def write_bibliography(self, entries, filename):
-        self.f = codecs.open(filename, "w", self.encoding)
+        self.f = pybtex.io.open(filename, "w", self.encoding)
         self.output = self.f.write
         entries = list(entries)
 

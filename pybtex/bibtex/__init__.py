@@ -16,20 +16,18 @@
 """BibTeX unnamed stack language interpreter and related stuff
 """
 
-import locale
-
 
 def make_bibliography(aux_filename,
         bib_format=None,
-        bib_encoding=locale.getpreferredencoding(),
-        output_encoding=locale.getpreferredencoding(),
-        bst_encoding=locale.getpreferredencoding(),
+        bib_encoding=None,
+        output_encoding=None,
+        bst_encoding=None,
         **kwargs
     ):
 
-    import codecs
     from os import path
 
+    import pybtex.io
     from pybtex.bibtex import bst
     from pybtex.bibtex.interpreter import Interpreter
     from pybtex import auxfile
@@ -44,6 +42,6 @@ def make_bibliography(aux_filename,
     base_filename = path.splitext(aux_filename)[0]
     bbl_filename = base_filename + path.extsep + 'bbl'
     bib_filenames = [filename + path.extsep + bib_format.file_extension for filename in aux_data.data]
-    bbl_file = codecs.open(bbl_filename, 'w', encoding=output_encoding)
+    bbl_file = pybtex.io.open(bbl_filename, 'w', encoding=output_encoding)
     interpreter = Interpreter(bib_format, bib_encoding)
     interpreter.run(bst_script, aux_data.citations, bib_filenames, bbl_file)

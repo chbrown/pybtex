@@ -15,6 +15,7 @@
 
 from xml.sax.saxutils import escape
 from pybtex.backends import BackendBase
+import pybtex.io
 
 file_extension = 'html'
 
@@ -46,7 +47,8 @@ class Writer(BackendBase):
         return r'<%s>%s</%s>' % (tag, text, tag)
     
     def write_prologue(self, maxlen):
-        self.output(PROLOGUE % self.encoding)
+        encoding = self.encoding or pybtex.io.get_default_encoding()
+        self.output(PROLOGUE % encoding)
 
     def write_epilogue(self):
         self.output('</dl></body></html>\n')

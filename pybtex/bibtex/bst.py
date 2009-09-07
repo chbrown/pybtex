@@ -13,13 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import codecs
 from pyparsing import (Suppress, QuotedString, Word,
         alphas, printables, Regex, lineno, line, col,
         Forward, ZeroOrMore, OneOrMore, Group,
         restOfLine, StringEnd, ParserElement, downcaseTokens)
 from pybtex.bibtex.interpreter import (Integer, String, QuotedVar,
         Identifier, FunctionLiteral, BibTeXError)
+import pybtex.io
 
 #ParserElement.enablePackrat()
 
@@ -89,7 +89,7 @@ def strip_comment(line):
     return line[:pos]
 
 def parse_file(filename, encoding):
-    bst_file = codecs.open(filename, encoding=encoding)
+    bst_file = pybtex.io.open(filename, encoding=encoding)
     bst = ''.join(strip_comment(line) for line in bst_file)
     return bstGrammar.parseString(bst)
 

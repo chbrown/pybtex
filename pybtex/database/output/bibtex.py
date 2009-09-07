@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import codecs
+import pybtex.io
 from pybtex.database.output import WriterBase
 
 file_extension = 'bib'
@@ -52,7 +52,7 @@ class Writer(WriterBase):
             if preamble:
                 f.write('@preamble{%s}\n\n' % self.quote(preamble))
 
-        f = codecs.getwriter(self.encoding)(stream)
+        f = pybtex.io.writer(stream, self.encoding)
         write_preamble(bib_data.preamble())
         for key, entry in bib_data.entries.iteritems():
             f.write('@%s' % entry.type)

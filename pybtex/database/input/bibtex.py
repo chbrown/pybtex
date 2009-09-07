@@ -15,7 +15,6 @@
 
 """BibTeX parser"""
 
-import codecs, locale
 from pyparsing import (
         Word, Literal, CaselessLiteral, CharsNotIn,
         nums, alphas, alphanums, printables, delimitedList, downcaseTokens,
@@ -23,6 +22,7 @@ from pyparsing import (
         Forward, ZeroOrMore, Optional,
         ParseException,
 )
+import pybtex.io
 from pybtex.core import Entry, Person
 from pybtex.database.input import ParserBase
 from pybtex.bibtex.utils import split_name_list
@@ -129,7 +129,7 @@ class Parser(ParserBase):
 
     def parse_stream(self, stream):
         self.unnamed_entry_counter = 1
-        s = codecs.getreader(self.encoding)(stream).read()
+        s = pybtex.io.reader(stream, self.encoding).read()
 
         self.macros = dict(self.default_macros)
         try:

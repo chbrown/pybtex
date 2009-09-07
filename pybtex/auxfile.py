@@ -19,9 +19,9 @@
 from __future__ import with_statement
 
 import re
-import codecs
 
 from pybtex.exceptions import PybtexError
+import pybtex.io
 
 
 class AuxDataError(PybtexError):
@@ -59,7 +59,7 @@ def parse_file(filename, encoding):
     """Parse a file and return an AuxData object."""
 
     command_re = re.compile(r'\\(citation|bibdata|bibstyle){(.*)}')
-    with codecs.open(filename, encoding=encoding) as f:
+    with pybtex.io.open(filename, encoding=encoding) as f:
         s = f.read()
     data = AuxData(filename)
     for datatype, value in command_re.findall(s):
