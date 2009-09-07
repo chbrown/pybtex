@@ -42,6 +42,6 @@ def make_bibliography(aux_filename,
     base_filename = path.splitext(aux_filename)[0]
     bbl_filename = base_filename + path.extsep + 'bbl'
     bib_filenames = [filename + path.extsep + bib_format.file_extension for filename in aux_data.data]
-    bbl_file = pybtex.io.open(bbl_filename, 'w', encoding=output_encoding)
+    bbl_file = pybtex.io.open_unicode(bbl_filename, 'w', encoding=output_encoding)
     interpreter = Interpreter(bib_format, bib_encoding)
     interpreter.run(bst_script, aux_data.citations, bib_filenames, bbl_file)

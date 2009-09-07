@@ -59,7 +59,7 @@ def parse_file(filename, encoding):
     """Parse a file and return an AuxData object."""
 
     command_re = re.compile(r'\\(citation|bibdata|bibstyle){(.*)}')
-    with pybtex.io.open(filename, encoding=encoding) as f:
+    with pybtex.io.open_unicode(filename, encoding=encoding) as f:
         s = f.read()
     data = AuxData(filename)
     for datatype, value in command_re.findall(s):

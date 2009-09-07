@@ -40,14 +40,14 @@ def _open(opener, filename, *args, **kwargs):
     try:
         return opener(filename, *args, **kwargs)
     except EnvironmentError, error:
-        raise PybtexError("unable to open %s. %s" % (filename, error.strerror))
+        raise PybtexError("unable to open_unicode %s. %s" % (filename, error.strerror))
 
 
 def open_plain(filename, mode='rb'):
     return _open(open, filename, mode)
 
 
-def open(filename, mode='rb', encoding=None):
+def open_unicode(filename, mode='rb', encoding=None):
     if encoding is None:
         encoding = get_default_encoding()
     return _open(codecs.open, filename, mode, encoding=encoding)

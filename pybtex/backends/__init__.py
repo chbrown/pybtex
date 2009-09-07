@@ -39,7 +39,7 @@ class BackendBase:
         raise NotImplementedError
 
     def write_bibliography(self, entries, filename):
-        self.f = pybtex.io.open(filename, "w", self.encoding)
+        self.f = pybtex.io.open_unicode(filename, "w", self.encoding)
         self.output = self.f.write
         entries = list(entries)
 
