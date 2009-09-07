@@ -45,4 +45,5 @@ def make_bibliography(aux_filename,
     bbl_filename = base_filename + path.extsep + 'bbl'
     bib_filenames = [filename + path.extsep + bib_format.file_extension for filename in aux_data.data]
     bbl_file = codecs.open(bbl_filename, 'w', encoding=output_encoding)
-    Interpreter(bib_format).run(bst_script, aux_data.citations, bib_filenames, bbl_file)
+    interpreter = Interpreter(bib_format, bib_encoding)
+    interpreter.run(bst_script, aux_data.citations, bib_filenames, bbl_file)

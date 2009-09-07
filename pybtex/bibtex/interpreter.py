@@ -153,8 +153,9 @@ class FunctionLiteral(Function):
 
 
 class Interpreter(object):
-    def __init__(self, bib_format):
+    def __init__(self, bib_format, bib_encoding):
         self.bib_format = bib_format
+        self.bib_encoding = bib_encoding
         self.stack = []
         self.vars = dict(builtins)
         #FIXME is 10000 OK?
@@ -258,7 +259,7 @@ class Interpreter(object):
 
     def command_read(self):
 #        print 'READ'
-        p = self.bib_format.Parser(macros=self.macros, person_fields=[])
+        p = self.bib_format.Parser(encoding=self.bib_encoding, macros=self.macros, person_fields=[])
         self.bib_data = p.parse_files(self.bib_files)
         self.citations = list(self.expand_wildcard_citations())
 #        for k, v in self.bib_data.iteritems():
