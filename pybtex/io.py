@@ -17,6 +17,7 @@
 """Unicode-aware IO routines."""
 
 
+import sys
 import locale
 import codecs
 
@@ -29,19 +30,28 @@ def get_default_encoding():
     return locale_encoding or 'UTF-8'
 
     
+def get_stream_encoding(stream):
+    stream_encoding = getattr(stream, 'encoding', None)
+    return stream_encoding or get_default_encoding()
+
+
 def open(filename, mode='rb', encoding=None):
     if encoding is None:
         encoding = get_default_encoding()
     return codecs.open(filename, mode, encoding=encoding)
 
 
-def reader(stream, encoding=None):
+def reader(stream, encoding=None, errors='strict'):
     if encoding is None:
-        encoding = get_default_encoding()
-    return codecs.getreader(encoding)(stream)
+        encoding = get_stream_encoding(stream)
+    return codecs.getreader(encoding)(stream, errors)
 
 
-def writer(stream, encoding=None):
+def writer(stream, encoding=None, errors='strict'):
     if encoding is None:
-        encoding = get_default_encoding()
-    return codecs.getwriter(encoding)(stream)
+        encoding = get_stream_encoding(stream)
+    return codecs.getwriter(encoding)(stream, errors)
+
+
+stdout = writer(sys.stdout, errors='backslashreplace')
+stderr = writer(sys.stderr, errors='backslashreplace')

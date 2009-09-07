@@ -36,10 +36,11 @@ class CommandLine(object):
 
     def __call__(self):
         from pybtex.exceptions import PybtexError
+        import pybtex.io
         try:
             self.main()
         except PybtexError, error:
-            print >>sys.stderr, 'ERROR: %s.' % error
+            print >>pybtex.io.stderr, 'ERROR: %s.' % error
             sys.exit(1)
 
     def make_option_parser(self):

@@ -18,6 +18,7 @@
 CAUTION: functions should PUSH results, not RETURN
 """
 
+import pybtex.io
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.utils import split_name_list
 from pybtex.core import Person
@@ -242,7 +243,7 @@ def substring(i):
 def stack(i):
     try:
         while True:
-            print i.pop()
+            print >>pybtex.io.stdout, i.pop()
     except IndexError:
         pass
 
@@ -266,8 +267,7 @@ def text_prefix(i):
 
 @builtin('top$')
 def top(i):
-    #FIXME encoding
-    print (unicode(i.pop()).encode('UTF-8'))
+    print >>pybtex.io.stdout, i.pop()
 
 @builtin('type$')
 def type_(i):
@@ -275,9 +275,8 @@ def type_(i):
 
 @builtin('warning$')
 def warning(i):
-    #FIXME stub
     msg = i.pop()
-    print 'Warning--' + msg
+    print >>pybtex.io.stderr, 'Warning--' + msg
 
 @builtin('while$')
 def while_(i):
