@@ -153,9 +153,6 @@ class Text(list):
     def upper(self):
         return self.map(string.upper)
 
-    def upper_end(self):
-        return self.change_end(string.upper)
-
     def apply_to_start(self, f):
         """Apply a function to the last part of the text"""
         return self.map(f, lambda index, length: index == 0)
