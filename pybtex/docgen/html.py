@@ -128,43 +128,6 @@ def register_directives(for_site=False):
     directives.register_directive('download-links', DownloadLinks if for_site else NoopDirective)
 
 
-class DownloadLinks(Directive):
-    has_content = False
-
-    def run(self):
-        tarball_uri = 'http://pypi.python.org/packages/source/p/pybtex/pybtex-%s.tar.bz2' % version
-
-        current_version_is = nodes.Text('Current version is ')
-        pybtex_xx = nodes.reference('', 'Pybtex %s' % version,
-            name='Pybtex %s' % version,
-            refuri=tarball_uri)
-        download = nodes.reference('', 'download', name='download',
-            refname='download')
-        see_whats_new = nodes.reference('', "see what's new",
-            name="see what's new", refuri='history.txt')
-        content = (
-            current_version_is,
-            pybtex_xx,
-            nodes.Text(' ('),
-            download, nodes.Text(', '),
-            see_whats_new,
-            nodes.Text(')')
-        )
-        paragraph = nodes.paragraph('', '', *content)
-        link_block = nodes.block_quote('', paragraph, classes=["pull-quote"])
-        return [link_block]
-
-class NoopDirective(Directive):
-    has_content = False
-    def run(self):
-        return []
-
-
-def register_directives(for_site=False):
-    directives.register_directive('sourcecode', pygments_directive)
-    directives.register_directive('download-links', DownloadLinks if for_site else NoopDirective)
-
-
 def mark_tail(phrase, keyword, pattern = '%s<span class="tail"> %s</span>'):
     """Finds and highlights a 'tail' in the sentense.
 
