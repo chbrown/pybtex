@@ -15,6 +15,7 @@
 
 import re
 
+from pybtex.bibtex.exceptions import BibTeXError
 
 whitespace_re = re.compile('(\s)')
 
