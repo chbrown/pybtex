@@ -54,6 +54,12 @@ pybtex-convert converts bibliography database files between supported formats
         )),
         ('encoding options', (
             make_option(
+                '-e', '--encoding',
+                action='store', type='string', dest='encoding',
+                help='default encoding',
+                metavar='ENCODING',
+            ),
+            make_option(
                 '--input-encoding',
                 action='store', type='string', dest='input_encoding',
                 metavar='ENCODING',
@@ -76,8 +82,8 @@ pybtex-convert converts bibliography database files between supported formats
             convert(args[0], args[1],
                     options.from_format,
                     options.to_format,
-                    input_encoding=options.input_encoding,
-                    output_encoding=options.output_encoding,
+                    input_encoding=options.input_encoding or options.encoding,
+                    output_encoding=options.output_encoding or options.encoding,
                     parser_options = {'allow_keyless_entries': options.allow_keyless_entries})
         except ConvertError, s:
             opt_parser.error(s)
