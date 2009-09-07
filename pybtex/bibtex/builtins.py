@@ -202,8 +202,6 @@ def missing(i):
 
 @builtin('newline$')
 def newline(i):
-    # FIXME bibtex does some automatic line breaking
-    # needs more investigation
     i.newline()
 
 @builtin('num.names$')
