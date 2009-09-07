@@ -25,7 +25,12 @@ class ConvertError(PybtexError):
 
 def format_for_filename(filename):
     ext = path.splitext(filename)[1].lstrip(path.extsep)
-    return format_for_extension[ext]
+    if not ext:
+        raise PybtexError('unable to determine format for %s' % filename)
+    try:
+        return format_for_extension[ext]
+    except KeyError:
+        raise PybtexError('unknown format: %s' % ext)
 
 def convert(input, output,
         from_format=None, to_format=None,
