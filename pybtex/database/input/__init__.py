@@ -39,3 +39,6 @@ class ParserBase:
         for filename in filenames:
             self.parse_file(filename, fileext)
         return self.data
+
+    def parse_stream(self, stream):
+        raise NotImplementedError

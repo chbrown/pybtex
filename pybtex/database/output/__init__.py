@@ -26,3 +26,6 @@ class WriterBase:
     def write_file(self, bib_data, filename):
         with pybtex.io.open_plain(filename, 'w') as stream:
             self.write_stream(bib_data, stream)
+
+    def write_stream(self, bib_data, stream):
+        raise NotImplementedError
