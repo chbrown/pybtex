@@ -10,7 +10,7 @@ Version 0.11
 
 - Fixed a bug in ``substring$`` with negative start values.
 
-- Fix .bst file grammar to allow underscores in identifiers.
+- Fixed .bst file grammar to allow underscores in identifiers.
 
 - BibTeX name parser: ties are now treated as whitespace when splitting name
   parts.
