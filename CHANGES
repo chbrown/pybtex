@@ -2,12 +2,13 @@ Version 0.11
 ------------
 (released on September 7th 2009)
 
-- Made text.lentgh$ and text.prefix$ BibTeX built-in functions treat braces and
-  TeX special characters properly (like the original BibTeX functions do).
+- Made ``text.lentgh$`` and ``text.prefix$`` BibTeX built-in functions treat
+  braces and TeX special characters properly (like the original BibTeX
+  functions do).
 
-- Changed purify$ to replace ties and hyphens by spaces.
+- Changed ``purify$`` to replace ties and hyphens by spaces.
 
-- Fixed a bug in substring$ with negative start values.
+- Fixed a bug in ``substring$`` with negative start values.
 
 - Fix .bst file grammar to allow underscores in identifiers.
 
