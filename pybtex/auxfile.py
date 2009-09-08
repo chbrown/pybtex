@@ -29,39 +29,51 @@ class AuxDataError(PybtexError):
 
 
 class AuxData:
-    def __init__(self, filename):
-        self.filename = filename
+    command_re = re.compile(r'\\(citation|bibdata|bibstyle|@input){(.*)}')
+    def __init__(self, encoding):
+        self.filename = None
+        self.encoding = encoding
         self.style = None
         self.data = None
         self.citations = []
 
-    def add_citation(self, s):
+    def handle_citation(self, s):
         for c in s.split(','):
             if not c in self.citations:
                 self.citations.append(c)
 
-    def add_bibstyle(self, style):
+    def handle_bibstyle(self, style):
         if self.style is not None:
             raise AuxDataError(r'illegal, another \bibstyle command in %s' % self.filename)
         self.style = style
 
-    def add_bibdata(self, bibdata):
+    def handle_bibdata(self, bibdata):
         if self.data is not None:
             raise AuxDataError(r'illegal, another \bibdata command in %s' % self.filename)
         self.data = bibdata.split(',')
 
-    def add(self, datatype, value):
-        action = getattr(self, 'add_%s' % datatype)
+    def handle_input(self, filename):
+        self.parse_file(filename)
+
+    def handle(self, command, value):
+        action = getattr(self, 'handle_%s' % command.lstrip('@'))
         action(value)
+
+    def parse_file(self, filename):
+        previous_filename = self.filename
+        self.filename = filename
+
+        with pybtex.io.open_unicode(filename, encoding=self.encoding) as f:
+            s = f.read()
+        for command, value in self.command_re.findall(s):
+            self.handle(command, value)
+
+        self.filename = previous_filename
 
 
 def parse_file(filename, encoding):
     """Parse a file and return an AuxData object."""
 
-    command_re = re.compile(r'\\(citation|bibdata|bibstyle){(.*)}')
-    with pybtex.io.open_unicode(filename, encoding=encoding) as f:
-        s = f.read()
-    data = AuxData(filename)
-    for datatype, value in command_re.findall(s):
-        data.add(datatype, value)
+    data = AuxData(encoding)
+    data.parse_file(filename)
     return data
