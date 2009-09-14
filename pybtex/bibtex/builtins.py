@@ -115,7 +115,6 @@ def change_case(i):
     if not mode_letter in ('l', 'u', 't'):
         raise BibTeXError('incorrect change.case$ mode: %s' % mode)
 
-    print string, mode, utils.change_case(string, mode_letter)
     i.push(utils.change_case(string, mode_letter))
 
 @builtin('chr.to.int$')
