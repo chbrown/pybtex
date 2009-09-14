@@ -20,6 +20,7 @@ CAUTION: functions should PUSH results, not RETURN
 
 import pybtex.io
 from pybtex.bibtex.exceptions import BibTeXError
+from pybtex.bibtex import utils
 from pybtex.bibtex.utils import split_name_list
 from pybtex.core import Person
 from pybtex.bibtex.utils import bibtex_len, bibtex_prefix, bibtex_purify, bibtex_substring
@@ -106,32 +107,18 @@ def call_type(i):
 
 @builtin('change.case$')
 def change_case(i):
-    def title(s):
-        l = []
-        start = True
-        for pos, char in enumerate(s):
-            if char == ':':
-                try:
-                    start = s[pos+1].isspace()
-                except IndexError:
-                    pass
-                start = True
-            if start:
-                l.append(char)
-                start = False
-            else:
-                l.append(char.lower())
-        return(''.join(l))
 
     mode = i.pop()
-    s = i.pop()
-    if mode == 'l':
-        s = s.lower()
-    elif mode == 'u':
-        s = s.upper()
-    elif mode == 't':
-        s = title(s)
-    i.push(s)
+    string = i.pop()
+
+    if not mode:
+        raise BibTeXError('empty mode string passed to change.case$')
+    mode_letter = mode[0].lower()
+    if not mode_letter in ('l', 'u', 't'):
+        raise BibTeXError('incorrect change.case$ mode: %s' % mode)
+
+    print string, mode, utils.change_case(string, mode_letter)
+    i.push(utils.change_case(string, mode_letter))
 
 @builtin('chr.to.int$')
 def chr_to_int(i):
