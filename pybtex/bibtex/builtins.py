@@ -21,9 +21,7 @@ CAUTION: functions should PUSH results, not RETURN
 import pybtex.io
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex import utils
-from pybtex.bibtex.utils import split_name_list
 from pybtex.core import Person
-from pybtex.bibtex.utils import bibtex_len, bibtex_prefix, bibtex_purify, bibtex_substring
 from pybtex.bibtex.names import format as format_bibtex_name
 
 class Builtin(object):
@@ -153,7 +151,7 @@ def format_name(i):
     format = i.pop()
     n = i.pop()
     names = i.pop()
-    name = split_name_list(names)[n - 1]
+    name = utils.split_name_list(names)[n - 1]
     i.push(format_bibtex_name(name, format))
 
 @builtin('if$')
@@ -194,7 +192,7 @@ def newline(i):
 @builtin('num.names$')
 def num_names(i):
     names = i.pop()
-    i.push(len(split_name_list(names)))
+    i.push(len(utils.split_name_list(names)))
 
 @builtin('pop$')
 def pop(i):
@@ -207,7 +205,7 @@ def preamble(i):
 @builtin('purify$')
 def purify(i):
     s = i.pop()
-    i.push(bibtex_purify(s))
+    i.push(utils.bibtex_purify(s))
 
 @builtin('quote$')
 def quote(i):
@@ -222,7 +220,7 @@ def substring(i):
     length = i.pop()
     start = i.pop()
     string = i.pop()
-    i.push(bibtex_substring(string, start, length))
+    i.push(utils.bibtex_substring(string, start, length))
 
 @builtin('stack$')
 def stack(i):
@@ -239,13 +237,13 @@ def swap(i):
 @builtin('text.length$')
 def text_length(i):
     s = i.pop()
-    i.push(bibtex_len(s))
+    i.push(utils.bibtex_len(s))
 
 @builtin('text.prefix$')
 def text_prefix(i):
     l = i.pop()
     s = i.pop()
-    i.push(bibtex_prefix(s, l))
+    i.push(utils.bibtex_prefix(s, l))
 
 @builtin('top$')
 def top(i):
@@ -274,7 +272,7 @@ def while_(i):
 def width(i):
     #FIXME need to investigate bibtex' source
     s = i.pop()
-    i.push(bibtex_len(s))
+    i.push(utils.bibtex_len(s))
 
 @builtin('write$')
 def write(i):
