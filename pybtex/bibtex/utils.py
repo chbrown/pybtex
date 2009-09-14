@@ -51,6 +51,72 @@ def wrap(string, width=79):
     return '\n'.join(wrap_chunks(chunks, width))
 
 
+def change_case(string, mode):
+    r"""
+    >>> print change_case('aBcD', 'l')
+    abcd
+    >>> print change_case('aBcD', 'u')
+    ABCD
+    >>> print change_case('ABcD', 't')
+    Abcd
+    >>> print change_case(r'The {\TeX book \noop}', 'u')
+    THE {\TeX BOOK \noop}
+    >>> print change_case('And Now: BOOO!!!', 't')
+    And now: Booo!!!
+    >>> print change_case('And {Now: BOOO!!!}', 't')
+    And {Now: BOOO!!!}
+    >>> print change_case('And {Now: {BOOO}!!!}', 'l')
+    and {Now: {BOOO}!!!}
+    >>> print change_case('And {\Now: BOOO!!!}', 't')
+    And {\Now: booo!!!}
+    >>> print change_case('And {\Now: {BOOO}!!!}', 'l')
+    and {\Now: {booo}!!!}
+    """
+
+    def title(char, state):
+        if state == 'start':
+            return char
+        else:
+            return char.lower()
+
+    lower = lambda char, state: char.lower()
+    upper = lambda char, state: char.upper()
+
+    convert_level0 = {'l': lower, 'u': upper, 't': title}[mode]
+    convert_level1 = {'l': lower, 'u': upper, 't': lower}[mode]
+
+    def convert_special_char(special_char):
+        # FIXME BibTeX treats some accented and foreign characterss specially
+        def convert_words(words):
+            for word in words:
+                if word.startswith('\\'):
+                    yield word
+                else:
+                    yield convert_level1(word, 'normal')
+
+        return ' '.join(convert_words(special_char.split(' ')))
+
+    def change_case_iter(string, mode):
+        state = 'start'
+        for char, brace_level in scan_bibtex_string(string):
+            if brace_level == 0:
+                yield convert_level0(char, state)
+                if char == ':':
+                    state = 'after colon'
+                elif char.isspace() and state == 'after colon':
+                    state = 'start'
+                else:
+                    state = 'normal'
+            else:
+                if brace_level == 1 and char.startswith('\\'):
+                    yield convert_special_char(char)
+                else:
+                    yield char
+                state = 'normal'
+
+    return ''.join(change_case_iter(string, mode))
+
+
 def bibtex_substring(string, start, length):
     """
     Return a substring of the given length, starting from the given position.
