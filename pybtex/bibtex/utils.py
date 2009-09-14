@@ -251,6 +251,7 @@ def bibtex_purify(string):
     abc
     """
 
+    # FIXME BibTeX treats some accented and foreign characterss specially
     def purify_iter():
         for char, brace_level in scan_bibtex_string(string):
             if brace_level == 1 and char.startswith('\\'):
