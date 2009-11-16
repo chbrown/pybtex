@@ -2,8 +2,6 @@
 Pybtex!
 =======
 
-.. TODO: remove hardcoded version number from here
-
 .. download-links::
 
 
