@@ -51,6 +51,51 @@ def wrap(string, width=79):
     return '\n'.join(wrap_chunks(chunks, width))
 
 
+class BibTeXString(object):
+    def __init__(self, chars, level=0):
+        self.level = level
+        self.is_closed = False
+        self.contents = list(self.find_closing_brace(iter(chars)))
+
+    def find_closing_brace(self, chars):
+        for char in chars:
+            if char == '{':
+                yield BibTeXString(chars, self.level + 1)
+            elif char == '}' and self.level > 0:
+                self.is_closed = True
+                return
+            else:
+                yield char
+
+    def is_special_char(self):
+        return self.level == 1 and self.contents and self.contents[0] == '\\'
+
+    def traverse(self, open=None, f=lambda char, string: char, close=None):
+        if open is not None and self.level > 0:
+            yield open(self)
+
+        for child in self.contents:
+            if hasattr(child, 'traverse'):
+                if child.is_special_char():
+                    yield open(child)
+                    yield f(child.inner_string(), child)
+                    yield close(child)
+                else:
+                    for result in child.traverse(open, f, close):
+                        yield result
+            else:
+                yield f(child, self)
+
+        if close is not None and self.level > 0 and self.is_closed:
+            yield close(self)
+
+    def __unicode__(self):
+        return ''.join(self.traverse(open=lambda string: '{', close=lambda string: '}'))
+
+    def inner_string(self):
+        return ''.join(unicode(child) for child in self.contents)
+
+
 def change_case(string, mode):
     r"""
     >>> print change_case('aBcD', 'l')
@@ -263,65 +308,17 @@ def bibtex_purify(string):
     return ''.join(purify_iter())
 
 
-class LookAheadIterator(object):
-    def __init__(self, seq):
-        self.iterable = iter(seq)
-        self.buffer = []
-
-    def __iter__(self):
-        return self
-
-    def peek(self):
-        if self.buffer:
-            return self.buffer[0]
-        else:
-            try:
-                self.buffer.append(self.iterable.next())
-            except StopIteration:
-                return None
-            else:
-                return self.buffer[0]
-
-    def poke(self, token):
-        self.buffer.insert(0, token)
-
-    def next(self):
-        if self.buffer:
-            return self.buffer.pop()
-        else:
-            return self.iterable.next()
-
-
 def scan_bibtex_string(string):
     """ Yield (char, brace_level) tuples.
 
     "Special characters", as in bibtex_len, are treated as a single character
 
     """
-
-    def scan(chars, level=0):
-        results = find_closing_brace(chars, level)
-        if level == 1 and chars.peek() == '\\':
-            return group(results, level)
-        else:
-            return results
-
-    def group(results, level):
-        yield ''.join(char for char, _ in results), level
-    
-    def find_closing_brace(chars, level):
-        for char in chars:
-            if char == '{':
-                yield char, level + 1
-                for item in scan(chars, level + 1):
-                    yield item
-            elif char == '}' and level > 0:
-                chars.poke(char)
-                return
-            else:
-                yield char, level
-    
-    return scan(LookAheadIterator(string))
+    return BibTeXString(string).traverse(
+        open=lambda string: ('{', string.level),
+        f=lambda char, string: (char, string.level),
+        close=lambda string: ('}', string.level - 1),
+    )
 
 
 def split_name_list(string):
