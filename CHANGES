@@ -1,5 +1,6 @@
 Version 0.12
 ------------
+(released on November 21st 2009)
 
 - Pybtex now works correctly with ``\input{filename}`` in LaTeX files.
 
