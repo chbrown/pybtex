@@ -1,3 +1,21 @@
+Version 0.12
+------------
+
+- Pybtex now works correctly with ``\input{filename}`` in LaTeX files.
+
+- Added a proper ``change.case$`` BibTeX function instead of a stub.
+
+- Added ``-e``/``--encoding`` command line option.
+
+- Fixed non-working ``--bibtex-encoding`` option.
+
+- Added proper error messages on missing plugins, file IO errors, some BibTeX
+  interpreter errors, etc.
+
+- Fallback to backslash-encoding when printing messages to the console - to
+  make them printable regardless of the locale.
+
+
 Version 0.11
 ------------
 (released on September 7th 2009)
