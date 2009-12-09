@@ -51,7 +51,7 @@ setup(name=progname,
     author='Andrey Golovizin',
     author_email='golovizin@gmail.com',
     url='http://pybtex.sourceforge.net/',
-    license='GPL-2',
+    license='GPL-3',
     platforms=['platform-independent'],
     classifiers=[
         'Development Status :: 4 - Beta',
