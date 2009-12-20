@@ -84,6 +84,7 @@ It is also possible to define bibliography formatting styles in Python.
     option_defaults = {
         'style_language': 'bibtex',
     }
+    legacy_options = '-help', '-version'
 
     def run(self, options, args):
         from pybtex.plugin import find_plugin

@@ -26,6 +26,7 @@ from pybtex.textutils import capfirst, add_period
 class CommandLine(object):
     options = ()
     option_defaults = None
+    legacy_options = ()
     prog = None
     args = None
     description = ''
@@ -66,8 +67,16 @@ class CommandLine(object):
     def run(self, options, args):
         raise NotImplementedError
 
+    def recognize_legacy_optons(self, args):
+        """Grok some legacy long options starting with a single `-'."""
+        return [
+            '-' + arg if arg in self.legacy_options else arg
+            for arg in args
+        ]
+
     def main(self):
-        options, args = self.opt_parser.parse_args()
+        args = self.recognize_legacy_optons(sys.argv[1:])
+        options, args = self.opt_parser.parse_args(args)
         if len(args) != self.num_args:
             self.opt_parser.print_help()
             sys.exit(1)
