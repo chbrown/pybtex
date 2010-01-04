@@ -29,9 +29,11 @@
         </div>
         <div id="footer">
             <hr />
+            {% if modification_date %}
             <div id="footer-right">
                 <p>Last modified on {{ modification_date }}.</p>
             </div>
+            {% endif %}
             <div id="footer-left">
 {% if for_site %}
                 <a href="http://sourceforge.net">

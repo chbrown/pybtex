@@ -222,9 +222,10 @@ def handle_file(filename, fp, dst, for_site):
     parts = generate_documentation(content, (lambda x: './%s.html' % x))
     os.chdir(cwd)
 
-    mtime, timezone = get_bzr_timestamp(filename)
     c = dict(parts)
-    c['modification_date'] = format_date(mtime, timezone, 'utc', date_fmt=DATE_FORMAT, show_offset=False)
+    if for_site:
+        mtime, timezone = get_bzr_timestamp(filename)
+        c['modification_date'] = format_date(mtime, timezone, 'utc', date_fmt=DATE_FORMAT, show_offset=False)
     c['file_id'] = title
     c['for_site'] = for_site
     tmpl = e.get_template('template.html')
