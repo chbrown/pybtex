@@ -40,7 +40,7 @@ def _open(opener, filename, *args, **kwargs):
     try:
         return opener(filename, *args, **kwargs)
     except EnvironmentError, error:
-        raise PybtexError("unable to open_unicode %s. %s" % (filename, error.strerror))
+        raise PybtexError("unable to open %s. %s" % (filename, error.strerror))
 
 
 def open_plain(filename, mode='rb'):
