@@ -32,13 +32,12 @@ def make_bibliography(aux_filename,
     from pybtex.bibtex import bst
     from pybtex.bibtex.interpreter import Interpreter
     from pybtex import auxfile
-    from pybtex.bibtex.kpathsea import kpsewhich
 
 
     if bib_format is None:
         from pybtex.database.input import bibtex as bib_format
     aux_data = auxfile.parse_file(aux_filename, output_encoding)
-    bst_filename = kpsewhich(aux_data.style + path.extsep + 'bst')
+    bst_filename = aux_data.style + path.extsep + 'bst'
     bst_script = bst.parse_file(bst_filename, bst_encoding)
     base_filename = path.splitext(aux_filename)[0]
     bbl_filename = base_filename + path.extsep + 'bbl'

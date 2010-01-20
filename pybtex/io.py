@@ -19,8 +19,10 @@
 import sys
 import locale
 import codecs
+from os import path
 
 from pybtex.exceptions import PybtexError
+from pybtex.kpathsea import kpsewhich
 
 
 def get_default_encoding():
@@ -37,6 +39,10 @@ def get_stream_encoding(stream):
 
 
 def _open(opener, filename, *args, **kwargs):
+    if not path.isfile(filename):
+        found = kpsewhich(filename)
+        if found:
+            filename = found
     try:
         return opener(filename, *args, **kwargs)
     except EnvironmentError, error:
