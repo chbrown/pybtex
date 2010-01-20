@@ -110,6 +110,19 @@ class Field(object):
             return MissingField(self.name)
 
 
+class Crossref(Field):
+    def __init__(self, interpreter):
+        super(Crossref, self).__init__(interpreter, 'crossref')
+    def value(self):
+        entry = self.interpreter.current_entry
+        bib_data = self.interpreter.bib_data
+        crossrefs = bib_data.crossref_counts.get(entry.fields.get('crossref'), 0)
+        if crossrefs >= self.interpreter.min_crossrefs:
+            return super(Crossref, self).value()
+        else:
+            return MissingField(self.name)
+
+
 class Identifier(Variable):
     value_type = basestring
     def execute(self, interpreter):
@@ -195,11 +208,12 @@ class Interpreter(object):
         self.output_file.write('\n')
         self.output_buffer = []
 
-    def run(self, bst_script, citations, bib_files, bbl_file):
+    def run(self, bst_script, citations, bib_files, bbl_file, min_crossrefs):
         self.bst_script = iter(bst_script)
         self.citations = citations
         self.bib_files = bib_files
         self.output_file = bbl_file
+        self.min_crossrefs = min_crossrefs
 
         for i in self.bst_script:
             commandname = 'command_' + i
@@ -214,7 +228,7 @@ class Interpreter(object):
         for id in self.get_token():
             name = id.value()
             self.add_variable(name, Field(self, name))
-        self.add_variable('crossref', Field(self, 'crossref'))
+        self.add_variable('crossref', Crossref(self))
         for id in self.get_token():
             name = id.value()
             self.add_variable(name, EntryInteger(self, name))
@@ -252,19 +266,25 @@ class Interpreter(object):
         value = self.get_token()[0].value()
         self.macros[name] = value
 
-    def expand_wildcard_citations(self):
-        for citation in self.citations:
+    def expand_wildcard_citations(self, citations):
+        for citation in citations:
             if citation == '*':
                 for key in self.bib_data.entries.iterkeys():
                     yield key
             else:
                 yield citation
 
+    def add_crossreferenced_citations(self, citations):
+        citation_set = set(citations)
+        extra_citations = self.bib_data.get_extra_citations(self.min_crossrefs)
+        return citations + [citation for citation in extra_citations if citation not in citation_set]
+
     def command_read(self):
 #        print 'READ'
         p = self.bib_format.Parser(encoding=self.bib_encoding, macros=self.macros, person_fields=[])
         self.bib_data = p.parse_files(self.bib_files)
-        self.citations = list(self.expand_wildcard_citations())
+        citations = list(self.expand_wildcard_citations(self.citations))
+        self.citations = self.add_crossreferenced_citations(citations)
 #        for k, v in self.bib_data.iteritems():
 #            print k
 #            for field, value in v.fields.iteritems():

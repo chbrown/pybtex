@@ -70,6 +70,12 @@ It is also possible to define bibliography formatting styles in Python.
                 action='store_true', dest='abbreviate_names',
                 help='use abbreviated name formatting style',
             ),
+            make_option(
+                '--min-crossrefs',
+                type='int', dest='min_crossrefs',
+                help='include item after NUMBER crossrefs; default 2',
+                metavar='NUMBER',
+            ),
     )),
         ('Encoding options', (
             make_option(
@@ -83,6 +89,7 @@ It is also possible to define bibliography formatting styles in Python.
     )
     option_defaults = {
         'style_language': 'bibtex',
+        'min_crossrefs': 2,
     }
     legacy_options = '-help', '-version'
 
@@ -104,6 +111,7 @@ It is also possible to define bibliography formatting styles in Python.
         if options.bib_format:
             kwargs['bib_format'] = find_plugin('database.input', options.bib_format)
         kwargs['abbreviate_names'] = bool(options.abbreviate_names)
+        kwargs['min_crossrefs'] = options.min_crossrefs
         for option in ('bib_encoding', 'output_encoding', 'bst_encoding'):
             value = getattr(options, option) or options.encoding
             if value:

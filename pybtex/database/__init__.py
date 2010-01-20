@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from collections import defaultdict
+
 from pybtex.exceptions import PybtexError
 
 
@@ -24,6 +26,7 @@ class BibliographyData(object):
     def __init__(self, entries=None, preamble=None):
         self.entries = {}
         self._preamble = []
+        self.crossref_counts = defaultdict(int)
         if entries:
             self.entries.update(entries)
         if preamble:
@@ -47,8 +50,19 @@ class BibliographyData(object):
         if key in self.entries:
             raise BibliographyDataError('repeated bibliograhpy entry: %s' % key)
         entry.collection = self
+        entry.key = key
         self.entries[key] = entry
+        if 'crossref' in entry.fields:
+            self.crossref_counts[entry.fields['crossref']] += 1
 
     def add_entries(self, entries):
         for key, entry in entries:
             self.add_entry(key, entry)
+
+    def get_extra_citations(self, min_crossrefs):
+        citations = (
+            citation
+            for citation, crossref_count in self.crossref_counts.items()
+            if crossref_count >= min_crossrefs
+        )
+        return sorted(citations)
