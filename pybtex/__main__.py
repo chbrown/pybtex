@@ -91,7 +91,7 @@ It is also possible to define bibliography formatting styles in Python.
         'style_language': 'bibtex',
         'min_crossrefs': 2,
     }
-    legacy_options = '-help', '-version'
+    legacy_options = '-help', '-version', '-min-crossrefs'
 
     def run(self, options, args):
         from pybtex.plugin import find_plugin
