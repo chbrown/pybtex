@@ -70,7 +70,7 @@ class CommandLine(object):
     def recognize_legacy_optons(self, args):
         """Grok some legacy long options starting with a single `-'."""
         return [
-            '-' + arg if arg in self.legacy_options else arg
+            '-' + arg if arg.split('=', 1)[0] in self.legacy_options else arg
             for arg in args
         ]
 
