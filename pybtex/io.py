@@ -19,7 +19,7 @@
 import sys
 import locale
 import codecs
-from os import path
+from os import path, environ
 
 from pybtex.exceptions import PybtexError
 from pybtex.kpathsea import kpsewhich
@@ -38,13 +38,34 @@ def get_stream_encoding(stream):
     return stream_encoding or get_default_encoding()
 
 
-def _open(opener, filename, *args, **kwargs):
+def _open_existing(opener, filename, mode, **kwargs):
     if not path.isfile(filename):
         found = kpsewhich(filename)
         if found:
             filename = found
+    return opener(filename, mode, **kwargs)
+
+
+def _open_or_create(opener, filename, mode, **kwargs):
     try:
-        return opener(filename, *args, **kwargs)
+        return opener(filename, mode, **kwargs)
+    except EnvironmentError, error:
+        if 'TEXMFOUTPUT' in environ:
+            new_filename = path.join(environ['TEXMFOUTPUT'], filename)
+            try:
+                return opener(new_filename, mode, **kwargs)
+            except EnvironmentError:
+                pass
+        raise error
+
+
+def _open(opener, filename, mode, **kwargs):
+    write_mode = 'w' in mode
+    try:
+        if write_mode:
+            return _open_or_create(opener, filename, mode, **kwargs)
+        else:
+            return _open_existing(opener, filename, mode, **kwargs)
     except EnvironmentError, error:
         raise PybtexError("unable to open %s. %s" % (filename, error.strerror))
 
