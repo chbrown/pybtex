@@ -80,8 +80,20 @@ is much less verbose.
         edition: Third
         year: 1979
 
+
+Bibliography style formats
+==========================
+
+- BibTeX ``.bst`` files
+- Pybtex own pythonic `style API <style_api.txt>`_
+
+
 Output formats
 ==============
+
+Unlike BibTeX ``.bst`` styles, which can only output LaTeX or whatever is
+hardcoded in them, Pybtex pythonic styles are output format agnostic and can
+produce:
 
 - LaTeX
 - plain text
@@ -90,11 +102,6 @@ Output formats
 Support for other formats can be added easily. If you really need it,
 please `file a feature request`_.
 
-
-Bibliography style formats
-==========================
-
-- BibTeX ``.bst`` files
-- Pybtex own pythonic `style API <style_api.txt>`_
-
 .. _file a feature request: http://sourceforge.net/tracker/?group_id=151578&atid=781409
+
+
