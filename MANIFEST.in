@@ -1,5 +1,5 @@
 include examples/foo.bib examples/foo.bibtexml examples/foo.yaml examples/foo.tex
-include COPYING NEWS CHANGES
+include COPYING CHANGES
 include pybtex/docgen/template.html
 recursive-include docs/html *.html *.css
 recursive-include docs/rst *.rst *.css
