@@ -24,13 +24,15 @@ Pybtex currently understands the following bibliography formats:
 
 - YAML-based format
 
-The resulting bibliography may be output in one of the following formats:
+The resulting bibliography may be output in one of the following formats
+(not supported by legacy BibTeX styles):
 
 - LaTeX
 
 - HTML
 
 - plain text
+
 
 Download and Install
 --------------------
