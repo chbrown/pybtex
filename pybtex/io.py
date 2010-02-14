@@ -38,15 +38,15 @@ def get_stream_encoding(stream):
     return stream_encoding or get_default_encoding()
 
 
-def _open_existing(opener, filename, mode, **kwargs):
+def _open_existing(opener, filename, mode, locate, **kwargs):
     if not path.isfile(filename):
-        found = kpsewhich(filename)
+        found = locate(filename)
         if found:
             filename = found
     return opener(filename, mode, **kwargs)
 
 
-def _open_or_create(opener, filename, mode, **kwargs):
+def _open_or_create(opener, filename, mode, environ, **kwargs):
     try:
         return opener(filename, mode, **kwargs)
     except EnvironmentError, error:
@@ -63,9 +63,9 @@ def _open(opener, filename, mode, **kwargs):
     write_mode = 'w' in mode
     try:
         if write_mode:
-            return _open_or_create(opener, filename, mode, **kwargs)
+            return _open_or_create(opener, filename, mode, environ, **kwargs)
         else:
-            return _open_existing(opener, filename, mode, **kwargs)
+            return _open_existing(opener, filename, mode, locate=kpsewhich, **kwargs)
     except EnvironmentError, error:
         raise PybtexError("unable to open %s. %s" % (filename, error.strerror))
 
