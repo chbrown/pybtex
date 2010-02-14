@@ -105,8 +105,19 @@ It is also possible to define bibliography formatting styles in Python.
         if not ext:
             filename = path.extsep.join([filename, 'aux'])
 
-        if options.style_language != 'python' and options.output_backend:
-            self.opt_parser.error('output backends are only supported by the pythonic style engine (-l python)')
+        not_supported_by_bibtex = {
+            'output_backend': 'output backends',
+            'label_style': 'label styles',
+            'name_style': 'name styles',
+            'abbreviate_names': 'abbreviated names',
+        }
+        if options.style_language != 'python':
+            for option, what_is_not_supported in not_supported_by_bibtex.items():
+                if getattr(options, option):
+                    self.opt_parser.error(
+                        '%s are only supported by the Pythonic style engine (-l python)' % what_is_not_supported
+                    )
+
 
         kwargs = {}
         if options.label_style:
