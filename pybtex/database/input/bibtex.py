@@ -45,7 +45,7 @@ month_names = {
 file_extension = 'bib'
 
 def join_lines(s, loc, toks):
-    return [' '.join(tok.splitlines()) for tok in toks]
+    return [' '.join(tok.strip().splitlines()) for tok in toks]
 
 class Parser(ParserBase):
     def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):
