@@ -1,3 +1,17 @@
+Version 0.13
+------------
+
+- Implemented `--min-crossrefs` option.
+
+- All command line options of the original BibTeX are not supported.
+
+- Pybtex now respects `BSTINPUTS`, `BIBINPUTS` and `TEXMFOUTPUT` environment
+  variables.
+
+- BibTeX bibliography parser now strips excessive whitespace from fields, like
+  BibTeX does.
+
+
 Version 0.12
 ------------
 (released on November 21st 2009)
