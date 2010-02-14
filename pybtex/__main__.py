@@ -76,6 +76,10 @@ It is also possible to define bibliography formatting styles in Python.
                 help='include item after NUMBER crossrefs; default 2',
                 metavar='NUMBER',
             ),
+            make_option(
+                '--terse', dest='verbose', action='store_false',
+                help='ignored for compatibility with BibTeX',
+            )
     )),
         ('Encoding options', (
             make_option(
@@ -91,7 +95,7 @@ It is also possible to define bibliography formatting styles in Python.
         'style_language': 'bibtex',
         'min_crossrefs': 2,
     }
-    legacy_options = '-help', '-version', '-min-crossrefs'
+    legacy_options = '-help', '-version', '-min-crossrefs', '-terse'
 
     def run(self, options, args):
         from pybtex.plugin import find_plugin
