@@ -1,3 +1,11 @@
+Version 0.13.1
+--------------
+(released on February 18 2010)
+
+- Fixed ``ImportError: No module named kpathsea`` errors. One of the source files
+  was missing from ``pybtex-0.13.tar.bz2`` for some strange reason. Sorry about that. ;)
+
+
 Version 0.13
 ------------
 (released on February 14 2010)
