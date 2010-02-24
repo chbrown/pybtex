@@ -17,6 +17,7 @@ import re
 
 terminators = '.?!'
 dash_re = re.compile(r'-')
+whitespace_re = re.compile(r'\s+')
 
 def capfirst(s):
     return s[0].upper() + s[1:] if s else s
@@ -58,3 +59,25 @@ def abbreviate(s):
         else:
             return part[1]
     return ''.join(abbr(part) for part in parts(s))
+
+def normalize_whitespace(string):
+    r"""
+    Replace every sequence of whitespace characters with a single space.
+
+    >>> print normalize_whitespace('abc')
+    abc
+    >>> print normalize_whitespace('Abc def.')
+    Abc def.
+    >>> print normalize_whitespace(' Abc def.')
+    Abc def.
+    >>> print normalize_whitespace('Abc\ndef.')
+    Abc def.
+    >>> print normalize_whitespace('Abc\r\ndef.')
+    Abc def.
+    >>> print normalize_whitespace('Abc    \r\n\tdef.')
+    Abc def.
+    >>> print normalize_whitespace('   \nAbc\r\ndef.')
+    Abc def.
+    """
+
+    return whitespace_re.sub(' ', string.strip())

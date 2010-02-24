@@ -26,6 +26,7 @@ import pybtex.io
 from pybtex.core import Entry, Person
 from pybtex.database.input import ParserBase
 from pybtex.bibtex.utils import split_name_list
+from pybtex import textutils
 
 month_names = {
     'jan': 'January',
@@ -44,8 +45,10 @@ month_names = {
 
 file_extension = 'bib'
 
-def join_lines(s, loc, toks):
-    return [' '.join(tok.strip().splitlines()) for tok in toks]
+
+def normalize_whitespace(s, loc, toks):
+    return [textutils.normalize_whitespace(tok) for tok in toks]
+
 
 class Parser(ParserBase):
     def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):
@@ -64,10 +67,10 @@ class Parser(ParserBase):
         comma = Suppress(',')
 
         innerBracedString = Forward()
-        innerBracedString << Combine(Literal('{') + ZeroOrMore(CharsNotIn('{}').setParseAction(join_lines) | innerBracedString) + Literal('}'))
-        quotedString = Combine(Suppress('"') + ZeroOrMore(CharsNotIn('"{').setParseAction(join_lines) | innerBracedString) + Suppress('"'))
-        bracedString = Combine(lbrace + ZeroOrMore(CharsNotIn('{}').setParseAction(join_lines) | innerBracedString) + rbrace)
-        bibTeXString = quotedString | bracedString
+        innerBracedString << Combine(Literal('{') + ZeroOrMore(CharsNotIn('{}') | innerBracedString) + Literal('}'))
+        quotedString = Combine(Suppress('"') + ZeroOrMore(CharsNotIn('"{') | innerBracedString) + Suppress('"'))
+        bracedString = Combine(lbrace + ZeroOrMore(CharsNotIn('{}') | innerBracedString) + rbrace)
+        bibTeXString = (quotedString | bracedString).setParseAction(normalize_whitespace)
 
         name_chars = alphanums + '!$&*+-./:;<>?[\\]^_`|~\x7f'
         macro_substitution = Word(name_chars).setParseAction(self.substitute_macro)
