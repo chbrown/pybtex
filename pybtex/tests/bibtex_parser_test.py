@@ -18,6 +18,13 @@ test_data = [
         }''',
         BibliographyData({u'test': Entry('article', {u'title': 'Polluted with {DDT}.'})}),
     ),
+    (
+        '''@ARTICLE{
+                test,
+                title="Nested braces  and {"quotes"}",
+        }''',
+        BibliographyData({u'test': Entry('article', {u'title': 'Nested braces and {"quotes"}'})}),
+    ),
 ]
 
 
