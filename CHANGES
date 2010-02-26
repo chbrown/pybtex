@@ -1,3 +1,10 @@
+Version 0.13.2
+--------------
+(released on February 26 2010)
+
+- BibTeX parser: fixed a bug with parsing strings containing braces, like "Error in {DNA}".
+
+
 Version 0.13.1
 --------------
 (released on February 18 2010)
