@@ -14,15 +14,41 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import pybtex.io
+from pybtex.bibtex.exceptions import BibTeXError
+from pybtex.bibtex.utils import scan_bibtex_string
 from pybtex.database.output import WriterBase
 
 file_extension = 'bib'
+
 
 class Writer(WriterBase):
     """Outputs BibTeX markup"""
 
     def quote(self, s):
-        return '"%s"' % s.replace('"', "''")
+        """
+        >>> w = Writer()
+        >>> print w.quote('The World')
+        "The World"
+        >>> print w.quote(r'The \emph{World}')
+        "The \emph{World}"
+        >>> print w.quote(r'The "World"')
+        {The "World"}
+        >>> print w.quote(r'The {World')
+        Traceback (most recent call last):
+        ...
+        BibTeXError: String has unmatched braces: The {World
+        """
+
+        self.check_braces(s)
+        if '"' not in s:
+            return '"%s"' % s
+        else:
+            return '{%s}' % s
+
+    def check_braces(self, s):
+        end_brace_level = list(scan_bibtex_string(s))[-1][1]
+        if end_brace_level != 0:
+            raise BibTeXError('String has unmatched braces: %s' % s)
 
     def write_stream(self, bib_data, stream):
         def write_field(type, value):
