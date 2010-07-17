@@ -26,6 +26,7 @@ import pybtex.io
 from pybtex.core import Entry, Person
 from pybtex.database.input import ParserBase
 from pybtex.bibtex.utils import split_name_list
+from pybtex.exceptions import PybtexError
 from pybtex import textutils
 
 month_names = {
@@ -125,7 +126,11 @@ class Parser(ParserBase):
         self.data.add_entry(key, entry)
 
     def substitute_macro(self, s, loc, toks):
-        return self.macros[toks[0].lower()]
+        key = toks[0].lower()
+        try:
+            return self.macros[key]
+        except KeyError:
+            raise PybtexError('undefined macro %s' % key)
 
     def process_macro(self, s, loc, toks):
         self.macros[toks[0][0].lower()] = toks[0][1]
