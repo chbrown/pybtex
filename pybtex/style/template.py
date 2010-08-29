@@ -37,6 +37,7 @@ one two three four
 """
 
 from pybtex import richtext
+from pybtex.exceptions import PybtexError
 
 __test__ = {} # for doctest
 
@@ -224,8 +225,10 @@ def sentence(children, data, capfirst=True, add_period=True, sep=', '):
         text = text.add_period()
     return text
 
-class FieldIsMissing(Exception):
-    pass
+class FieldIsMissing(PybtexError):
+    def __init__(self, field_name):
+        self.field_name = field_name
+        super(FieldIsMissing, self).__init__('missing field: %s' % field_name)
 
 @node
 def field(children, data, name, apply_func=None):
