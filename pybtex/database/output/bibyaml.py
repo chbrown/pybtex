@@ -51,4 +51,4 @@ class Writer(WriterBase):
         preamble = bib_data.preamble()
         if preamble:
             data['preamble'] = preamble
-        yaml.safe_dump(data, stream, allow_unicode=True, default_flow_style=False, indent=4)
+        yaml.safe_dump(data, stream, allow_unicode=True, encoding='UTF-8', default_flow_style=False, indent=4)
