@@ -24,6 +24,8 @@ file_extension = 'bib'
 class Writer(WriterBase):
     """Outputs BibTeX markup"""
 
+    unicode_io = True
+
     def quote(self, s):
         """
         >>> w = Writer()
@@ -52,7 +54,7 @@ class Writer(WriterBase):
 
     def write_stream(self, bib_data, stream):
         def write_field(type, value):
-            f.write(',\n    %s = %s' % (type, self.quote(value)))
+            stream.write(u',\n    %s = %s' % (type, self.quote(value)))
         def format_name(person):
             def join(l):
                 return ' '.join([name for name in l if name])
@@ -73,20 +75,19 @@ class Writer(WriterBase):
         def write_persons(persons, role):
 #            persons = getattr(entry, role + 's')
             if persons:
-                write_field(role, ' and '.join([format_name(person) for person in persons]))
+                write_field(role, u' and '.join([format_name(person) for person in persons]))
         def write_preamble(preamble):
             if preamble:
-                f.write('@preamble{%s}\n\n' % self.quote(preamble))
+                stream.write(u'@preamble{%s}\n\n' % self.quote(preamble))
 
-        f = pybtex.io.writer(stream, self.encoding)
         write_preamble(bib_data.preamble())
         for key, entry in bib_data.entries.iteritems():
-            f.write('@%s' % entry.type)
-            f.write('{\n')
-            f.write('    %s' % key)
+            stream.write(u'@%s' % entry.type)
+            stream.write(u'{\n')
+            stream.write(u'    %s' % key)
 #            for role in ('author', 'editor'):
             for role, persons in entry.persons.iteritems():
                 write_persons(persons, role)
             for type, value in entry.fields.iteritems():
                 write_field(type, value)
-            f.write('\n}\n\n')
+            stream.write(u'\n}\n\n')

@@ -24,6 +24,8 @@ default = 'bib'
 filetypes = {'bib' : 'bibtex'}
 
 class ParserBase:
+    unicode_io = False
+
     def __init__(self, encoding=None, **kwargs):
         self.encoding = encoding
         self.data = BibliographyData()
@@ -31,7 +33,8 @@ class ParserBase:
     def parse_file(self, filename, fileext=None):
         if fileext is not None:
             filename = filename + path.extsep + fileext
-        with pybtex.io.open_raw(filename) as f:
+        open_file = pybtex.io.open_unicode if self.unicode_io else pybtex.io.open_raw
+        with open_file(filename, encoding=self.encoding) as f:
             self.parse_stream(f)
         return self.data
 

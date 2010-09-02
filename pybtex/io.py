@@ -72,12 +72,11 @@ def _open(opener, filename, mode, **kwargs):
         raise PybtexError("unable to open %s. %s" % (filename, error.strerror))
 
 
-def open_raw(filename, mode='rb'):
+def open_raw(filename, mode='rb', encoding=None):
     return _open(io.open, filename, mode)
 
 
 def open_unicode(filename, mode='r', encoding=None):
-    return _open(io.open, filename, mode, encoding=encoding)
     if encoding is None:
         encoding = get_default_encoding()
     return _open(io.open, filename, mode, encoding=encoding)
