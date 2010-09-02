@@ -37,9 +37,6 @@ from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 
-from bzrlib import workingtree
-from bzrlib.osutils import format_date
-
 from pybtex.__version__ import version
 from .mystyle import MyHiglightStyle
 
@@ -53,7 +50,16 @@ PYGMENTS_FORMATTER = HtmlFormatter(style=MyHiglightStyle, cssclass='sourcecode')
 DATE_FORMAT = '%d %B %y (%a)'
 
 
+def get_bzr_modification_date(filename):
+    from bzrlib.osutils import format_date
+
+    mtime, timezone = get_bzr_timestamp(filename)
+    return format_date(mtime, timezone, 'utc', date_fmt=DATE_FORMAT, show_offset=False)
+
+
 def get_bzr_timestamp(filename):
+    from bzrlib import workingtree
+
     if os.path.basename(filename) == 'history.rst':
         root_dir = os.path.dirname(os.path.dirname(os.path.dirname(filename)))
         filename = os.path.join(root_dir, 'CHANGES')
@@ -224,8 +230,7 @@ def handle_file(filename, fp, dst, for_site):
 
     c = dict(parts)
     if for_site:
-        mtime, timezone = get_bzr_timestamp(filename)
-        c['modification_date'] = format_date(mtime, timezone, 'utc', date_fmt=DATE_FORMAT, show_offset=False)
+        c['modification_date'] = get_bzr_modification_date(filename) 
     c['file_id'] = title
     c['for_site'] = for_site
     tmpl = e.get_template('template.html')
