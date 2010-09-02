@@ -98,4 +98,4 @@ class Writer(WriterBase):
 
         tree = ET.ElementTree(w.close())
         tree.write(stream, self.encoding)
-        stream.write('\n')
+        stream.write(b'\n')
