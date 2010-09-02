@@ -31,7 +31,7 @@ class ParserBase:
     def parse_file(self, filename, fileext=None):
         if fileext is not None:
             filename = filename + path.extsep + fileext
-        with pybtex.io.open_plain(filename, 'r') as f:
+        with pybtex.io.open_plain(filename) as f:
             self.parse_stream(f)
         return self.data
 

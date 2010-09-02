@@ -208,9 +208,9 @@ class Interpreter(object):
         self.output_buffer.append(string)
 
     def newline(self):
-        output = wrap(''.join(self.output_buffer))
+        output = wrap(u''.join(self.output_buffer))
         self.output_file.write(output)
-        self.output_file.write('\n')
+        self.output_file.write(u'\n')
         self.output_buffer = []
 
     def run(self, bst_script, citations, bib_files, bbl_file, min_crossrefs):

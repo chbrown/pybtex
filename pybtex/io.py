@@ -16,9 +16,11 @@
 
 """Unicode-aware IO routines."""
 
+from __future__ import absolute_import
+
+import io
 import sys
 import locale
-import codecs
 from os import path, environ
 
 from pybtex.exceptions import PybtexError
@@ -71,26 +73,21 @@ def _open(opener, filename, mode, **kwargs):
 
 
 def open_plain(filename, mode='rb'):
-    return _open(open, filename, mode)
+    return _open(io.open, filename, mode)
 
 
-def open_unicode(filename, mode='rb', encoding=None):
+def open_unicode(filename, mode='r', encoding=None):
+    return _open(io.open, filename, mode, encoding=encoding)
     if encoding is None:
         encoding = get_default_encoding()
-    return _open(codecs.open, filename, mode, encoding=encoding)
+    return _open(io.open, filename, mode, encoding=encoding)
 
 
 def reader(stream, encoding=None, errors='strict'):
     if encoding is None:
         encoding = get_stream_encoding(stream)
-    return codecs.getreader(encoding)(stream, errors)
+    return io.TextIOWrapper(stream, encoding=encoding, errors=errors)
 
 
-def writer(stream, encoding=None, errors='strict'):
-    if encoding is None:
-        encoding = get_stream_encoding(stream)
-    return codecs.getwriter(encoding)(stream, errors)
-
-
-stdout = writer(sys.stdout, errors='backslashreplace')
-stderr = writer(sys.stderr, errors='backslashreplace')
+stdout = sys.stdout
+stderr = sys.stderr
