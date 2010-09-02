@@ -90,7 +90,7 @@ class Parser(ParserBase):
         #preamble
         preamble_body = bibtexGroup(value)
         preamble = at + CaselessLiteral('PREAMBLE').suppress() + preamble_body
-        preamble.setParseAction(self.process_preamble)
+        preamble.setParseAction(lambda toks: self.process_preamble(toks))
 
         #bibliography entry
         entry_header = at + Word(alphas).setParseAction(downcaseTokens)
@@ -100,14 +100,14 @@ class Parser(ParserBase):
         else:
             entry_body = bibtexGroup(entry_key + comma + Group(fields) + Optional(comma))
         entry = entry_header + entry_body
-        entry.setParseAction(self.process_entry)
+        entry.setParseAction(lambda toks: self.process_entry(toks))
 
         self.BibTeX_entry = string | preamble | entry
 
-    def process_preamble(self, s, loc, toks):
+    def process_preamble(self, toks):
         self.data.add_to_preamble(toks[0])
 
-    def process_entry(self, s, loc, toks):
+    def process_entry(self, toks):
         entry = Entry(toks[0].lower())
         fields = {}
         key = toks[1]
