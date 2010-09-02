@@ -44,6 +44,14 @@ class Sdist(sdist):
 ROOT = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(ROOT, 'README')).read()
 
+if sys.version_info >= (3, 0):
+    extra = {
+        'use_2to3': True,
+        'use_2to3_fixers': ['custom_fixers'],
+    }
+else:
+    extra = {}
+
 setup(name=progname,
     version=version,
     description='A BibTeX-compatible bibliography processor in Python',
@@ -68,9 +76,10 @@ setup(name=progname,
         'pyparsing>=1.4.5',
         'PyYAML>=3.01'
     ],
-    packages=find_packages(exclude=['docs']),
+    packages=find_packages(exclude=['docs', 'custom_fixers']),
     scripts=[os.path.join('scripts', progname), os.path.join('scripts', progname + "-convert")],
     include_package_data=True,
     cmdclass={'sdist' : Sdist},
     zip_safe=True,
+    **extra
     )
