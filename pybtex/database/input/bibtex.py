@@ -52,6 +52,8 @@ def normalize_whitespace(s, loc, toks):
 
 
 class Parser(ParserBase):
+    unicode_io = True
+
     def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):
         ParserBase.__init__(self, encoding)
 
@@ -137,12 +139,11 @@ class Parser(ParserBase):
 
     def parse_stream(self, stream):
         self.unnamed_entry_counter = 1
-        s = pybtex.io.reader(stream, self.encoding).read()
 
         self.macros = dict(self.default_macros)
         try:
 #            entries = dict(entry[0][0] for entry in self.BibTeX_entry.scanString(s))
-            self.BibTeX_entry.searchString(s)
+            self.BibTeX_entry.searchString(stream.read())
         except ParseException, e:
             print "%s: syntax error:" % getattr(stream, 'name', '<NO FILE>')
             print e
