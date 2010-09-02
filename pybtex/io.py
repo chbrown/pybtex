@@ -72,7 +72,7 @@ def _open(opener, filename, mode, **kwargs):
         raise PybtexError("unable to open %s. %s" % (filename, error.strerror))
 
 
-def open_plain(filename, mode='rb'):
+def open_raw(filename, mode='rb'):
     return _open(io.open, filename, mode)
 
 
