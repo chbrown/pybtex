@@ -17,12 +17,35 @@ from pybtex.exceptions import PybtexError
 
 
 class PluginNotFound(PybtexError):
-    pass
+    def __init__(self, plugin_group, name):
+        message = u'plugin {name} not found in {plugin_group}'.format(
+            plugin_group=plugin_group,
+            name=name,
+        )
+        super(PluginNotFound, self).__init__(message)
 
 
-def find_plugin(plugin_path, name):
-    m = __import__(str(plugin_path), globals(), locals(), [str(name)])
-    try:
-        return getattr(m, name)
-    except AttributeError:
-        raise PluginNotFound('plugin %s not found in %s' % (name, plugin_path))
+class PluginLoader(object):
+    def find_plugin(plugin_group, name):
+        raise NotImplementedError
+
+
+class BuiltInPluginLoader(PluginLoader):
+    def find_plugin(self, plugin_group, name):
+        m = __import__(str(plugin_group), globals(), locals(), [str(name)])
+        try:
+            return getattr(m, name)
+        except AttributeError:
+            raise PluginNotFound(plugin_group, name)
+
+
+plugin_loaders = [BuiltInPluginLoader()]
+
+
+def find_plugin(plugin_group, name):
+    for loader in plugin_loaders:
+        try:
+            return loader.find_plugin(plugin_group, name)
+        except PluginNotFound:
+            continue
+    raise PluginNotFound(plugin_group, name)
