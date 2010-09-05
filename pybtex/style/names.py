@@ -19,6 +19,9 @@ from pybtex.richtext import Symbol, Text, nbsp
 from pybtex.style.template import join, together, node, _format_list
 
 
+available_plugins = ('plain', 'last_first')
+
+
 def tie_or_space(word, tie='~', space = ' ', enough_chars=3):
     if len(word) < enough_chars:
         return tie

@@ -17,6 +17,10 @@ from __future__ import with_statement
 
 import pybtex.io
 
+
+available_plugins = ('bibtex', 'bibtexml', 'bibyaml')
+
+
 class WriterBase(object):
     unicode_io = False
 

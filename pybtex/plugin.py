@@ -13,7 +13,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+from itertools import chain
+
 from pybtex.exceptions import PybtexError
+
+
+class PluginGroupNotFound(PybtexError):
+    def __init__(self, group_name):
+        message = u'plugin group {group_name} not found'.format(
+            group_name=group_name,
+        )
+        super(PluginGroupNotFound, self).__init__(message)
 
 
 class PluginNotFound(PybtexError):
@@ -29,14 +40,28 @@ class PluginLoader(object):
     def find_plugin(plugin_group, name):
         raise NotImplementedError
 
+    def enumerate_plugin_names(plugin_group):
+        raise NotImplementedError
+
 
 class BuiltInPluginLoader(PluginLoader):
     def find_plugin(self, plugin_group, name):
-        m = __import__(str(plugin_group), globals(), locals(), [str(name)])
+        try:
+            m = __import__(str(plugin_group), globals(), locals(), [str(name)])
+        except ImportError:
+            raise PluginGroupNotFound(plugin_group)
         try:
             return getattr(m, name)
         except AttributeError:
             raise PluginNotFound(plugin_group, name)
+
+    def enumerate_plugin_names(self, plugin_group):
+        try:
+            __import__(str(plugin_group), globals(), locals())
+            group_module = sys.modules[plugin_group]
+        except ImportError:
+            raise PluginGroupNotFound(plugin_group)
+        return group_module.available_plugins
 
 
 plugin_loaders = [BuiltInPluginLoader()]
@@ -49,3 +74,11 @@ def find_plugin(plugin_group, name):
         except PluginNotFound:
             continue
     raise PluginNotFound(plugin_group, name)
+
+
+def enumerate_plugin_names(plugin_group):
+    results = (
+        loader.enumerate_plugin_names(plugin_group)
+        for loader in plugin_loaders
+    )
+    return chain(*results)

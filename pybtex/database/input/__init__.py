@@ -20,8 +20,11 @@ from os import path
 import pybtex.io
 from pybtex.database import BibliographyData
 
+
 default = 'bib'
 filetypes = {'bib' : 'bibtex'}
+available_plugins = ('bibtex', 'bibtexml', 'bibyaml')
+
 
 class ParserBase:
     unicode_io = False
