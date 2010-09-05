@@ -15,12 +15,14 @@
 
 from pybtex.exceptions import PybtexError
 
-class FindPluginError(PybtexError):
+
+class PluginNotFound(PybtexError):
     pass
+
 
 def find_plugin(plugin_path, name):
     m = __import__(str(plugin_path), globals(), locals(), [str(name)])
     try:
         return getattr(m, name)
     except AttributeError:
-        raise FindPluginError('plugin %s not found in %s' % (name, plugin_path))
+        raise PluginNotFound('plugin %s not found in %s' % (name, plugin_path))
