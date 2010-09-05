@@ -13,8 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import pkgutil
 from unittest import TestCase
-from pkg_resources import resource_stream
 import yaml
 from StringIO import StringIO
 
@@ -22,8 +22,8 @@ from pybtex.plugin import find_plugin
 
 class DatabaseIOTest(TestCase):
     def setUp(self):
-        reference_data_file = resource_stream('pybtex', 'tests/database_test/reference_data.yaml')
-        self.reference_data = yaml.load(reference_data_file)
+        reference_data = pkgutil.get_data('pybtex', 'tests/database_test/reference_data.yaml')
+        self.reference_data = yaml.load(reference_data)
 
     def _test_input(self, plugin):
         parser = find_plugin('pybtex.database.input', plugin).Parser(encoding='UTF-8')
