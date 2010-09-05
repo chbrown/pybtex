@@ -19,7 +19,7 @@ import pybtex.io
 
 file_extension = 'html'
 
-PROLOGUE = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head><meta name="generator" content="Pybtex">
 <meta http-equiv="Content-Type" content="text/html; charset=%s">
@@ -31,12 +31,12 @@ PROLOGUE = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 
 class Writer(BackendBase):
     symbols = {
-        'ndash': '&ndash;',
-        'newblock': '\n',
-        'nbsp': '&nbsp;'
+        'ndash': u'&ndash;',
+        'newblock': u'\n',
+        'nbsp': u'&nbsp;'
     }
     tags = {
-         'emph': 'em',
+         'emph': u'em',
     }
     
     def format_text(self, text):
@@ -44,15 +44,15 @@ class Writer(BackendBase):
 
     def format_tag(self, tag_name, text):
         tag = self.tags[tag_name]
-        return r'<%s>%s</%s>' % (tag, text, tag)
+        return ur'<%s>%s</%s>' % (tag, text, tag)
     
     def write_prologue(self, maxlen):
         encoding = self.encoding or pybtex.io.get_default_encoding()
         self.output(PROLOGUE % encoding)
 
     def write_epilogue(self):
-        self.output('</dl></body></html>\n')
+        self.output(u'</dl></body></html>\n')
 
     def write_entry(self, key, label, text):
-        self.output('<dt>%s</dt>\n' % label)
-        self.output('<dd>%s</dd>\n' % text)
+        self.output(u'<dt>%s</dt>\n' % label)
+        self.output(u'<dd>%s</dd>\n' % text)

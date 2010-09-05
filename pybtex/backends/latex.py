@@ -19,20 +19,20 @@ file_extension = 'bbl'
 
 class Writer(BackendBase):
     symbols = {
-        'ndash': '--',
-        'newblock': '\n\\newblock ',
-        'nbsp': '~'
+        'ndash': u'--',
+        'newblock': u'\n\\newblock ',
+        'nbsp': u'~'
     }
     
     def format_tag(self, tag_name, text):
-        return r'\%s{%s}' % (tag_name, text)
+        return ur'\%s{%s}' % (tag_name, text)
     
     def write_prologue(self, maxlen):
-        self.output('\\begin{thebibliography}{%s}' % ('8' * maxlen))
+        self.output(u'\\begin{thebibliography}{%s}' % ('8' * maxlen))
 
     def write_epilogue(self):
-        self.output('\n\n\\end{thebibliography}\n')
+        self.output(u'\n\n\\end{thebibliography}\n')
 
     def write_entry(self, key, label, text):
-        self.output('\n\n\\bibitem[%s]{%s}\n' % (label, key))
+        self.output(u'\n\n\\bibitem[%s]{%s}\n' % (label, key))
         self.output(text)
