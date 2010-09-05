@@ -46,7 +46,7 @@ def make_bibliography(aux_filename,
 
     bib_data = bib_format.Parser(bib_encoding).parse_files(aux_data.data, bib_format.file_extension)
 
-    formatter = find_plugin('style.formatting', aux_data.style).Formatter(
+    formatter = find_plugin('pybtex.style.formatting', aux_data.style).Formatter(
             label_style=kwargs.get('label_style'),
             name_style=kwargs.get('name_style'),
             abbreviate_names=kwargs.get('abbreviate_names', True),

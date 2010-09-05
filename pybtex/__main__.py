@@ -121,13 +121,13 @@ It is also possible to define bibliography formatting styles in Python.
 
         kwargs = {}
         if options.label_style:
-            kwargs['label_style'] = find_plugin('style.labels', options.label_style)
+            kwargs['label_style'] = find_plugin('pybtex.style.labels', options.label_style)
         if options.name_style:
-            kwargs['name_style'] = find_plugin('style.names', options.name_style)
+            kwargs['name_style'] = find_plugin('pybtex.style.names', options.name_style)
         if options.output_backend:
-            kwargs['output_backend'] = find_plugin('backends', options.output_backend)
+            kwargs['output_backend'] = find_plugin('pybtex.backends', options.output_backend)
         if options.bib_format:
-            kwargs['bib_format'] = find_plugin('database.input', options.bib_format)
+            kwargs['bib_format'] = find_plugin('pybtex.database.input', options.bib_format)
         kwargs['abbreviate_names'] = bool(options.abbreviate_names)
         kwargs['min_crossrefs'] = options.min_crossrefs
         for option in ('bib_encoding', 'output_encoding', 'bst_encoding'):

@@ -42,8 +42,8 @@ def convert(input, output,
         from_format = format_for_filename(input)
     if to_format is None:
         to_format = format_for_filename(output)
-    input_format = find_plugin('database.input', from_format)
-    output_format = find_plugin('database.output', to_format)
+    input_format = find_plugin('pybtex.database.input', from_format)
+    output_format = find_plugin('pybtex.database.output', to_format)
     
     if input == output:
         raise ConvertError('input and output file can not be the same')
