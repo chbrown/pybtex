@@ -20,6 +20,7 @@ CAUTION: functions should PUSH results, not RETURN
 
 import pybtex.io
 from pybtex.bibtex.exceptions import BibTeXError
+from pybtex.utils import memoize
 from pybtex.bibtex import utils
 from pybtex.core import Person
 from pybtex.bibtex.names import format as format_bibtex_name
@@ -145,13 +146,25 @@ def empty(i):
     else:
         i.push(1)
 
+
+@memoize
+def _split_names(names):
+    return utils.split_name_list(names)
+
+
+@memoize
+def _format_name(names, n, format):
+    name = _split_names(names)[n - 1]
+    return format_bibtex_name(name, format)
+
+
 @builtin('format.name$')
 def format_name(i):
     format = i.pop()
     n = i.pop()
     names = i.pop()
-    name = utils.split_name_list(names)[n - 1]
-    i.push(format_bibtex_name(name, format))
+    i.push(_format_name(names, n, format))
+
 
 @builtin('if$')
 def if_(i):
