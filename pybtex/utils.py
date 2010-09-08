@@ -17,8 +17,12 @@
 """Miscellaneous small utils."""
 
 
+from functools import wraps
+
+
 def memoize(f):
     memory = {}
+    @wraps(f)
     def new_f(*args):
         if args not in memory:
             memory[args] = f(*args)

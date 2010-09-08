@@ -18,6 +18,9 @@
 CAUTION: functions should PUSH results, not RETURN
 """
 
+from functools import update_wrapper
+
+
 import pybtex.io
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.utils import memoize
@@ -38,7 +41,9 @@ builtins = {}
 def builtin(name):
     def _builtin(f):
         b = Builtin(f)
+        update_wrapper(b, f)
         builtins[name] = b
+        return b
     return _builtin
 
 @builtin('>')
