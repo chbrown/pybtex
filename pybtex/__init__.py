@@ -46,13 +46,13 @@ def make_bibliography(aux_filename,
 
     bib_data = bib_format.Parser(bib_encoding).parse_files(aux_data.data, bib_format.file_extension)
 
-    formatter = find_plugin('pybtex.style.formatting', aux_data.style).Formatter(
+    style = find_plugin('pybtex.style.formatting', aux_data.style).Style(
             label_style=kwargs.get('label_style'),
             name_style=kwargs.get('name_style'),
             abbreviate_names=kwargs.get('abbreviate_names', True),
     )
     entries = ((key, bib_data.entries[key]) for key in aux_data.citations)
-    formatted_entries = formatter.format_entries(entries)
+    formatted_entries = style.format_entries(entries)
     del entries
 
     output_filename = path.extsep.join([filename, output_backend.file_extension])

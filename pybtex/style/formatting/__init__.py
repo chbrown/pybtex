@@ -24,7 +24,7 @@ def toplevel(children, data):
     return join(sep=Symbol('newblock')) [children].format_data(data)
 
 
-class FormatterBase:
+class BaseStyle(object):
     default_label_style = 'number'
     default_name_style = 'plain'
 
