@@ -21,7 +21,7 @@ import pybtex.io
 available_plugins = ('bibtex', 'bibtexml', 'bibyaml')
 
 
-class WriterBase(object):
+class BaseWriter(object):
     unicode_io = False
 
     def __init__(self, encoding=None):

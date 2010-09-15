@@ -16,12 +16,12 @@
 import pybtex.io
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.utils import scan_bibtex_string
-from pybtex.database.output import WriterBase
+from pybtex.database.output import BaseWriter
 
 file_extension = 'bib'
 
 
-class Writer(WriterBase):
+class Writer(BaseWriter):
     """Outputs BibTeX markup"""
 
     unicode_io = True

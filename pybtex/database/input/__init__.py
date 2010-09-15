@@ -26,7 +26,7 @@ filetypes = {'bib' : 'bibtex'}
 available_plugins = ('bibtex', 'bibtexml', 'bibyaml')
 
 
-class ParserBase:
+class BaseParser(object):
     unicode_io = False
 
     def __init__(self, encoding=None, **kwargs):
