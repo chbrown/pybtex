@@ -32,7 +32,7 @@ class FormatterBase:
         if name_style is None:
             name_style = find_plugin('pybtex.style.names', self.default_name_style)
         if label_style is None:
-            label_format = find_plugin('pybtex.style.labels', self.default_label_style)
+            label_style = find_plugin('pybtex.style.labels', self.default_label_style)
         self.format_label = label_style.LabelStyle().format
         self.format_name = name_style.NameStyle().format
         self.abbreviate_names = abbreviate_names
