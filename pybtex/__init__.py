@@ -56,4 +56,4 @@ def make_bibliography(aux_filename,
     del entries
 
     output_filename = path.extsep.join([filename, output_backend.file_extension])
-    output_backend.Writer(output_encoding).write_bibliography(formatted_entries, output_filename)
+    output_backend.Backend(output_encoding).write_bibliography(formatted_entries, output_filename)

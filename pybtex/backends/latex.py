@@ -13,11 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from pybtex.backends import BackendBase
+from pybtex.backends import BaseBackend
 
 file_extension = 'bbl'
 
-class Writer(BackendBase):
+class Backend(BaseBackend):
     symbols = {
         'ndash': u'--',
         'newblock': u'\n\\newblock ',

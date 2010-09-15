@@ -19,7 +19,7 @@ import pybtex.io
 available_plugins = ('latex', 'html', 'plaintext')
 
 
-class BackendBase:
+class BaseBackend(object):
     def __init__(self, encoding=None):
         self.encoding = encoding
 
