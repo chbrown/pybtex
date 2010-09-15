@@ -18,23 +18,23 @@ from pybtex.style.template import node, join
 from pybtex.richtext import Symbol, Text
 from pybtex.plugin import find_plugin
 
+
 @node
 def toplevel(children, data):
     return join(sep=Symbol('newblock')) [children].format_data(data)
+
 
 class FormatterBase:
     default_label_style = 'number'
     default_name_style = 'plain'
 
-    def __init__(self, label_style=None, name_style=None, abbreviate_names=False):
-        def get(value, plugin_path, default_name):
-            if value is not None:
-                return value
-            else:
-                return find_plugin(plugin_path, default_name)
-
-        self.format_label = get(label_style, 'pybtex.style.labels', self.default_label_style)
-        self.format_name = get(name_style, 'pybtex.style.names', self.default_name_style)
+    def __init__(self, label_style=None, name_style=None, abbreviate_names=False, **kwargs):
+        if name_style is None:
+            name_style = find_plugin('pybtex.style.names', self.default_name_style)
+        if label_style is None:
+            label_format = find_plugin('pybtex.style.labels', self.default_label_style)
+        self.format_label = label_style.LabelStyle().format
+        self.format_name = name_style.NameStyle().format
         self.abbreviate_names = abbreviate_names
 
     def format_entries(self, entries):

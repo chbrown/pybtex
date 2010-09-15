@@ -49,6 +49,7 @@ class BuiltInPluginLoader(PluginLoader):
         try:
             m = __import__(str(plugin_group), globals(), locals(), [str(name)])
         except ImportError:
+            raise
             raise PluginGroupNotFound(plugin_group)
         try:
             return getattr(m, name)

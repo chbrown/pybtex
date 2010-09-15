@@ -19,7 +19,12 @@ from pybtex.richtext import Symbol, Text, nbsp
 from pybtex.style.template import join, together, node, _format_list
 
 
-available_plugins = ('plain', 'last_first')
+available_plugins = ('plain', 'lastfirst')
+
+
+class BaseNameStyle(object):
+    def format(self, person, abbr=False):
+        raise NotImplementedError
 
 
 def tie_or_space(word, tie='~', space = ' ', enough_chars=3):
@@ -38,55 +43,3 @@ def name_part(children, data, before='', tie=False):
         return Text(before, parts, tie_or_space(parts, nbsp, ' '))
     else:
         return Text(before, parts)
-
-
-def plain(person, abbr=False):
-    r"""
-    Format names similarly to {ff~}{vv~}{ll}{, jj} in BibTeX.  
-
-    >>> from pybtex.core import Person
-    >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
-    >>> print plain(name).format().plaintext()
-    Charles Louis Xavier<nbsp>Joseph de<nbsp>la Vall{\'e}e<nbsp>Poussin
-    >>> print plain(name, abbr=True).format().plaintext()
-    C.<nbsp>L. X.<nbsp>J. de<nbsp>la Vall{\'e}e<nbsp>Poussin
-
-    >>> name = Person(first='First', last='Last', middle='Middle')
-    >>> print plain(name).format().plaintext()
-    First<nbsp>Middle Last
-    >>> print plain(name, abbr=True).format().plaintext()
-    F.<nbsp>M. Last
-    >>> print plain(Person('de Last, Jr., First Middle')).format().plaintext()
-    First<nbsp>Middle de<nbsp>Last, Jr.
-    """
-    return join [
-        name_part(tie=True) [person.first(abbr) + person.middle(abbr)],
-        name_part(tie=True) [person.prelast()],
-        name_part [person.last()],
-        name_part(before=', ') [person.lineage()]
-    ]
-
-def last_first(person, abbr=False):
-    r"""
-    Format names similarly to {vv~}{ll}{, jj}{, f.} in BibTeX.
-
-    >>> from pybtex.core import Person
-    >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
-    >>> print last_first(name).format().plaintext()
-    de<nbsp>la Vall{\'e}e<nbsp>Poussin, Charles Louis Xavier<nbsp>Joseph
-    >>> print last_first(name, abbr=True).format().plaintext()
-    de<nbsp>la Vall{\'e}e<nbsp>Poussin, C.<nbsp>L. X.<nbsp>J.
-
-    >>> name = Person(first='First', last='Last', middle='Middle')
-    >>> print last_first(name).format().plaintext()
-    Last, First<nbsp>Middle
-    >>> print last_first(name, abbr=True).format().plaintext()
-    Last, F.<nbsp>M.
-
-    """
-    return join [
-        name_part(tie=True) [person.prelast()],
-        name_part [person.last()],
-        name_part(before=', ') [person.lineage()],
-        name_part(before=', ') [person.first(abbr) + person.middle(abbr)],
-    ]
