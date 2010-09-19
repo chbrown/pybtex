@@ -1,3 +1,15 @@
+Version 0.14
+------------
+
+- BibTeX writer: fixed quoting ``"`` (double quote) characters.
+
+- BibTeX parser now produces human-readable error messages on unread macros.
+
+- Improved performance on very long name lists.
+
+- Added support for Python 3.
+
+
 Version 0.13.2
 --------------
 (released on February 26 2010)
