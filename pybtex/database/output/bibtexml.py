@@ -67,6 +67,9 @@ class PrettyTreeBuilder(ET.TreeBuilder):
 class Writer(BaseWriter):
     """Outputs BibTeXML markup"""
 
+    name = 'bibtexml'
+    filenames = '*.xml', '*.bibtexml'
+
     def write_stream(self, bib_data, stream):
         def write_persons(persons, role):
             if persons:

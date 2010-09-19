@@ -30,6 +30,9 @@ PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 """
 
 class Backend(BaseBackend):
+    name = 'html'
+    filenames = '*.html',
+
     symbols = {
         'ndash': u'&ndash;',
         'newblock': u'\n',

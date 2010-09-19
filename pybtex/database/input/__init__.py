@@ -18,6 +18,7 @@ from __future__ import with_statement
 from os import path
 
 import pybtex.io
+from pybtex.plugin import Plugin
 from pybtex.database import BibliographyData
 
 
@@ -26,7 +27,9 @@ filetypes = {'bib' : 'bibtex'}
 available_plugins = ('bibtex', 'bibtexml', 'bibyaml')
 
 
-class BaseParser(object):
+class BaseParser(Plugin):
+    default_plugin = 'bibtex'
+
     unicode_io = False
 
     def __init__(self, encoding=None, **kwargs):

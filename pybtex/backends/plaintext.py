@@ -18,6 +18,10 @@ from pybtex.backends import BaseBackend
 file_extension = 'txt'
 
 class Backend(BaseBackend):
+    name = 'plaintext'
+    aliases = 'text',
+    filenames = '*.txt',
+
     symbols = {
         'ndash': u'-',
         'newblock': u' ',

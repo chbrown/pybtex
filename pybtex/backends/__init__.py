@@ -14,12 +14,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import pybtex.io
+from pybtex.plugin import Plugin
 
 
 available_plugins = ('latex', 'html', 'plaintext')
 
 
-class BaseBackend(object):
+class BaseBackend(Plugin):
+    default_plugin = 'latex'
+
     def __init__(self, encoding=None):
         self.encoding = encoding
 

@@ -18,6 +18,9 @@ from pybtex.backends import BaseBackend
 file_extension = 'bbl'
 
 class Backend(BaseBackend):
+    name = 'latex'
+    filenames = '*.tex',
+
     symbols = {
         'ndash': u'--',
         'newblock': u'\n\\newblock ',

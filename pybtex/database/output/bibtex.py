@@ -24,6 +24,8 @@ file_extension = 'bib'
 class Writer(BaseWriter):
     """Outputs BibTeX markup"""
 
+    name = 'bibtex'
+    filenames = '*.bib',
     unicode_io = True
 
     def quote(self, s):

@@ -16,7 +16,7 @@
 from pybtex.core import FormattedEntry
 from pybtex.style.template import node, join
 from pybtex.richtext import Symbol, Text
-from pybtex.plugin import find_plugin
+from pybtex.plugin import Plugin, find_plugin
 
 
 @node
@@ -24,7 +24,8 @@ def toplevel(children, data):
     return join(sep=Symbol('newblock')) [children].format_data(data)
 
 
-class BaseStyle(object):
+class BaseStyle(Plugin):
+    default_plugin = 'unsrt'
     default_label_style = 'number'
     default_name_style = 'plain'
 

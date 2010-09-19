@@ -19,6 +19,9 @@ from pybtex.style.names import BaseNameStyle, name_part
 
 
 class NameStyle(BaseNameStyle):
+    name = 'last_first'
+    aliases = 'lastfirst',
+
     def format(self, person, abbr=False):
         r"""
         Format names similarly to {vv~}{ll}{, jj}{, f.} in BibTeX.

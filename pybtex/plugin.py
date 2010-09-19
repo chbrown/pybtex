@@ -36,6 +36,13 @@ class PluginNotFound(PybtexError):
         super(PluginNotFound, self).__init__(message)
 
 
+class Plugin(object):
+    name = None
+    aliases = ()
+    filenames = ()
+    default_plugin = None
+
+
 class PluginLoader(object):
     def find_plugin(plugin_group, name):
         raise NotImplementedError

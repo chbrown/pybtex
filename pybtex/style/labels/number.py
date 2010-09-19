@@ -18,5 +18,7 @@ from pybtex.style.labels import BaseLabelStyle
 
 
 class LabelStyle(BaseLabelStyle):
+    name = 'number'
+
     def format(self, entry):
         return unicode(entry.number)

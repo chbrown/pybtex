@@ -52,6 +52,8 @@ def normalize_whitespace(s, loc, toks):
 
 
 class Parser(BaseParser):
+    name = 'bibtex'
+    filenames = '*.bib',
     unicode_io = True
 
     def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):

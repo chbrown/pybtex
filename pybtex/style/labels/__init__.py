@@ -13,10 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from pybtex.plugin import Plugin
 
 available_plugins = ('number',)
 
 
-class BaseLabelStyle(object):
+class BaseLabelStyle(Plugin):
+    default_plugin = 'number'
+
     def format(self, entry):
         raise NotImplementedError

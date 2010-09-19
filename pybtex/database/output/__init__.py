@@ -16,13 +16,15 @@
 from __future__ import with_statement
 
 import pybtex.io
+from pybtex.plugin import Plugin
 
 
 available_plugins = ('bibtex', 'bibtexml', 'bibyaml')
 
 
-class BaseWriter(object):
+class BaseWriter(Plugin):
     unicode_io = False
+    default_plugin = 'bibtex'
 
     def __init__(self, encoding=None):
         self.encoding = encoding

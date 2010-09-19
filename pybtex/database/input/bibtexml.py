@@ -31,6 +31,9 @@ def remove_ns(s):
         return s[len(bibtexns):]
 
 class Parser(BaseParser):
+    name = 'bibtexml'
+    filenames = '*.xml', '*.bibtexml'
+
     def parse_stream(self, stream):
         t = ET.parse(stream)
         entries = t.findall(bibtexns + 'entry')
