@@ -53,7 +53,7 @@ def get_plugin_registry():
 
 def write_plugin_registry(filename):
     with open(filename, 'wb') as registry_file:
-        registry_file.write('registry = ')
+        registry_file.write('plugin_registry = ')
         json.dump(get_plugin_registry(), registry_file, indent=4)
         registry_file.write('\n')
 

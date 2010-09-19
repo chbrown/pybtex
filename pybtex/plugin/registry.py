@@ -1,4 +1,4 @@
-registry = {
+plugin_registry = {
     "pybtex.database.output": {
         "class_name": "Writer", 
         "aliases": {

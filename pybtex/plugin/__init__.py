@@ -51,24 +51,39 @@ class PluginLoader(object):
 
 
 class BuiltInPluginLoader(PluginLoader):
-    def find_plugin(self, plugin_group, name):
+    def get_group_info(self, plugin_group):
+        from pybtex.plugin.registry import plugin_registry
         try:
-            m = __import__(str(plugin_group), globals(), locals(), [str(name)])
-        except ImportError:
-            raise
+            return plugin_registry[plugin_group]
+        except KeyError:
             raise PluginGroupNotFound(plugin_group)
-        try:
-            return getattr(m, name)
-        except AttributeError:
-            raise PluginNotFound(plugin_group, name)
+
+    def find_plugin(self, plugin_group, name=None, filename=None):
+        plugin_group_info = self.get_group_info(plugin_group)
+        module_name = None
+        if name:
+            if name in plugin_group_info['plugins']:
+                module_name = name
+            elif name in plugin_group_info['aliases']:
+                module_name = plugin_group_info['aliases'][name]
+            else:
+                raise PluginNotFound(plugin_group, name)
+        elif filename:
+            raise NotImplementedError  # FIXME
+        else:
+            module_name = plugin_group_info['default_plugin']
+
+        class_name = plugin_group_info['class_name']
+        return self.import_plugin(plugin_group, module_name, class_name)
+
+    def import_plugin(self, plugin_group, module_name, class_name):
+        module = __import__(str(plugin_group), globals(), locals(), [str(module_name)])
+        #return getattr(getattr(module, module_name), class_name)
+        return getattr(module, module_name)
 
     def enumerate_plugin_names(self, plugin_group):
-        try:
-            __import__(str(plugin_group), globals(), locals())
-            group_module = sys.modules[plugin_group]
-        except ImportError:
-            raise PluginGroupNotFound(plugin_group)
-        return group_module.available_plugins
+        plugin_group_info = self.get_group_info(plugin_group)
+        return plugin_group_info['plugins']
 
 
 plugin_loaders = [BuiltInPluginLoader()]
