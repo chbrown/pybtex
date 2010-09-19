@@ -106,15 +106,15 @@ def change_case(string, mode):
     Abcd
     >>> print change_case(r'The {\TeX book \noop}', 'u')
     THE {\TeX BOOK \noop}
-    >>> print change_case('And Now: BOOO!!!', 't')
+    >>> print change_case(r'And Now: BOOO!!!', 't')
     And now: Booo!!!
-    >>> print change_case('And {Now: BOOO!!!}', 't')
+    >>> print change_case(r'And {Now: BOOO!!!}', 't')
     And {Now: BOOO!!!}
-    >>> print change_case('And {Now: {BOOO}!!!}', 'l')
+    >>> print change_case(r'And {Now: {BOOO}!!!}', 'l')
     and {Now: {BOOO}!!!}
-    >>> print change_case('And {\Now: BOOO!!!}', 't')
+    >>> print change_case(r'And {\Now: BOOO!!!}', 't')
     And {\Now: booo!!!}
-    >>> print change_case('And {\Now: {BOOO}!!!}', 'l')
+    >>> print change_case(r'And {\Now: {BOOO}!!!}', 'l')
     and {\Now: {booo}!!!}
     """
 

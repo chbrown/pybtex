@@ -36,8 +36,7 @@ This is a very rich text.
 Some \emph{nested \texttt{Text objects}}.
 >>> print t.plaintext()
 Some nested Text objects.
->>> from string import upper, lower
->>> t = t.map(upper)
+>>> t = t.map(lambda string: string.upper())
 >>> print t.render(backend)
 SOME \emph{NESTED \texttt{TEXT OBJECTS}}.
 >>> print t.plaintext()

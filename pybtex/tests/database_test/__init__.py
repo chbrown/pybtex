@@ -16,7 +16,7 @@
 import pkgutil
 from unittest import TestCase
 import yaml
-from StringIO import StringIO
+from io import BytesIO, TextIOWrapper, BufferedWriter
 
 from pybtex.plugin import find_plugin
 
@@ -28,10 +28,13 @@ class DatabaseIOTest(TestCase):
     def _test_input(self, plugin):
         parser = find_plugin('pybtex.database.input', plugin).Parser(encoding='UTF-8')
         writer = find_plugin('pybtex.database.output', plugin).Writer(encoding='UTF-8')
-        stream = StringIO()
-        writer.write_stream(self.reference_data, stream)
+        stream = BytesIO()
+        writer_stream = TextIOWrapper(stream, 'UTF-8') if writer.unicode_io else stream
+        parser_stream = TextIOWrapper(stream, 'UTF-8') if parser.unicode_io else stream
+        writer.write_stream(self.reference_data, writer_stream)
+        writer_stream.flush()
         stream.seek(0)
-        parser.parse_stream(stream)
+        parser.parse_stream(parser_stream)
         loaded_data = parser.data
         self.assertEqual(loaded_data, self.reference_data)
 
