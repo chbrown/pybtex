@@ -25,8 +25,8 @@ doctype = """<!DOCTYPE bibtex:file PUBLIC
 class Writer(BaseWriter):
     """Outputs YAML markup"""
 
-    name = 'yaml'
-    aliases = 'bibyaml',
+    name = 'bibyaml'
+    aliases = 'yaml',
     filenames = '*.yaml', '*.bibyaml'
 
     def write_stream(self, bib_data, stream):

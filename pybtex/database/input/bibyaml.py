@@ -20,8 +20,8 @@ from pybtex.core import Entry, Person
 file_extension = 'yaml'
 
 class Parser(BaseParser):
-    name = 'yaml'
-    aliases = 'bibyaml',
+    name = 'bibyaml'
+    aliases = 'yaml',
     filenames = '*.yaml', '*.bibyaml'
 
     def parse_stream(self, stream):

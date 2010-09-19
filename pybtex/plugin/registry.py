@@ -2,20 +2,20 @@ registry = {
     "pybtex.database.output": {
         "class_name": "Writer", 
         "aliases": {
-            "bibyaml": "yaml"
+            "yaml": "bibyaml"
         }, 
         "default_plugin": "bibtex", 
         "filenames": {
-            "*.yaml": "yaml", 
+            "*.yaml": "bibyaml", 
             "*.bib": "bibtex", 
-            "*.bibyaml": "yaml", 
+            "*.bibyaml": "bibyaml", 
             "*.xml": "bibtexml", 
             "*.bibtexml": "bibtexml"
         }, 
         "plugins": [
             "bibtex", 
             "bibtexml", 
-            "yaml"
+            "bibyaml"
         ]
     }, 
     "pybtex.style.formatting": {
@@ -56,31 +56,31 @@ registry = {
     "pybtex.database.input": {
         "class_name": "Parser", 
         "aliases": {
-            "bibyaml": "yaml"
+            "yaml": "bibyaml"
         }, 
         "default_plugin": "bibtex", 
         "filenames": {
-            "*.yaml": "yaml", 
+            "*.yaml": "bibyaml", 
             "*.bib": "bibtex", 
-            "*.bibyaml": "yaml", 
+            "*.bibyaml": "bibyaml", 
             "*.xml": "bibtexml", 
             "*.bibtexml": "bibtexml"
         }, 
         "plugins": [
             "bibtex", 
             "bibtexml", 
-            "yaml"
+            "bibyaml"
         ]
     }, 
     "pybtex.style.names": {
         "class_name": "NameStyle", 
         "aliases": {
-            "lastfirst": "last_first"
+            "last_first": "lastfirst"
         }, 
         "default_plugin": "plain", 
         "filenames": {}, 
         "plugins": [
-            "last_first", 
+            "lastfirst", 
             "plain"
         ]
     }
