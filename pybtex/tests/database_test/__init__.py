@@ -38,13 +38,13 @@ class DatabaseIOTest(TestCase):
         loaded_data = parser.data
         self.assertEqual(loaded_data, self.reference_data)
 
-    def test_bibtex_inpub(self):
+    def test_bibtex_input(self):
         self._test_input('bibtex')
 
-    def test_bibyaml_inpub(self):
+    def test_bibyaml_input(self):
         self._test_input('bibyaml')
 
-    def test_bibtexml_inpub(self):
+    def test_bibtexml_input(self):
         # BibTeXML does not support TeX preambles AFAIK
         self.reference_data._preamble = []
         self._test_input('bibtexml')
