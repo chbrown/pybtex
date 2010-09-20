@@ -35,10 +35,11 @@ class Writer(WriterBase):
         "The \emph{World}"
         >>> print w.quote(r'The "World"')
         {The "World"}
-        >>> print w.quote(r'The {World')
-        Traceback (most recent call last):
-        ...
-        BibTeXError: String has unmatched braces: The {World
+        >>> try:
+        ...     print w.quote(r'The {World')
+        ... except BibTeXError, error:
+        ...     print error
+        String has unmatched braces: The {World
         """
 
         self.check_braces(s)
