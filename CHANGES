@@ -5,6 +5,8 @@ Version 0.14
 
 - BibTeX parser now produces human-readable error messages on unread macros.
 
+- Added error messages on missing data in .aux files.
+
 - Improved performance on very long name lists.
 
 - Added support for Python 3.
