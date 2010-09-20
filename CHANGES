@@ -1,5 +1,6 @@
 Version 0.14
 ------------
+(released on September 20 2010)
 
 - BibTeX writer: fixed quoting ``"`` (double quote) characters.
 
