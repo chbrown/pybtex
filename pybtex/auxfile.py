@@ -76,4 +76,8 @@ def parse_file(filename, encoding):
 
     data = AuxData(encoding)
     data.parse_file(filename)
+    if data.data is None:
+        raise AuxDataError(r'found no \bibdata command in %s' % filename)
+    if data.style is None:
+        raise AuxDataError(r'found no \bibstyle command in %s' % filename)
     return data
