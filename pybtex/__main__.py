@@ -102,7 +102,7 @@ It is also possible to define bibliography formatting styles in Python.
 
         filename = args[0]
         ext = path.splitext(filename)[1]
-        if not ext:
+        if ext != '.aux':
             filename = path.extsep.join([filename, 'aux'])
 
         not_supported_by_bibtex = {
