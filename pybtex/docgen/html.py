@@ -75,10 +75,10 @@ def get_bzr_timestamp(filename):
 def get_last_bzr_revision(branch, file_id):
     history = branch.repository.iter_reverse_revision_history(branch.last_revision())
     last_revision_id = branch.last_revision()
-    current_inventory = branch.repository.get_revision_inventory(last_revision_id)
+    current_inventory = branch.repository.get_inventory(last_revision_id)
     current_sha1 = current_inventory[file_id].text_sha1
     for revision_id in history:
-        inv = branch.repository.get_revision_inventory(revision_id)
+        inv = branch.repository.get_inventory(revision_id)
         if not file_id in inv or inv[file_id].text_sha1 != current_sha1:
             return branch.repository.get_revision(last_revision_id)
         last_revision_id = revision_id
