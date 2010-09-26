@@ -22,7 +22,7 @@ file_extension = 'yaml'
 class Parser(BaseParser):
     name = 'bibyaml'
     aliases = 'yaml',
-    filenames = '*.yaml', '*.bibyaml'
+    suffixes = '.yaml', '.bibyaml'
 
     def parse_stream(self, stream):
         t = yaml.safe_load(stream)

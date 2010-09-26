@@ -38,7 +38,7 @@ class PluginNotFound(PybtexError):
 class Plugin(object):
     name = None
     aliases = ()
-    filenames = ()
+    suffixes = ()
     default_plugin = None
 
 

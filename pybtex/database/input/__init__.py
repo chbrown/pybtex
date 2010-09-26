@@ -44,8 +44,8 @@ class BaseParser(Plugin):
             self.parse_stream(f)
         return self.data
 
-    def parse_files(self, filenames, fileext=None):
-        for filename in filenames:
+    def parse_files(self, suffixes, fileext=None):
+        for filename in suffixes:
             self.parse_file(filename, fileext)
         return self.data
 

@@ -35,12 +35,12 @@ def get_plugin_group_info(plugin_group, class_name):
         'default_plugin': base_plugin.default_plugin,
         'plugins': [],
         'aliases': {},
-        'filenames': {},
+        'suffixes': {},
     }
     for plugin in iter_plugins(base_module, class_name):
         info['plugins'].append(plugin.name)
         info['aliases'].update(dict.fromkeys(plugin.aliases, plugin.name))
-        info['filenames'].update(dict.fromkeys(plugin.filenames, plugin.name))
+        info['suffixes'].update(dict.fromkeys(plugin.suffixes, plugin.name))
     return info
 
 

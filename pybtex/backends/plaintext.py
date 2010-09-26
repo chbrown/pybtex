@@ -20,7 +20,7 @@ file_extension = 'txt'
 class Backend(BaseBackend):
     name = 'plaintext'
     aliases = 'text',
-    filenames = '*.txt',
+    suffixes = '.txt',
 
     symbols = {
         'ndash': u'-',

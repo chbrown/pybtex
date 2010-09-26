@@ -19,7 +19,7 @@ file_extension = 'bbl'
 
 class Backend(BaseBackend):
     name = 'latex'
-    filenames = '*.tex',
+    suffixes = '.tex',
 
     symbols = {
         'ndash': u'--',

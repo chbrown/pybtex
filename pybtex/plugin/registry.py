@@ -1,17 +1,17 @@
 plugin_registry = {
     "pybtex.database.output": {
         "class_name": "Writer", 
+        "suffixes": {
+            ".xml": "bibtexml", 
+            ".bibtexml": "bibtexml", 
+            ".bibyaml": "bibyaml", 
+            ".bib": "bibtex", 
+            ".yaml": "bibyaml"
+        }, 
         "aliases": {
             "yaml": "bibyaml"
         }, 
         "default_plugin": "bibtex", 
-        "filenames": {
-            "*.yaml": "bibyaml", 
-            "*.bib": "bibtex", 
-            "*.bibyaml": "bibyaml", 
-            "*.xml": "bibtexml", 
-            "*.bibtexml": "bibtexml"
-        }, 
         "plugins": [
             "bibtex", 
             "bibtexml", 
@@ -20,33 +20,33 @@ plugin_registry = {
     }, 
     "pybtex.style.formatting": {
         "class_name": "Style", 
+        "suffixes": {}, 
         "aliases": {}, 
         "default_plugin": "unsrt", 
-        "filenames": {}, 
         "plugins": [
             "unsrt"
         ]
     }, 
     "pybtex.style.labels": {
         "class_name": "LabelStyle", 
+        "suffixes": {}, 
         "aliases": {}, 
         "default_plugin": "number", 
-        "filenames": {}, 
         "plugins": [
             "number"
         ]
     }, 
     "pybtex.backends": {
         "class_name": "Backend", 
+        "suffixes": {
+            ".html": "html", 
+            ".tex": "latex", 
+            ".txt": "plaintext"
+        }, 
         "aliases": {
             "text": "plaintext"
         }, 
         "default_plugin": "latex", 
-        "filenames": {
-            "*.html": "html", 
-            "*.txt": "plaintext", 
-            "*.tex": "latex"
-        }, 
         "plugins": [
             "html", 
             "latex", 
@@ -55,17 +55,17 @@ plugin_registry = {
     }, 
     "pybtex.database.input": {
         "class_name": "Parser", 
+        "suffixes": {
+            ".xml": "bibtexml", 
+            ".bibtexml": "bibtexml", 
+            ".bibyaml": "bibyaml", 
+            ".bib": "bibtex", 
+            ".yaml": "bibyaml"
+        }, 
         "aliases": {
             "yaml": "bibyaml"
         }, 
         "default_plugin": "bibtex", 
-        "filenames": {
-            "*.yaml": "bibyaml", 
-            "*.bib": "bibtex", 
-            "*.bibyaml": "bibyaml", 
-            "*.xml": "bibtexml", 
-            "*.bibtexml": "bibtexml"
-        }, 
         "plugins": [
             "bibtex", 
             "bibtexml", 
@@ -74,11 +74,11 @@ plugin_registry = {
     }, 
     "pybtex.style.names": {
         "class_name": "NameStyle", 
+        "suffixes": {}, 
         "aliases": {
             "last_first": "lastfirst"
         }, 
         "default_plugin": "plain", 
-        "filenames": {}, 
         "plugins": [
             "lastfirst", 
             "plain"

@@ -27,7 +27,7 @@ class Writer(BaseWriter):
 
     name = 'bibyaml'
     aliases = 'yaml',
-    filenames = '*.yaml', '*.bibyaml'
+    suffixes = '.yaml', '.bibyaml'
 
     def write_stream(self, bib_data, stream):
         def process_person_roles(entry):
