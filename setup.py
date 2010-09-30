@@ -76,7 +76,7 @@ setup(name=progname,
         'pyparsing>=1.4.5',
         'PyYAML>=3.01'
     ],
-    packages=find_packages(exclude=['docs', 'custom_fixers']),
+    packages=find_packages(exclude=['docs']),
     scripts=[os.path.join('scripts', progname), os.path.join('scripts', progname + "-convert")],
     include_package_data=True,
     cmdclass={'sdist' : Sdist},
