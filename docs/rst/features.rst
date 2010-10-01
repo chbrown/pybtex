@@ -59,7 +59,7 @@ BibTeX bibliography entry wolud look like:
 YAML
 ----
 
-We choosed to create our own format to use with Pybtex. It is quite similar to
+We chose to create our own format to use with Pybtex. It is quite similar to
 `BibTeXML <http://bibtexml.sourceforge.net>`_
 but based on `YAML <http://yaml.org>`_ instead of XML and therefore
 is much less verbose.
