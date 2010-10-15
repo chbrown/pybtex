@@ -21,7 +21,7 @@ import re
 from pybtex.exceptions import PybtexError
 from pybtex.bibtex.utils import split_tex_string
 
-class FormattedEntry:
+class FormattedEntry(object):
     """Formatted bibliography entry. Consists of
     - key (which is used for sorting);
     - label (which appears in the resulting bibliography)
