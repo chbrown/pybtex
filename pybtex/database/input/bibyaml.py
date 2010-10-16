@@ -32,6 +32,7 @@ class Parser(ParserBase):
             pass
 
         self.data.add_entries(entries)
+        return self.data
 
     def process_entry(self, entry):
         e = Entry(entry['type']) 

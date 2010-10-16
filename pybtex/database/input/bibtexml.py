@@ -35,6 +35,7 @@ class Parser(ParserBase):
         t = ET.parse(stream)
         entries = t.findall(bibtexns + 'entry')
         self.data.add_entries(self.process_entry(entry) for entry in entries)
+        return self.data
 
     def process_entry(self, entry):
         def process_person(person_entry, role):

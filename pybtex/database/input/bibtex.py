@@ -191,3 +191,4 @@ class Parser(ParserBase):
             print e
             import sys
             sys.exit(1)
+        return self.data
