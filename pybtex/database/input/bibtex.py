@@ -13,7 +13,45 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""BibTeX parser"""
+"""BibTeX parser
+
+>>> import StringIO
+>>> parser = Parser()
+>>> bib_data = parser.parse_stream(StringIO.StringIO('''
+... @String{SCI = "Science"}
+... 
+... @String{JFernandez = "Fernandez, Julio M."}
+... @String{HGaub = "Gaub, Hermann E."}
+... @String{MGautel = "Gautel, Mathias"}
+... @String{FOesterhelt = "Oesterhelt, Filipp"}
+... @String{MRief = "Rief, Matthias"}
+... 
+... @Article{rief97b,
+...   author =       MRief #" and "# MGautel #" and "# FOesterhelt
+...                  #" and "# JFernandez #" and "# HGaub,
+...   title =        "Reversible Unfolding of Individual Titin
+...                  Immunoglobulin Domains by {AFM}",
+...   journal =      SCI,
+...   volume =       276,
+...   number =       5315,
+...   pages =        "1109--1112",
+...   year =         1997,
+...   doi =          "10.1126/science.276.5315.1109",
+...   URL =          "http://www.sciencemag.org/cgi/content/abstract/276/5315/1109",
+...   eprint =       "http://www.sciencemag.org/cgi/reprint/276/5315/1109.pdf",
+... }
+... '''))
+>>> rief97b = parser.data.entries['rief97b']
+>>> authors = rief97b.persons['author']
+>>> for author in authors:
+...     print unicode(author)
+Rief, Matthias
+Gautel, Mathias
+Oesterhelt, Filipp
+Fernandez, Julio M.
+Gaub, Hermann E.
+
+"""
 
 from pyparsing import (
         Word, Literal, CaselessLiteral, CharsNotIn,
@@ -46,9 +84,13 @@ month_names = {
 
 file_extension = 'bib'
 
+def _normalize_whitespace(tok):
+    if tok == ' and ':
+        return tok
+    return textutils.normalize_whitespace(tok)
 
 def normalize_whitespace(s, loc, toks):
-    return [textutils.normalize_whitespace(tok) for tok in toks]
+    return [_normalize_whitespace(tok) for tok in toks]
 
 
 class Parser(ParserBase):
