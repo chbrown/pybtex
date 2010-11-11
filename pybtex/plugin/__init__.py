@@ -12,6 +12,8 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import os
 import sys
 from itertools import chain
 
@@ -41,6 +43,10 @@ class Plugin(object):
     suffixes = ()
     default_plugin = None
 
+    @classmethod
+    def get_default_suffix(cls):
+        return cls.suffixes[0]
+
 
 class PluginLoader(object):
     def find_plugin(plugin_group, name):
@@ -69,7 +75,11 @@ class BuiltInPluginLoader(PluginLoader):
             else:
                 raise PluginNotFound(plugin_group, name)
         elif filename:
-            raise NotImplementedError  # FIXME
+            suffix = os.path.splitext(filename)[1]
+            if suffix in plugin_group_info['suffixes']:
+                module_name = plugin_group_info['suffixes'][suffix]
+            else:
+                raise PluginNotFound(plugin_group, filename)
         else:
             module_name = plugin_group_info['default_plugin']
 
