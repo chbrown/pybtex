@@ -23,8 +23,9 @@ except ImportError:
 from pybtex.core import Entry, Person
 from pybtex.database.input import BaseParser
 
+
 bibtexns = '{http://bibtexml.sf.net/}'
-file_extension = 'bibtexml'
+
 
 def remove_ns(s):
     if s.startswith(bibtexns):

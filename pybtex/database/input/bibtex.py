@@ -44,8 +44,6 @@ month_names = {
     'dec': 'December'
 }
 
-file_extension = 'bib'
-
 
 def normalize_whitespace(s, loc, toks):
     return [textutils.normalize_whitespace(tok) for tok in toks]

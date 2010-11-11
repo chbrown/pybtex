@@ -17,7 +17,6 @@ import yaml
 from pybtex.database.input import BaseParser
 from pybtex.core import Entry, Person
 
-file_extension = 'yaml'
 
 class Parser(BaseParser):
     name = 'bibyaml'
