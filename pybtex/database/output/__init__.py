@@ -19,9 +19,6 @@ import pybtex.io
 from pybtex.plugin import Plugin
 
 
-available_plugins = ('bibtex', 'bibtexml', 'bibyaml')
-
-
 class BaseWriter(Plugin):
     unicode_io = False
     default_plugin = 'bibtex'
