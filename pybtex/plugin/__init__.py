@@ -27,7 +27,7 @@ class PluginGroupNotFound(PybtexError):
 
 
 class PluginNotFound(PybtexError):
-    def __init__(self, plugin_group, name):
+    def __init__(self, plugin_group, name, filename):
         message = u'plugin {name} not found in {plugin_group}'.format(
             plugin_group=plugin_group,
             name=name,
@@ -89,13 +89,13 @@ class BuiltInPluginLoader(PluginLoader):
 plugin_loaders = [BuiltInPluginLoader()]
 
 
-def find_plugin(plugin_group, name):
+def find_plugin(plugin_group, name=None, filename=None):
     for loader in plugin_loaders:
         try:
-            return loader.find_plugin(plugin_group, name)
+            return loader.find_plugin(plugin_group, name, filename)
         except PluginNotFound:
             continue
-    raise PluginNotFound(plugin_group, name)
+    raise PluginNotFound(plugin_group, name, filename)
 
 
 def enumerate_plugin_names(plugin_group):
