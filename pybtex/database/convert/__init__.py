@@ -35,5 +35,5 @@ def convert(from_filename, to_filename,
     if from_filename == to_filename:
         raise ConvertError('input and output file can not be the same')
 
-    bib_data = input_format.Parser(input_encoding, **parser_options).parse_file(from_filename)
-    output_format.Writer(output_encoding).write_file(bib_data, to_filename)
+    bib_data = input_format(input_encoding, **parser_options).parse_file(from_filename)
+    output_format(output_encoding).write_file(bib_data, to_filename)

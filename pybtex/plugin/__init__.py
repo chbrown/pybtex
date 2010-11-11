@@ -88,8 +88,7 @@ class BuiltInPluginLoader(PluginLoader):
 
     def import_plugin(self, plugin_group, module_name, class_name):
         module = __import__(str(plugin_group), globals(), locals(), [str(module_name)])
-        #return getattr(getattr(module, module_name), class_name)
-        return getattr(module, module_name)
+        return getattr(getattr(module, module_name), class_name)
 
     def enumerate_plugin_names(self, plugin_group):
         plugin_group_info = self.get_group_info(plugin_group)

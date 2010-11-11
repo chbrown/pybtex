@@ -32,8 +32,8 @@ class BaseStyle(Plugin):
             name_style = find_plugin('pybtex.style.names')
         if label_style is None:
             label_style = find_plugin('pybtex.style.labels')
-        self.format_label = label_style.LabelStyle().format
-        self.format_name = name_style.NameStyle().format
+        self.format_label = label_style().format
+        self.format_name = name_style().format
         self.abbreviate_names = abbreviate_names
 
     def format_entries(self, entries):

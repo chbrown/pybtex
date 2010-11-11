@@ -39,7 +39,7 @@ def make_bibliography(aux_filename,
 
 
     try:
-        output_backend = kwargs['output_backend'].Backend
+        output_backend = kwargs['output_backend']
     except KeyError:
         from pybtex.backends.latex import Backend as output_backend
 
@@ -47,7 +47,8 @@ def make_bibliography(aux_filename,
     bib_format = bib_format.Parser
     bib_data = bib_format(bib_encoding).parse_files(aux_data.data, bib_format.get_default_suffix())
 
-    style = find_plugin('pybtex.style.formatting', aux_data.style).Style(
+    style_cls = find_plugin('pybtex.style.formatting', aux_data.style)
+    style = style_cls(
             label_style=kwargs.get('label_style'),
             name_style=kwargs.get('name_style'),
             abbreviate_names=kwargs.get('abbreviate_names', True),
