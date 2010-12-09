@@ -29,11 +29,21 @@ class PluginGroupNotFound(PybtexError):
 
 
 class PluginNotFound(PybtexError):
-    def __init__(self, plugin_group, name, filename):
-        message = u'plugin {name} not found in {plugin_group}'.format(
-            plugin_group=plugin_group,
-            name=name,
-        )
+    def __init__(self, plugin_group, name=None, filename=None):
+        assert plugin_group
+        if name:
+            message = u'plugin {plugin_group}.{name} not found'.format(
+                plugin_group=plugin_group,
+                name=name,
+            )
+        elif filename:
+            message = u'cannot determine file type for {filename}'.format(
+                plugin_group=plugin_group,
+                filename=filename,
+            )
+        else:
+            raise ValueError('Either name or filename argument should be presend.')
+
         super(PluginNotFound, self).__init__(message)
 
 
@@ -73,13 +83,13 @@ class BuiltInPluginLoader(PluginLoader):
             elif name in plugin_group_info['aliases']:
                 module_name = plugin_group_info['aliases'][name]
             else:
-                raise PluginNotFound(plugin_group, name)
+                raise PluginNotFound(plugin_group, name=name)
         elif filename:
             suffix = os.path.splitext(filename)[1]
             if suffix in plugin_group_info['suffixes']:
                 module_name = plugin_group_info['suffixes'][suffix]
             else:
-                raise PluginNotFound(plugin_group, filename)
+                raise PluginNotFound(plugin_group, filename=filename)
         else:
             module_name = plugin_group_info['default_plugin']
 
