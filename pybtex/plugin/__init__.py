@@ -42,7 +42,7 @@ class PluginNotFound(PybtexError):
                 filename=filename,
             )
         else:
-            raise ValueError('Either name or filename argument should be presend.')
+            message = u'' # FIXME
 
         super(PluginNotFound, self).__init__(message)
 
@@ -105,7 +105,35 @@ class BuiltInPluginLoader(PluginLoader):
         return plugin_group_info['plugins']
 
 
-plugin_loaders = [BuiltInPluginLoader()]
+class EntryPointPluginLoader(PluginLoader):
+    def find_plugin(self, plugin_group, name=None, filename=None):
+        try:
+            import pkg_resources
+        except ImportError:
+            raise PluginNotFound(plugin_group)
+
+        if name:
+            entry_points = pkg_resources.iter_entry_points(plugin_group, name)
+            try:
+                entry_point = entry_points.next()
+            except StopIteration:
+                raise PluginNotFound(plugin_group, name, filename)
+            else:
+                return entry_point.load()
+        elif filename:
+            suffix = os.path.splitext(filename)[1]
+            entry_points = pkg_resources.iter_entry_points(plugin_group + '.suffixes', suffix)
+            try:
+                entry_point = entry_points.next()
+            except StopIteration:
+                raise PluginNotFound(plugin_group, name, filename)
+            else:
+                return entry_point.load()
+        else:
+            raise PluginNotFound(plugin_group)
+
+
+plugin_loaders = [EntryPointPluginLoader(), BuiltInPluginLoader()]
 
 
 def find_plugin(plugin_group, name=None, filename=None):
