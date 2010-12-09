@@ -84,13 +84,9 @@ month_names = {
 
 file_extension = 'bib'
 
-def _normalize_whitespace(tok):
-    if tok == ' and ':
-        return tok
-    return textutils.normalize_whitespace(tok)
 
 def normalize_whitespace(s, loc, toks):
-    return [_normalize_whitespace(tok) for tok in toks]
+    return [textutils.normalize_whitespace(tok) for tok in toks]
 
 
 class Parser(ParserBase):
@@ -115,12 +111,13 @@ class Parser(ParserBase):
         innerBracedString << Combine(Literal('{') + ZeroOrMore(CharsNotIn('{}') | innerBracedString) + Literal('}'))
         quotedString = Combine(Suppress('"') + ZeroOrMore(CharsNotIn('"{') | innerBracedString) + Suppress('"'))
         bracedString = Combine(lbrace + ZeroOrMore(CharsNotIn('{}') | innerBracedString) + rbrace)
-        bibTeXString = (quotedString | bracedString).setParseAction(normalize_whitespace)
+        bibTeXString = (quotedString | bracedString)
 
         name_chars = alphanums + '!$&*+-./:;<>?[\\]^_`|~\x7f'
         macro_substitution = Word(name_chars).setParseAction(self.substitute_macro)
         name = Word(name_chars).setParseAction(downcaseTokens)
         value = Combine(delimitedList(bibTeXString | Word(nums) | macro_substitution, delim='#'), adjacent=False)
+        value.setParseAction(normalize_whitespace)
 
         #fields
         field = Group(name + Suppress('=') + value)
