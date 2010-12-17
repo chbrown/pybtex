@@ -112,7 +112,7 @@ class EntryPointPluginLoader(PluginLoader):
         except ImportError:
             raise PluginNotFound(plugin_group)
 
-        if name:
+        def load_entry_point(group, name):
             entry_points = pkg_resources.iter_entry_points(plugin_group, name)
             try:
                 entry_point = entry_points.next()
@@ -120,15 +120,12 @@ class EntryPointPluginLoader(PluginLoader):
                 raise PluginNotFound(plugin_group, name, filename)
             else:
                 return entry_point.load()
+
+        if name:
+            return load_entry_point(plugin_group, name)
         elif filename:
             suffix = os.path.splitext(filename)[1]
-            entry_points = pkg_resources.iter_entry_points(plugin_group + '.suffixes', suffix)
-            try:
-                entry_point = entry_points.next()
-            except StopIteration:
-                raise PluginNotFound(plugin_group, name, filename)
-            else:
-                return entry_point.load()
+            return load_entry_point(plugin_group + '.suffixes', suffix)
         else:
             raise PluginNotFound(plugin_group)
 
