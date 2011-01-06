@@ -59,13 +59,8 @@ Gaub, Hermann E.
 
 """
 
-from pyparsing import (
-        Word, Literal, CaselessLiteral, CharsNotIn,
-        nums, alphas, alphanums, printables, delimitedList, downcaseTokens,
-        Suppress, Combine, Group, Dict,
-        Forward, ZeroOrMore, Optional,
-        ParseException,
-)
+import babybib
+
 import pybtex.io
 from pybtex.core import Entry, Person
 from pybtex.database.input import BaseParser
@@ -93,6 +88,27 @@ def normalize_whitespace(s, loc, toks):
     return [textutils.normalize_whitespace(tok) for tok in toks]
 
 
+def flatten_bibtex_string(parts, macros):
+    def _convert_to_string(parts):
+        for part in parts:
+            if isinstance(part, basestring):
+                yield part
+            elif isinstance(part, babybib.btparse.Macro):
+                try:
+                    yield macros[part.name]
+                except KeyError:
+                    raise PybtexError('undefined macro %s' % part.name)
+            elif isinstance(part, list):
+                yield '{'
+                for result in _convert_to_string(part):
+                    yield result
+                yield '}'
+            else:
+                raise NotImplementedError(part) 
+
+    return textutils.normalize_whitespace(''.join(_convert_to_string(parts)))
+
+
 class Parser(BaseParser):
     name = 'bibtex'
     suffixes = '.bib',
@@ -104,71 +120,23 @@ class Parser(BaseParser):
         self.default_macros = dict(macros)
         self.person_fields = person_fields
 
-        lbrace = Suppress('{')
-        rbrace = Suppress('}')
-        def bibtexGroup(s):
-            return ((lbrace + s + rbrace) |
-                    (Suppress('(') + s + Suppress(')')))
-
-        at = Suppress('@')
-        comma = Suppress(',')
-
-        innerBracedString = Forward()
-        innerBracedString << Combine(Literal('{') + ZeroOrMore(CharsNotIn('{}') | innerBracedString) + Literal('}'))
-        quotedString = Combine(Suppress('"') + ZeroOrMore(CharsNotIn('"{') | innerBracedString) + Suppress('"'))
-        bracedString = Combine(lbrace + ZeroOrMore(CharsNotIn('{}') | innerBracedString) + rbrace)
-        bibTeXString = (quotedString | bracedString)
-
-        name_chars = alphanums + '!$&*+-./:;<>?[\\]^_`|~\x7f'
-        macro_substitution = Word(name_chars).setParseAction(self.substitute_macro)
-        name = Word(name_chars).setParseAction(downcaseTokens)
-        value = Combine(delimitedList(bibTeXString | Word(nums) | macro_substitution, delim='#'), adjacent=False)
-        value.setParseAction(normalize_whitespace)
-
-        #fields
-        field = Group(name + Suppress('=') + value)
-        fields = Dict(delimitedList(field))
-
-        #String (aka macro)
-        string_body = bibtexGroup(fields)
-        string = at + CaselessLiteral('STRING').suppress() + string_body
-        string.setParseAction(self.process_macro)
-
-        #preamble
-        preamble_body = bibtexGroup(value)
-        preamble = at + CaselessLiteral('PREAMBLE').suppress() + preamble_body
-        preamble.setParseAction(lambda toks: self.process_preamble(toks))
-
-        #bibliography entry
-        entry_header = at + Word(alphas).setParseAction(downcaseTokens)
-        entry_key = Word(printables.replace(',', ''))
-        if kwargs.get('allow_keyless_entries', False):
-            entry_body = bibtexGroup(Optional(entry_key + comma, None) + Group(fields) + Optional(comma))
-        else:
-            entry_body = bibtexGroup(entry_key + comma + Group(fields) + Optional(comma))
-        entry = entry_header + entry_body
-        entry.setParseAction(lambda toks: self.process_entry(toks))
-
-        self.BibTeX_entry = string | preamble | entry
-
     def process_preamble(self, toks):
         self.data.add_to_preamble(toks[0])
 
-    def process_entry(self, toks):
-        entry = Entry(toks[0].lower())
-        fields = {}
-        key = toks[1]
+    def process_entry(self, entry_type, key, fields, macros):
+        entry = Entry(entry_type)
 
         if key is None:
             key = 'unnamed-%i' % self.unnamed_entry_counter
             self.unnamed_entry_counter += 1
 
-        for k, v in toks[2]:
-            if k in self.person_fields:
-                for name in split_name_list(v):
-                    entry.add_person(Person(name), k)
+        for field_name, field_values in fields.items():
+            field_value = flatten_bibtex_string(field_values, macros)
+            if field_name in self.person_fields:
+                for name in split_name_list(field_value):
+                    entry.add_person(Person(name), field_name)
             else:
-                entry.fields[k] = v
+                entry.fields[field_name] = field_value
 #        return (key, entry)
         self.data.add_entry(key, entry)
 
@@ -183,15 +151,12 @@ class Parser(BaseParser):
         self.macros[toks[0][0].lower()] = toks[0][1]
 
     def parse_stream(self, stream):
-        self.unnamed_entry_counter = 1
-
-        self.macros = dict(self.default_macros)
-        try:
-#            entries = dict(entry[0][0] for entry in self.BibTeX_entry.scanString(s))
-            self.BibTeX_entry.searchString(stream.read())
-        except ParseException, e:
-            print "%s: syntax error:" % getattr(stream, 'name', '<NO FILE>')
-            print e
-            import sys
-            sys.exit(1)
+        parser = babybib.btparse.BibTeXParser(debug=False)
+        results = parser.parse(stream.read())
+        self.data.add_to_preamble(*results.preamble)
+        macros = dict(self.default_macros)
+        macros.update(results.defined_macros)
+        for key, fields in results.entries.items():
+            entry_type = fields.pop('entry type').lower()
+            self.process_entry(entry_type, key, fields, macros)
         return self.data

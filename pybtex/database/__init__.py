@@ -46,8 +46,8 @@ class BibliographyData(object):
             and self._preamble == other._preamble
         )
 
-    def add_to_preamble(self, s):
-        self._preamble.append(s)
+    def add_to_preamble(self, *values):
+        self._preamble.extend(values)
 
     def preamble(self):
         return ''.join(self._preamble)
