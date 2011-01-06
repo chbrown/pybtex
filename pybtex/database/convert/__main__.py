@@ -16,9 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from optparse import make_option
-
-from pybtex.cmdline import CommandLine
+from pybtex.cmdline import CommandLine, make_option
 
 class PybtexConvertCommandLine(CommandLine):
     prog = 'pybtex-convert'
@@ -36,12 +34,14 @@ pybtex-convert converts bibliography database files between supported formats
     options = (
         (None, (
             make_option(
-                '-f', '--from', action='store', type='string', dest='from_format',
-                help='input format', metavar='FORMAT',
+                '-f', '--from', dest='from_format',
+                help='input format (%plugin_choices)', metavar='FORMAT',
+                type='load_plugin', plugin_group='pybtex.database.input',
             ),
             make_option(
-                '-t', '--to', action='store', type='string', dest='to_format',
-                help='output format', metavar='FORMAT',
+                '-t', '--to', dest='to_format',
+                help='output format (%plugin_choices)', metavar='FORMAT',
+                type='load_plugin', plugin_group='pybtex.database.output',
             ),
             make_option(
                 '--allow-keyless-bibtex-entries',

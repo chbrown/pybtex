@@ -21,6 +21,33 @@ import optparse
 from pybtex.__version__ import version
 
 from pybtex.textutils import capfirst, add_period
+from pybtex.plugin import find_plugin, enumerate_plugin_names
+
+
+def check_plugin(option, option_string, value):
+    return find_plugin(option.plugin_group, value)
+
+
+class PybtexOption(optparse.Option):
+    ATTRS = optparse.Option.ATTRS + ['plugin_group']
+    TYPES = optparse.Option.TYPES + ('load_plugin',)
+    TYPE_CHECKER = dict(optparse.Option.TYPE_CHECKER, load_plugin=check_plugin)
+
+
+BaseHelpFormatter = optparse.IndentedHelpFormatter
+class PybtexHelpFormatter(BaseHelpFormatter):
+    def get_plugin_choices(self, plugin_group):
+        return ', '.join(sorted(enumerate_plugin_names(plugin_group)))
+
+    def expand_default(self, option):
+        result = BaseHelpFormatter.expand_default(self, option)
+        if option.plugin_group:
+            plugin_choices = self.get_plugin_choices(option.plugin_group)
+            result = result.replace('%plugin_choices', plugin_choices)
+        return result
+
+
+make_option = PybtexOption
 
 
 class CommandLine(object):
@@ -47,6 +74,8 @@ class CommandLine(object):
     def make_option_parser(self):
         opt_parser = optparse.OptionParser(
             prog=self.prog,
+            option_class=PybtexOption,
+            formatter=PybtexHelpFormatter(),
             usage='%prog ' + self.args,
             description=capfirst(add_period(self.description)),
             version='%%prog-%s' % version
