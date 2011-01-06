@@ -62,7 +62,7 @@ class PluginLoader(object):
     def find_plugin(plugin_group, name):
         raise NotImplementedError
 
-    def enumerate_plugin_names(plugin_group):
+    def enumerate_plugin_names(self, plugin_group):
         raise NotImplementedError
 
 
@@ -129,17 +129,24 @@ class EntryPointPluginLoader(PluginLoader):
         else:
             raise PluginNotFound(plugin_group)
 
+    def enumerate_plugin_names(self, plugin_group):
+        try:
+            import pkg_resources
+        except ImportError:
+            return
+        entry_points = pkg_resources.iter_entry_points(plugin_group)
+        return [entry_point.name for entry_point in entry_points]
+
 
 plugin_loaders = [EntryPointPluginLoader(), BuiltInPluginLoader()]
 
 
-def find_plugin(plugin_group, obj_or_name=None, filename=None):
-    if isinstance(obj_or_name, type) and issubclass(obj_or_name, Plugin):
-        plugin = obj_or_name
+def find_plugin(plugin_group, name=None, filename=None):
+    if isinstance(name, type) and issubclass(obj_or_name, Plugin):
+        plugin = name
         #assert plugin.group_name == plugin_group
         return plugin
     else:
-        name = obj_or_name
         for loader in plugin_loaders:
             try:
                 return loader.find_plugin(plugin_group, name, filename)
