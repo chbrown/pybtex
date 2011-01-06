@@ -133,13 +133,19 @@ class EntryPointPluginLoader(PluginLoader):
 plugin_loaders = [EntryPointPluginLoader(), BuiltInPluginLoader()]
 
 
-def find_plugin(plugin_group, name=None, filename=None):
-    for loader in plugin_loaders:
-        try:
-            return loader.find_plugin(plugin_group, name, filename)
-        except PluginNotFound:
-            continue
-    raise PluginNotFound(plugin_group, name, filename)
+def find_plugin(plugin_group, obj_or_name=None, filename=None):
+    if isinstance(obj_or_name, type) and issubclass(obj_or_name, Plugin):
+        plugin = obj_or_name
+        #assert plugin.group_name == plugin_group
+        return plugin
+    else:
+        name = obj_or_name
+        for loader in plugin_loaders:
+            try:
+                return loader.find_plugin(plugin_group, name, filename)
+            except PluginNotFound:
+                continue
+        raise PluginNotFound(plugin_group, name, filename)
 
 
 def enumerate_plugin_names(plugin_group):
