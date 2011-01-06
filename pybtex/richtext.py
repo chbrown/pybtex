@@ -18,7 +18,7 @@ r"""(simple but) rich text formatting tools
 Usage:
 
 >>> from pybtex.backends import latex
->>> backend = latex.Writer()
+>>> backend = latex.Backend()
 >>> t = Text('this ', 'is a ', Tag('emph', 'very'), Text(' rich', ' text'))
 >>> print t.render(backend)
 this is a \emph{very} rich text
@@ -206,7 +206,7 @@ class Text(list):
         """Add a period to the end of text, if necessary.
 
         >>> import pybtex.backends.html
-        >>> html = pybtex.backends.html.Writer()
+        >>> html = pybtex.backends.html.Backend()
 
         >>> text = Text("That's all, folks")
         >>> print text.add_period().plaintext()
@@ -248,9 +248,9 @@ class Tag(Text):
 
     >>> emph = Tag('emph', 'emphasized text')
     >>> from pybtex.backends import latex, html
-    >>> print emph.render(latex.Writer())
+    >>> print emph.render(latex.Backend())
     \emph{emphasized text}
-    >>> print emph.render(html.Writer())
+    >>> print emph.render(html.Backend())
     <em>emphasized text</em>
     """
 
@@ -272,9 +272,9 @@ class Symbol(object):
 
     >>> nbsp = Symbol('nbsp')
     >>> from pybtex.backends import latex, html
-    >>> print nbsp.render(latex.Writer())
+    >>> print nbsp.render(latex.Backend())
     ~
-    >>> print nbsp.render(html.Writer())
+    >>> print nbsp.render(html.Backend())
     &nbsp;
     """
 

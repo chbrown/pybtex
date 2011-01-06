@@ -14,12 +14,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import yaml
-from pybtex.database.input import ParserBase
+from pybtex.database.input import BaseParser
 from pybtex.core import Entry, Person
 
-file_extension = 'yaml'
 
-class Parser(ParserBase):
+class Parser(BaseParser):
+    name = 'bibyaml'
+    aliases = 'yaml',
+    suffixes = '.yaml', '.bibyaml'
+
     def parse_stream(self, stream):
         t = yaml.safe_load(stream)
 

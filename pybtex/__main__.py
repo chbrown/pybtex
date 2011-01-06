@@ -16,9 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from os import path
-from optparse import make_option
 
-from pybtex.cmdline import CommandLine
+from pybtex.cmdline import CommandLine, make_option
+
 
 class PybtexCommandLine(CommandLine):
     prog = 'pybtex'
@@ -42,12 +42,16 @@ It is also possible to define bibliography formatting styles in Python.
         (None, (
             make_option(
                 '-f', '--bibliography-format', dest='bib_format',
-                help='bibliograpy format (bibtex, bibtexml, bibyaml)',
+                help='bibliograpy format (%plugin_choices)',
+                type='load_plugin',
+                plugin_group='pybtex.database.input',
                 metavar='FORMAT',
             ),
             make_option(
                 '-b', '--output-backend', dest='output_backend',
-                help='output backend (latex, html, plaintext)',
+                help='output backend (%plugin_choices)',
+                type='load_plugin',
+                plugin_group='pybtex.backends',
                 metavar='BACKEND',
             ),
             make_option(
@@ -57,12 +61,16 @@ It is also possible to define bibliography formatting styles in Python.
             ),
             make_option(
                 '--label-style', dest='label_style',
-                help='label formatting style',
+                help='label formatting style (%plugin_choices)',
+                type='load_plugin',
+                plugin_group='pybtex.style.labels',
                 metavar='STYLE',
             ),
             make_option(
                 '--name-style', dest='name_style',
-                help='name formatting style',
+                help='name formatting style (%plugin_choices)',
+                type='load_plugin',
+                plugin_group='pybtex.style.names',
                 metavar='STYLE',
             ),
             make_option(

@@ -18,32 +18,30 @@ from __future__ import with_statement
 from os import path
 
 import pybtex.io
+from pybtex.plugin import Plugin
 from pybtex.database import BibliographyData
 
 
-default = 'bib'
-filetypes = {'bib' : 'bibtex'}
-available_plugins = ('bibtex', 'bibtexml', 'bibyaml')
+class BaseParser(Plugin):
+    default_plugin = 'bibtex'
 
-
-class ParserBase:
     unicode_io = False
 
     def __init__(self, encoding=None, **kwargs):
         self.encoding = encoding
         self.data = BibliographyData()
 
-    def parse_file(self, filename, fileext=None):
-        if fileext is not None:
-            filename = filename + path.extsep + fileext
+    def parse_file(self, filename, file_suffix=None):
+        if file_suffix is not None:
+            filename = filename + file_suffix
         open_file = pybtex.io.open_unicode if self.unicode_io else pybtex.io.open_raw
         with open_file(filename, encoding=self.encoding) as f:
             self.parse_stream(f)
         return self.data
 
-    def parse_files(self, filenames, fileext=None):
-        for filename in filenames:
-            self.parse_file(filename, fileext)
+    def parse_files(self, base_filenames, file_suffix=None):
+        for filename in base_filenames:
+            self.parse_file(filename, file_suffix)
         return self.data
 
     def parse_stream(self, stream):

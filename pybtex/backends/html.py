@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from xml.sax.saxutils import escape
-from pybtex.backends import BackendBase
+from pybtex.backends import BaseBackend
 import pybtex.io
 
 file_extension = 'html'
@@ -29,7 +29,10 @@ PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <dl>
 """
 
-class Writer(BackendBase):
+class Backend(BaseBackend):
+    name = 'html'
+    suffixes = '.html',
+
     symbols = {
         'ndash': u'&ndash;',
         'newblock': u'\n',

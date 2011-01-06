@@ -13,24 +13,37 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import with_statement
+"""name formatting styles
+"""
 
-import pybtex.io
 from pybtex.plugin import Plugin
+from pybtex.richtext import Symbol, Text, nbsp
+from pybtex.style.template import join, together, node, _format_list
 
 
-class BaseWriter(Plugin):
-    unicode_io = False
-    default_plugin = 'bibtex'
+available_plugins = ('plain', 'lastfirst')
 
-    def __init__(self, encoding=None):
-        self.encoding = encoding
 
-    def write_file(self, bib_data, filename):
-        open_file = pybtex.io.open_unicode if self.unicode_io else pybtex.io.open_raw
-        mode = 'w' if self.unicode_io else 'wb'
-        with open_file(filename, mode, encoding=self.encoding) as stream:
-            self.write_stream(bib_data, stream)
+class BaseNameStyle(Plugin):
+    default_plugin = 'plain'
 
-    def write_stream(self, bib_data, stream):
+    def format(self, person, abbr=False):
         raise NotImplementedError
+
+
+def tie_or_space(word, tie='~', space = ' ', enough_chars=3):
+    if len(word) < enough_chars:
+        return tie
+    else:
+        return space
+    
+
+@node
+def name_part(children, data, before='', tie=False):
+    parts = together [children].format_data(data)
+    if not parts:
+        return Text()
+    if tie:
+        return Text(before, parts, tie_or_space(parts, nbsp, ' '))
+    else:
+        return Text(before, parts)

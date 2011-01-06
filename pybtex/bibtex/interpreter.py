@@ -286,7 +286,7 @@ class Interpreter(object):
 
     def command_read(self):
 #        print 'READ'
-        p = self.bib_format.Parser(encoding=self.bib_encoding, macros=self.macros, person_fields=[])
+        p = self.bib_format(encoding=self.bib_encoding, macros=self.macros, person_fields=[])
         self.bib_data = p.parse_files(self.bib_files)
         citations = list(self.expand_wildcard_citations(self.citations))
         self.citations = self.add_crossreferenced_citations(citations)

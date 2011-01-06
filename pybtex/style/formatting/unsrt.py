@@ -15,7 +15,7 @@
 
 import re
 
-from pybtex.style.formatting import FormatterBase, toplevel
+from pybtex.style.formatting import BaseStyle, toplevel
 from pybtex.style.template import (
     join, words, field, optional, first_of,
     names, sentence, tag, optional_field
@@ -30,7 +30,9 @@ pages = field('pages', apply_func=dashify)
 
 date = words [optional_field('month'), field('year')]
 
-class Formatter(FormatterBase):
+class Style(BaseStyle):
+    name = 'unsrt'
+
     def format_names(self, role):
         return sentence(capfirst=False) [names(role, sep=', ', sep2 = ' and ', last_sep=', and ')]
 

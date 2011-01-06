@@ -22,9 +22,9 @@ except ImportError:
         from xml.etree import ElementTree as ET
 
 from pybtex.core import Entry
-from pybtex.database.output import WriterBase
+from pybtex.database.output import BaseWriter
 
-file_extension = 'bibtexml'
+
 doctype = """<!DOCTYPE bibtex:file PUBLIC
     "-//BibTeXML//DTD XML for BibTeX v1.0//EN"
         "bibtexml.dtd" >
@@ -64,8 +64,11 @@ class PrettyTreeBuilder(ET.TreeBuilder):
         self.end(indent=False)
 
 
-class Writer(WriterBase):
+class Writer(BaseWriter):
     """Outputs BibTeXML markup"""
+
+    name = 'bibtexml'
+    suffixes = '.xml', '.bibtexml'
 
     def write_stream(self, bib_data, stream):
         def write_persons(persons, role):

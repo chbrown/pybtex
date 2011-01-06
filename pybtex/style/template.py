@@ -273,7 +273,7 @@ def tag(children, data, name):
     """Wrap text into a tag.
 
     >>> import pybtex.backends.html
-    >>> html = pybtex.backends.html.Writer()
+    >>> html = pybtex.backends.html.Backend()
     >>> print tag('emph') ['important'].format().render(html)
     <em>important</em>
     >>> print sentence ['ready', 'set', tag('emph') ['go']].format().render(html)

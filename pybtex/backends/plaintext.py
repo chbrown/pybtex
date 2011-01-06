@@ -13,11 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from pybtex.backends import BackendBase
+from pybtex.backends import BaseBackend
 
 file_extension = 'txt'
 
-class Writer(BackendBase):
+class Backend(BaseBackend):
+    name = 'plaintext'
+    aliases = 'text',
+    suffixes = '.txt',
+
     symbols = {
         'ndash': u'-',
         'newblock': u' ',

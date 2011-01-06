@@ -16,14 +16,14 @@
 import pybtex.io
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.utils import scan_bibtex_string
-from pybtex.database.output import WriterBase
-
-file_extension = 'bib'
+from pybtex.database.output import BaseWriter
 
 
-class Writer(WriterBase):
+class Writer(BaseWriter):
     """Outputs BibTeX markup"""
 
+    name = 'bibtex'
+    suffixes = '.bib',
     unicode_io = True
 
     def quote(self, s):

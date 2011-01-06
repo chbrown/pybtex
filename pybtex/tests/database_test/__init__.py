@@ -26,8 +26,8 @@ class DatabaseIOTest(TestCase):
         self.reference_data = yaml.load(reference_data)
 
     def _test_input(self, plugin):
-        parser = find_plugin('pybtex.database.input', plugin).Parser(encoding='UTF-8')
-        writer = find_plugin('pybtex.database.output', plugin).Writer(encoding='UTF-8')
+        parser = find_plugin('pybtex.database.input', plugin)(encoding='UTF-8')
+        writer = find_plugin('pybtex.database.output', plugin)(encoding='UTF-8')
         stream = BytesIO()
         writer_stream = TextIOWrapper(stream, 'UTF-8') if writer.unicode_io else stream
         parser_stream = TextIOWrapper(stream, 'UTF-8') if parser.unicode_io else stream

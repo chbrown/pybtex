@@ -41,19 +41,21 @@ def make_bibliography(aux_filename,
     try:
         output_backend = kwargs['output_backend']
     except KeyError:
-        from pybtex.backends import latex as output_backend
+        from pybtex.backends.latex import Backend as output_backend
 
 
-    bib_data = bib_format.Parser(bib_encoding).parse_files(aux_data.data, bib_format.file_extension)
+    bib_format = bib_format.Parser
+    bib_data = bib_format(bib_encoding).parse_files(aux_data.data, bib_format.get_default_suffix())
 
-    formatter = find_plugin('pybtex.style.formatting', aux_data.style).Formatter(
+    style_cls = find_plugin('pybtex.style.formatting', aux_data.style)
+    style = style_cls(
             label_style=kwargs.get('label_style'),
             name_style=kwargs.get('name_style'),
             abbreviate_names=kwargs.get('abbreviate_names', True),
     )
     entries = ((key, bib_data.entries[key]) for key in aux_data.citations)
-    formatted_entries = formatter.format_entries(entries)
+    formatted_entries = style.format_entries(entries)
     del entries
 
-    output_filename = path.extsep.join([filename, output_backend.file_extension])
-    output_backend.Writer(output_encoding).write_bibliography(formatted_entries, output_filename)
+    output_filename = filename + output_backend.get_default_suffix()
+    output_backend(output_encoding).write_bibliography(formatted_entries, output_filename)

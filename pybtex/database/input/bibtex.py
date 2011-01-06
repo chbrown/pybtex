@@ -62,7 +62,7 @@ from pyparsing import (
 )
 import pybtex.io
 from pybtex.core import Entry, Person
-from pybtex.database.input import ParserBase
+from pybtex.database.input import BaseParser
 from pybtex.bibtex.utils import split_name_list
 from pybtex.exceptions import PybtexError
 from pybtex import textutils
@@ -82,18 +82,18 @@ month_names = {
     'dec': 'December'
 }
 
-file_extension = 'bib'
-
 
 def normalize_whitespace(s, loc, toks):
     return [textutils.normalize_whitespace(tok) for tok in toks]
 
 
-class Parser(ParserBase):
+class Parser(BaseParser):
+    name = 'bibtex'
+    suffixes = '.bib',
     unicode_io = True
 
     def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):
-        ParserBase.__init__(self, encoding)
+        BaseParser.__init__(self, encoding)
 
         self.default_macros = dict(macros)
         self.person_fields = person_fields
