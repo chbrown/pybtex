@@ -148,7 +148,7 @@ plugin_loaders = [EntryPointPluginLoader(), BuiltInPluginLoader()]
 
 
 def find_plugin(plugin_group, name=None, filename=None):
-    if isinstance(name, type) and issubclass(obj_or_name, Plugin):
+    if isinstance(name, type) and issubclass(name, Plugin):
         plugin = name
         #assert plugin.group_name == plugin_group
         return plugin
