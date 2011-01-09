@@ -156,8 +156,8 @@ class Parser(BaseParser):
     command_start = None
     macros = None
 
-    NAME_CHARS = ascii_letters + digits + '!$&*+-./:;<>?[\\]^_`|~\x7f'
-    NAME = re.compile(r'[{0}]+'.format(re.escape(NAME_CHARS)))
+    NAME_CHARS = ascii_letters + '!$&*+-./:;<>?[\\]^_`|~\x7f'
+    NAME = re.compile(r'[{0}][{1}]+'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)))
     NUMBER = re.compile(r'[{0}]+'.format(digits))
     LBRACE = literal('{')
     RBRACE = literal('}')
