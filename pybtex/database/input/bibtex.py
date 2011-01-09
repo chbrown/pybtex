@@ -98,16 +98,46 @@ class Token(object):
         return repr(self.value)
 
 
-class EOF(Exception):
-    pass
-
-
 class SkipEntry(Exception):
     pass
 
 
-class TokenRequired(Exception):
-    pass
+class BibTeXSyntaxError(PybtexError):
+    def __init__(self, message, parser):
+        super(BibTeXSyntaxError, self).__init__(message)
+        self.parser = parser
+        self.lineno = parser.lineno
+        self.error_context_info = parser.get_error_context_info()
+
+    def __unicode__(self):
+        base_message = super(BibTeXSyntaxError, self).__unicode__()
+        return 'Syntax error in {parser.filename}, line {parser.lineno}: {message}'.format(
+            parser=self.parser,
+            message=base_message,
+        )
+
+
+class TokenRequired(BibTeXSyntaxError):
+    def __init__(self, tokens, context):
+        message = 'Token required: ' + ', '.join(tokens)
+        super(TokenRequired, self).__init__(message, context)
+
+    def __unicode__(self):
+        self.context, self.lineno, self.colno = self.parser.get_error_context(self.error_context_info)
+        message = super(TokenRequired, self).__unicode__()
+        if self.context is None:
+            return message
+        if self.colno == 0:
+            marker = '^'
+        else:
+            marker = ' ' * (self.colno - 1) + '^^^'
+        return '\n'.join((message, self.context, marker))
+
+
+class PrematureEOF(BibTeXSyntaxError):
+    def __init__(self, parser):
+        message = 'premature end of file'
+        super(PrematureEOF, self).__init__(message, parser)
 
 
 def literal(s):
@@ -172,11 +202,9 @@ class Parser(BaseParser):
             self.pos = whitespace.end()
             self.update_lineno(whitespace.group())
         if self.pos == self.end_pos:
-            raise EOF
+            raise PrematureEOF(self)
 
     def get_token(self, patterns):
-        if not isinstance(patterns, (list, tuple)):
-            patterns = [patterns]
         self.eat_whitespace_and_check_eof()
         for i, pattern in enumerate(patterns):
             match = pattern.match(self.text, self.pos)
@@ -185,15 +213,35 @@ class Parser(BaseParser):
                 self.pos = match.end()
                 #print '->', value
                 return Token(value, pattern)
-        raise TokenRequired([pattern.pattern for pattern in patterns])
-
-    required = get_token
 
     def optional(self, patterns, **kwargs):
-        try:
-            return self.get_token(patterns, **kwargs)
-        except TokenRequired:
-            pass
+        if not isinstance(patterns, (list, tuple)):
+            patterns = [patterns]
+        return self.get_token(patterns)
+
+    def required(self, patterns, **kwargs):
+        if not isinstance(patterns, (list, tuple)):
+            patterns = [patterns]
+        token =  self.get_token(patterns, **kwargs)
+        if token is None:
+            raise TokenRequired([pattern.pattern for pattern in patterns], self)
+        else:
+            return token
+
+    def get_error_context_info(self):
+        return self.command_start, self.pos
+
+    def get_error_context(self, context_info):
+        error_start, error_pos  = context_info
+        before_error = self.text[error_start:error_pos]
+        if not before_error.endswith('\n'):
+            eol = self.NEWLINE.search(self.text, error_pos)
+            error_end = eol.end() if eol else self.end_pos
+        else:
+            error_end = error_pos
+        context = self.text[error_start:error_end].rstrip('\r\n')
+        colno = len(before_error.splitlines()[-1])
+        return context, self.lineno, colno
 
     def parse_bibliography(self):
         while True:
@@ -203,13 +251,7 @@ class Parser(BaseParser):
             try:
                 self.parse_command()
             except TokenRequired as token_required:
-                print token_required
-                bad_input = self.text[self.command_start:self.pos]
-                last_bad_line = bad_input.splitlines()[-1]
-                print 'Syntax error in line {0}'.format(self.lineno)
-                remainder = self.skip_to(self.NEWLINE)
-                print bad_input + remainder.value,
-                print ' ' * (len(last_bad_line) - 1) + '^^'
+                print unicode(token_required)
                 #raise
             except SkipEntry:
                 pass
@@ -295,7 +337,7 @@ class Parser(BaseParser):
         while True:
             part = self.skip_to(*special_chars)
             if not part:
-                raise TokenRequired
+                raise PrematureEOF(self)
             if part.pattern is string_end:
                 yield part
                 break
@@ -340,8 +382,5 @@ class Parser(BaseParser):
         self.command_start = 0
         self.macros = dict(self.default_macros)
 
-        try:
-            self.parse_bibliography()
-        except EOF:
-            return
+        self.parse_bibliography()
         return self.data
