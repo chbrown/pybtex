@@ -158,6 +158,7 @@ class Parser(BaseParser):
 
     NAME_CHARS = ascii_letters + '!$&*+-./:;<>?[\\]^_`|~\x7f'
     NAME = re.compile(r'[{0}][{1}]+'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)))
+    KEY = re.compile(r'[^\s\,]+')
     NUMBER = re.compile(r'[{0}]+'.format(digits))
     LBRACE = literal('{')
     RBRACE = literal('}')
@@ -283,7 +284,7 @@ class Parser(BaseParser):
         self.process_macro(name, value)
 
     def parse_entry_body(self, entry_type, body_end):
-        key = self.required(self.NAME).value
+        key = self.required(self.KEY).value
         fields = dict(self.parse_entry_fields(body_end))
         self.process_entry(entry_type, key, fields)
 
