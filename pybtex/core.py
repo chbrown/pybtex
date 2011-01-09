@@ -72,19 +72,28 @@ class Entry(object):
         # for BibTeX interpreter
         self.vars = {}
 
-    def get_crossref(self):
-        return self.collection.entries[self.fields['crossref']]
-
     def __eq__(self, other):
         if not isinstance(other, Entry):
             return super(Entry, self) == other
         return (
-                self.fields == other.fields
+                self.type == other.type
+                and self.fields == other.fields
                 and self.persons == other.persons
         )
 
+    def __repr__(self):
+        return 'Entry({type_}, fields={fields}, persons={persons})'.format(
+            type_=repr(self.type),
+            fields=repr(self.fields),
+            persons=repr(self.persons),
+        )
+
+    def get_crossref(self):
+        return self.collection.entries[self.fields['crossref']]
+
     def add_person(self, person, role):
         self.persons.setdefault(role, []).append(person)
+
 
 class Person(object):
     """Represents a person (usually human).
@@ -130,6 +139,7 @@ class Person(object):
     valid_roles = ['author', 'editor'] 
     style1_re = re.compile('^(.+),\s*(.+)$')
     style2_re = re.compile('^(.+),\s*(.+),\s*(.+)$')
+
     def __init__(self, string="", first="", middle="", prelast="", last="", lineage=""):
         self._first = []
         self._middle = []
@@ -218,6 +228,9 @@ class Person(object):
         jr = ' '.join(self._lineage)
         first = ' '.join(self._first + self._middle)
         return ', '.join(part for part in (von_last, jr, first) if part)
+
+    def __repr__(self):
+        return 'Person({0})'.format(repr(unicode(self)))
 
     def get_part_as_text(self, type):
         names = getattr(self, '_' + type)
