@@ -32,6 +32,8 @@ def _test(bibtex_input, correct_result):
     parser = Parser(encoding='UTF-8')
     parser.parse_stream(StringIO(bibtex_input))
     result = parser.data
+    if 'test' in result.entries:
+        print result.entries['test'].fields
     assert result == correct_result
 
 def test_bibtex_parser():

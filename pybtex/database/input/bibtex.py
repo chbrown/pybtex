@@ -59,7 +59,8 @@ Gaub, Hermann E.
 
 """
 
-import babybib
+import re
+from string import ascii_letters, digits
 
 import pybtex.io
 from pybtex.core import Entry, Person
@@ -84,29 +85,33 @@ month_names = {
 }
 
 
-def normalize_whitespace(s, loc, toks):
-    return [textutils.normalize_whitespace(tok) for tok in toks]
+def normalize_whitespace(value_parts):
+    return textutils.normalize_whitespace(''.join(value_parts))
 
 
-def flatten_bibtex_string(parts, macros):
-    def _convert_to_string(parts):
-        for part in parts:
-            if isinstance(part, basestring):
-                yield part
-            elif isinstance(part, babybib.btparse.Macro):
-                try:
-                    yield macros[part.name]
-                except KeyError:
-                    raise PybtexError('undefined macro %s' % part.name)
-            elif isinstance(part, list):
-                yield '{'
-                for result in _convert_to_string(part):
-                    yield result
-                yield '}'
-            else:
-                raise NotImplementedError(part) 
+class Token(object):
+    def __init__(self, value, pattern):
+        self.value = value
+        self.pattern = pattern
 
-    return textutils.normalize_whitespace(''.join(_convert_to_string(parts)))
+    def __repr__(self):
+        return repr(self.value)
+
+
+class EOF(Exception):
+    pass
+
+
+class SkipEntry(Exception):
+    pass
+
+
+class TokenRequired(Exception):
+    pass
+
+
+def literal(s):
+    return re.compile(re.escape(s))
 
 
 class Parser(BaseParser):
@@ -114,24 +119,201 @@ class Parser(BaseParser):
     suffixes = '.bib',
     unicode_io = True
 
+    text = None
+    lineno = None
+    pos = None
+    end_pos = None
+    command_start = None
+    macros = None
+
+    NAME_CHARS = ascii_letters + digits + '!$&*+-./:;<>?[\\]^_`|~\x7f'
+    NAME = re.compile(r'[{0}]+'.format(re.escape(NAME_CHARS)))
+    NUMBER = re.compile(r'[{0}]+'.format(digits))
+    LBRACE = literal('{')
+    RBRACE = literal('}')
+    LPAREN = literal('(')
+    RPAREN = literal(')')
+    QUOTE = literal('"')
+    COMMA = literal(',')
+    EQUALS = literal('=')
+    HASH = literal('#')
+    AT = literal('@')
+    WHITESPACE = re.compile(r'\s+')
+    NEWLINE = re.compile(r'[\r\n]')
+
     def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):
         BaseParser.__init__(self, encoding)
 
         self.default_macros = dict(macros)
         self.person_fields = person_fields
 
-    def process_preamble(self, toks):
-        self.data.add_to_preamble(toks[0])
+    def skip_to(self, *patterns):
+        end = None
+        winning_pattern = None
+        for pattern in patterns:
+            match = pattern.search(self.text, self.pos)
+            if match and (not end or match.end() < end):
+                end = match.end()
+                winning_pattern = pattern
+        if winning_pattern:
+            value = self.text[self.pos : end]
+            self.pos = end
+            #print '>>', value
+            self.update_lineno(value)
+            return Token(value, winning_pattern)
 
-    def process_entry(self, entry_type, key, fields, macros):
+    def update_lineno(self, value):
+        num_newlines = len(self.NEWLINE.findall(value))
+        self.lineno += num_newlines
+
+    def eat_whitespace_and_check_eof(self):
+        whitespace = self.WHITESPACE.match(self.text, self.pos)
+        if whitespace:
+            self.pos = whitespace.end()
+            self.update_lineno(whitespace.group())
+        if self.pos == self.end_pos:
+            raise EOF
+
+    def get_token(self, patterns):
+        if not isinstance(patterns, (list, tuple)):
+            patterns = [patterns]
+        self.eat_whitespace_and_check_eof()
+        for i, pattern in enumerate(patterns):
+            match = pattern.match(self.text, self.pos)
+            if match:
+                value = match.group()
+                self.pos = match.end()
+                #print '->', value
+                return Token(value, pattern)
+        raise TokenRequired([pattern.pattern for pattern in patterns])
+
+    required = get_token
+
+    def optional(self, patterns, **kwargs):
+        try:
+            return self.get_token(patterns, **kwargs)
+        except TokenRequired:
+            pass
+
+    def parse_bibliography(self):
+        while True:
+            if not self.skip_to(self.AT):
+                return
+            self.command_start = self.pos - 1
+            try:
+                self.parse_command()
+            except TokenRequired as token_required:
+                print token_required
+                bad_input = self.text[self.command_start:self.pos]
+                last_bad_line = bad_input.splitlines()[-1]
+                print 'Syntax error in line {0}'.format(self.lineno)
+                remainder = self.skip_to(self.NEWLINE)
+                print bad_input + remainder.value,
+                print ' ' * (len(last_bad_line) - 1) + '^^'
+                #raise
+            except SkipEntry:
+                pass
+
+    def parse_command(self):
+        name = self.required(self.NAME)
+        body_start = self.required([self.LPAREN, self.LBRACE])
+        body_end = self.RBRACE if body_start.pattern == self.LBRACE else self.RPAREN
+
+        entry_type = name.value.lower()
+        if entry_type == 'string':
+            self.parse_string_body(body_end)
+        elif entry_type == 'preamble':
+            self.parse_preamble_body(body_end)
+        elif entry_type == 'comment':
+            raise SkipEntry
+        else:
+            self.parse_entry_body(entry_type, body_end)
+
+    def parse_preamble_body(self, body_end):
+        self.data.add_to_preamble(normalize_whitespace(self.parse_value()))
+        self.required(body_end)
+
+    def parse_string_body(self, body_end):
+        name = self.required(self.NAME).value
+        self.required(self.EQUALS)
+        value = normalize_whitespace(self.parse_value())
+        self.required(body_end)
+        self.process_macro(name, value)
+
+    def parse_entry_body(self, entry_type, body_end):
+        key = self.required(self.NAME).value
+        fields = dict(self.parse_entry_fields(body_end))
+        self.process_entry(entry_type, key, fields)
+
+    def parse_entry_fields(self, body_end):
+        while True:
+            comma_or_body_end = self.required([self.COMMA, body_end])
+            if comma_or_body_end.pattern is self.COMMA:
+                field = list(self.parse_field())
+                if field:
+                    yield field
+            else:
+                return
+
+    def parse_field(self):
+        name = self.optional(self.NAME)
+        if not name:
+            return
+        yield name.value
+        self.required(self.EQUALS)
+        yield normalize_whitespace(self.parse_value())
+
+    def parse_value(self):
+        start = True
+        concatenation = False
+        while True:
+            if not start:
+                concatenation = self.optional(self.HASH)
+            if not (start or concatenation):
+                break
+            yield self.parse_value_part()
+            start = False
+
+    def parse_value_part(self):
+        token = self.required([self.QUOTE, self.LBRACE, self.NUMBER, self.NAME])
+        if token.pattern is self.QUOTE:
+            return self.flatten_string(self.parse_string(string_end=self.QUOTE))
+        elif token.pattern is self.LBRACE:
+            return self.flatten_string(self.parse_string(string_end=self.RBRACE))
+        elif token.pattern is self.NUMBER:
+            return token.value
+        else:
+            return self.substitute_macro(token.value)
+
+    def flatten_string(self, parts):
+        return ''.join(part.value for part in parts)[:-1]
+
+    def parse_string(self, string_end, level=0):
+        special_chars = [self.RBRACE, self.LBRACE]
+        if string_end is self.QUOTE:
+            special_chars = [self.QUOTE] + special_chars
+        while True:
+            part = self.skip_to(*special_chars)
+            if not part:
+                raise TokenRequired
+            if part.pattern is string_end:
+                yield part
+                break
+            elif part.pattern is self.LBRACE:
+                yield part
+                for subpart in self.parse_string(self.RBRACE, level + 1):
+                    yield subpart
+            elif part.pattern is self.RBRACE and level == 0:
+                raise SyntaxError('unbalanced brace')
+
+    def process_entry(self, entry_type, key, fields):
         entry = Entry(entry_type)
 
         if key is None:
             key = 'unnamed-%i' % self.unnamed_entry_counter
             self.unnamed_entry_counter += 1
 
-        for field_name, field_values in fields.items():
-            field_value = flatten_bibtex_string(field_values, macros)
+        for field_name, field_value in fields.items():
             if field_name in self.person_fields:
                 for name in split_name_list(field_value):
                     entry.add_person(Person(name), field_name)
@@ -140,23 +322,26 @@ class Parser(BaseParser):
 #        return (key, entry)
         self.data.add_entry(key, entry)
 
-    def substitute_macro(self, s, loc, toks):
-        key = toks[0].lower()
+    def substitute_macro(self, name):
         try:
-            return self.macros[key]
+            return self.macros[name.lower()]
         except KeyError:
-            raise PybtexError('undefined macro %s' % key)
+            raise PybtexError('undefined macro %s' % name)
 
-    def process_macro(self, s, loc, toks):
-        self.macros[toks[0][0].lower()] = toks[0][1]
+    def process_macro(self, name, value):
+        self.macros[name.lower()] = value
 
     def parse_stream(self, stream):
-        parser = babybib.btparse.BibTeXParser(debug=False)
-        results = parser.parse(stream.read())
-        self.data.add_to_preamble(*results.preamble)
-        macros = dict(self.default_macros)
-        macros.update(results.defined_macros)
-        for key, fields in results.entries.items():
-            entry_type = fields.pop('entry type').lower()
-            self.process_entry(entry_type, key, fields, macros)
+        text = stream.read()
+        self.text = text
+        self.lineno = 1
+        self.pos = 0
+        self.end_pos = len(text)
+        self.command_start = 0
+        self.macros = dict(self.default_macros)
+
+        try:
+            self.parse_bibliography()
+        except EOF:
+            return
         return self.data
