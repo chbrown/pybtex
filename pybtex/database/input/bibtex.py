@@ -128,7 +128,7 @@ class TokenRequired(BibTeXSyntaxError):
         if self.context is None:
             return message
         if self.colno == 0:
-            marker = '^'
+            marker = '^^'
         else:
             marker = ' ' * (self.colno - 1) + '^^^'
         return '\n'.join((message, self.context, marker))
