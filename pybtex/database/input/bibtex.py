@@ -122,13 +122,9 @@ class BibTeXSyntaxError(PybtexError):
 
 
 class TokenRequired(BibTeXSyntaxError):
-    def __init__(self, tokens, context):
-        if len(tokens) == 1:
-            message = 'token required: '
-        else:
-            message = 'one of this tokens required: '
-        full_message = message + ', '.join(tokens)
-        super(TokenRequired, self).__init__(full_message, context)
+    def __init__(self, description, context):
+        message = '{0} expected'.format(description)
+        super(TokenRequired, self).__init__(message, context)
 
     def __unicode__(self):
         self.context, self.lineno, self.colno = self.parser.get_error_context(self.error_context_info)
@@ -197,13 +193,15 @@ class Scanner(object):
                 #print '->', value
                 return Token(value, pattern)
 
-    def optional(self, patterns, **kwargs):
+    def optional(self, patterns):
         return self.get_token(patterns)
 
-    def required(self, patterns, **kwargs):
-        token =  self.get_token(patterns, **kwargs)
+    def required(self, patterns, description=None):
+        token =  self.get_token(patterns)
         if token is None:
-            raise TokenRequired([pattern.description for pattern in patterns], self)
+            if not description:
+                description = ' or '.join(pattern.description for pattern in patterns)
+            raise TokenRequired(description, self)
         else:
             return token
 
@@ -335,7 +333,10 @@ class BibTeXEntryIterator(Scanner):
             start = False
 
     def parse_value_part(self):
-        token = self.required([self.QUOTE, self.LBRACE, self.NUMBER, self.NAME])
+        token = self.required(
+            [self.QUOTE, self.LBRACE, self.NUMBER, self.NAME],
+            description='field value',
+        )
         if token.pattern is self.QUOTE:
             return self.flatten_string(self.parse_string(string_end=self.QUOTE))
         elif token.pattern is self.LBRACE:
