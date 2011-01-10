@@ -365,7 +365,7 @@ class BibTeXEntryIterator(Scanner):
                 for subpart in self.parse_string(self.RBRACE, level + 1):
                     yield subpart
             elif part.pattern is self.RBRACE and level == 0:
-                raise SyntaxError('unbalanced brace')
+                raise BibTeXSyntaxError('unbalanced braces', self)
 
 
 class Parser(BaseParser):
