@@ -160,7 +160,7 @@ class Scanner(object):
         self.pos = 0
         self.end_pos = len(text)
 
-    def skip_to(self, *patterns):
+    def skip_to(self, patterns):
         end = None
         winning_pattern = None
         for pattern in patterns:
@@ -198,13 +198,9 @@ class Scanner(object):
                 return Token(value, pattern)
 
     def optional(self, patterns, **kwargs):
-        if not isinstance(patterns, (list, tuple)):
-            patterns = [patterns]
         return self.get_token(patterns)
 
     def required(self, patterns, **kwargs):
-        if not isinstance(patterns, (list, tuple)):
-            patterns = [patterns]
         token =  self.get_token(patterns, **kwargs)
         if token is None:
             raise TokenRequired([pattern.description for pattern in patterns], self)
@@ -267,7 +263,7 @@ class BibTeXEntryIterator(Scanner):
 
     def parse_bibliography(self):
         while True:
-            if not self.skip_to(self.AT):
+            if not self.skip_to([self.AT]):
                 return
             self.command_start = self.pos - 1
             try:
@@ -279,7 +275,7 @@ class BibTeXEntryIterator(Scanner):
                 pass
 
     def parse_command(self):
-        name = self.required(self.NAME)
+        name = self.required([self.NAME])
         body_start = self.required([self.LPAREN, self.LBRACE])
         body_end = self.RBRACE if body_start.pattern == self.LBRACE else self.RPAREN
 
@@ -296,16 +292,16 @@ class BibTeXEntryIterator(Scanner):
 
     def parse_preamble_body(self, body_end):
         yield tuple(self.parse_value())
-        self.required(body_end)
+        self.required([body_end])
 
     def parse_string_body(self, body_end):
-        yield self.required(self.NAME).value
-        self.required(self.EQUALS)
+        yield self.required([self.NAME]).value
+        self.required([self.EQUALS])
         yield tuple(self.parse_value())
-        self.required(body_end)
+        self.required([body_end])
 
     def parse_entry_body(self, entry_type, body_end):
-        key = self.required(self.KEY).value
+        key = self.required([self.KEY]).value
         yield key
         yield dict(self.parse_entry_fields(body_end))
 
@@ -320,11 +316,11 @@ class BibTeXEntryIterator(Scanner):
                 return
 
     def parse_field(self):
-        name = self.optional(self.NAME)
+        name = self.optional([self.NAME])
         if not name:
             return
         yield name.value
-        self.required(self.EQUALS)
+        self.required([self.EQUALS])
         yield tuple(self.parse_value())
 
     def parse_value(self):
@@ -332,7 +328,7 @@ class BibTeXEntryIterator(Scanner):
         concatenation = False
         while True:
             if not start:
-                concatenation = self.optional(self.HASH)
+                concatenation = self.optional([self.HASH])
             if not (start or concatenation):
                 break
             yield self.parse_value_part()
@@ -357,7 +353,7 @@ class BibTeXEntryIterator(Scanner):
         if string_end is self.QUOTE:
             special_chars = [self.QUOTE] + special_chars
         while True:
-            part = self.skip_to(*special_chars)
+            part = self.skip_to(special_chars)
             if not part:
                 raise PrematureEOF(self)
             if part.pattern is string_end:
