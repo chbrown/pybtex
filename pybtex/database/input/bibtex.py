@@ -123,8 +123,12 @@ class BibTeXSyntaxError(PybtexError):
 
 class TokenRequired(BibTeXSyntaxError):
     def __init__(self, tokens, context):
-        message = 'Token required: ' + ', '.join(tokens)
-        super(TokenRequired, self).__init__(message, context)
+        if len(tokens) == 1:
+            message = 'token required: '
+        else:
+            message = 'one of this tokens required: '
+        full_message = message + ', '.join(tokens)
+        super(TokenRequired, self).__init__(full_message, context)
 
     def __unicode__(self):
         self.context, self.lineno, self.colno = self.parser.get_error_context(self.error_context_info)
@@ -142,10 +146,6 @@ class PrematureEOF(BibTeXSyntaxError):
     def __init__(self, parser):
         message = 'premature end of file'
         super(PrematureEOF, self).__init__(message, parser)
-
-
-def literal(s):
-    return re.compile(re.escape(s))
 
 
 class Scanner(object):
@@ -207,27 +207,43 @@ class Scanner(object):
             patterns = [patterns]
         token =  self.get_token(patterns, **kwargs)
         if token is None:
-            raise TokenRequired([pattern.pattern for pattern in patterns], self)
+            raise TokenRequired([pattern.description for pattern in patterns], self)
         else:
             return token
 
 
+class Pattern(object):
+    def __init__(self, regexp, description):
+        self.description = description
+        compiled_regexp = re.compile(regexp)
+        self.search = compiled_regexp.search
+        self.match = compiled_regexp.match
+        self.findall = compiled_regexp.findall
+
+
+class Literal(Pattern):
+    def __init__(self, literal):
+        pattern = re.compile(re.escape(literal))
+        description = "'{0}'".format(literal)
+        super(Literal, self).__init__(pattern, description)
+
+
 class BibTeXEntryIterator(Scanner):
     NAME_CHARS = ascii_letters + '!$&*+-./:;<>?[\\]^_`|~\x7f'
-    NAME = re.compile(r'[{0}][{1}]+'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)))
-    KEY = re.compile(r'[^\s\,]+')
-    NUMBER = re.compile(r'[{0}]+'.format(digits))
-    LBRACE = literal('{')
-    RBRACE = literal('}')
-    LPAREN = literal('(')
-    RPAREN = literal(')')
-    QUOTE = literal('"')
-    COMMA = literal(',')
-    EQUALS = literal('=')
-    HASH = literal('#')
-    AT = literal('@')
-    WHITESPACE = re.compile(r'\s+')
-    NEWLINE = re.compile(r'[\r\n]')
+    NAME = Pattern(r'[{0}][{1}]+'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
+    KEY = Pattern(r'[^\s\,]+', 'entry key')
+    NUMBER = Pattern(r'[{0}]+'.format(digits), 'a number')
+    LBRACE = Literal('{')
+    RBRACE = Literal('}')
+    LPAREN = Literal('(')
+    RPAREN = Literal(')')
+    QUOTE = Literal('"')
+    COMMA = Literal(',')
+    EQUALS = Literal('=')
+    HASH = Literal('#')
+    AT = Literal('@')
+    WHITESPACE = Pattern(r'\s+', 'whitespace')
+    NEWLINE = Pattern(r'[\r\n]', 'newline')
 
     command_start = None
 
