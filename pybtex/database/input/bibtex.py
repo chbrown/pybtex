@@ -224,7 +224,7 @@ class Literal(Pattern):
 
 class BibTeXEntryIterator(Scanner):
     NAME_CHARS = ascii_letters + '!$&*+-./:;<>?[\\]^_`|~\x7f'
-    NAME = Pattern(r'[{0}][{1}]+'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
+    NAME = Pattern(r'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
     KEY = Pattern(r'[^\s\,]+', 'entry key')
     NUMBER = Pattern(r'[{0}]+'.format(digits), 'a number')
     LBRACE = Literal('{')
