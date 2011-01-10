@@ -175,3 +175,24 @@ class InlineCommentTest(ParserTest, TestCase):
         'me2010': Entry('article'),
         'me2013': Entry('article'),
     })
+
+
+class KeyParsingTest(ParserTest, TestCase):
+    input = """
+        # will not work as expected
+        @article(test(parens1))
+
+        # works fine
+        @article(test(parens2),)
+
+        # works fine
+        @article{test(braces1)}
+
+        # also works
+        @article{test(braces2),}
+    """
+    correct_result = BibliographyData({
+        'test(parens2)': Entry('article'),
+        'test(braces1)': Entry('article'),
+        'test(braces2)': Entry('article'),
+    })

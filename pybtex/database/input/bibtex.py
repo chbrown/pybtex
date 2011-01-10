@@ -225,7 +225,8 @@ class Literal(Pattern):
 class BibTeXEntryIterator(Scanner):
     NAME_CHARS = ascii_letters + '@!$&*+-./:;<>?[\\]^_`|~\x7f'
     NAME = Pattern(r'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
-    KEY = Pattern(r'[^\s\,]+', 'entry key')
+    KEY_PAREN = Pattern(r'[^\s\,]+', 'entry key')
+    KEY_BRACE = Pattern(r'[^\s\,}]+', 'entry key')
     NUMBER = Pattern(r'[{0}]+'.format(digits), 'a number')
     LBRACE = Literal('{')
     RBRACE = Literal('}')
@@ -299,7 +300,8 @@ class BibTeXEntryIterator(Scanner):
         self.required([body_end])
 
     def parse_entry_body(self, entry_type, body_end):
-        key = self.required([self.KEY]).value.lower()
+        key_pattern = self.KEY_PAREN if body_end == self.RPAREN else self.KEY_BRACE
+        key = self.required([key_pattern]).value.lower()
         yield key
         yield dict(self.parse_entry_fields(body_end))
 
