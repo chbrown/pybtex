@@ -293,13 +293,13 @@ class BibTeXEntryIterator(Scanner):
         self.required([body_end])
 
     def parse_string_body(self, body_end):
-        yield self.required([self.NAME]).value
+        yield self.required([self.NAME]).value.lower()
         self.required([self.EQUALS])
         yield tuple(self.parse_value())
         self.required([body_end])
 
     def parse_entry_body(self, entry_type, body_end):
-        key = self.required([self.KEY]).value
+        key = self.required([self.KEY]).value.lower()
         yield key
         yield dict(self.parse_entry_fields(body_end))
 
@@ -317,7 +317,7 @@ class BibTeXEntryIterator(Scanner):
         name = self.optional([self.NAME])
         if not name:
             return
-        yield name.value
+        yield name.value.lower()
         self.required([self.EQUALS])
         yield tuple(self.parse_value())
 
