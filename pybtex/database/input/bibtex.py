@@ -85,10 +85,6 @@ month_names = {
 }
 
 
-def normalize_whitespace(value_parts):
-    return textutils.normalize_whitespace(''.join(value_parts))
-
-
 class Token(object):
     def __init__(self, value, pattern):
         self.value = value
@@ -96,6 +92,14 @@ class Token(object):
 
     def __repr__(self):
         return repr(self.value)
+
+
+class Macro(object):
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return 'Macro({0})'.format(self.name)
 
 
 class SkipEntry(Exception):
@@ -111,7 +115,7 @@ class BibTeXSyntaxError(PybtexError):
 
     def __unicode__(self):
         base_message = super(BibTeXSyntaxError, self).__unicode__()
-        return 'Syntax error in {parser.filename}, line {parser.lineno}: {message}'.format(
+        return 'Syntax error in line {parser.lineno}: {message}'.format(
             parser=self.parser,
             message=base_message,
         )
@@ -144,39 +148,17 @@ def literal(s):
     return re.compile(re.escape(s))
 
 
-class Parser(BaseParser):
-    name = 'bibtex'
-    suffixes = '.bib',
-    unicode_io = True
-
+class Scanner(object):
     text = None
     lineno = None
     pos = None
     end_pos = None
-    command_start = None
-    macros = None
 
-    NAME_CHARS = ascii_letters + '!$&*+-./:;<>?[\\]^_`|~\x7f'
-    NAME = re.compile(r'[{0}][{1}]+'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)))
-    KEY = re.compile(r'[^\s\,]+')
-    NUMBER = re.compile(r'[{0}]+'.format(digits))
-    LBRACE = literal('{')
-    RBRACE = literal('}')
-    LPAREN = literal('(')
-    RPAREN = literal(')')
-    QUOTE = literal('"')
-    COMMA = literal(',')
-    EQUALS = literal('=')
-    HASH = literal('#')
-    AT = literal('@')
-    WHITESPACE = re.compile(r'\s+')
-    NEWLINE = re.compile(r'[\r\n]')
-
-    def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):
-        BaseParser.__init__(self, encoding)
-
-        self.default_macros = dict(macros)
-        self.person_fields = person_fields
+    def __init__(self, text):
+        self.text = text
+        self.lineno = 1
+        self.pos = 0
+        self.end_pos = len(text)
 
     def skip_to(self, *patterns):
         end = None
@@ -229,6 +211,29 @@ class Parser(BaseParser):
         else:
             return token
 
+
+class BibTeXEntryIterator(Scanner):
+    NAME_CHARS = ascii_letters + '!$&*+-./:;<>?[\\]^_`|~\x7f'
+    NAME = re.compile(r'[{0}][{1}]+'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)))
+    KEY = re.compile(r'[^\s\,]+')
+    NUMBER = re.compile(r'[{0}]+'.format(digits))
+    LBRACE = literal('{')
+    RBRACE = literal('}')
+    LPAREN = literal('(')
+    RPAREN = literal(')')
+    QUOTE = literal('"')
+    COMMA = literal(',')
+    EQUALS = literal('=')
+    HASH = literal('#')
+    AT = literal('@')
+    WHITESPACE = re.compile(r'\s+')
+    NEWLINE = re.compile(r'[\r\n]')
+
+    command_start = None
+
+    def __iter__(self):
+        return self.parse_bibliography()
+
     def get_error_context_info(self):
         return self.command_start, self.pos
 
@@ -250,9 +255,9 @@ class Parser(BaseParser):
                 return
             self.command_start = self.pos - 1
             try:
-                self.parse_command()
-            except TokenRequired as token_required:
-                print unicode(token_required)
+                yield tuple(self.parse_command())
+            except BibTeXSyntaxError as error:
+                print unicode(error) # FIXME
                 #raise
             except SkipEntry:
                 pass
@@ -263,36 +268,36 @@ class Parser(BaseParser):
         body_end = self.RBRACE if body_start.pattern == self.LBRACE else self.RPAREN
 
         entry_type = name.value.lower()
+        yield entry_type
         if entry_type == 'string':
-            self.parse_string_body(body_end)
+            yield tuple(self.parse_string_body(body_end))
         elif entry_type == 'preamble':
-            self.parse_preamble_body(body_end)
+            yield tuple(self.parse_preamble_body(body_end))
         elif entry_type == 'comment':
             raise SkipEntry
         else:
-            self.parse_entry_body(entry_type, body_end)
+            yield tuple(self.parse_entry_body(entry_type, body_end))
 
     def parse_preamble_body(self, body_end):
-        self.data.add_to_preamble(normalize_whitespace(self.parse_value()))
+        yield tuple(self.parse_value())
         self.required(body_end)
 
     def parse_string_body(self, body_end):
-        name = self.required(self.NAME).value
+        yield self.required(self.NAME).value
         self.required(self.EQUALS)
-        value = normalize_whitespace(self.parse_value())
+        yield tuple(self.parse_value())
         self.required(body_end)
-        self.process_macro(name, value)
 
     def parse_entry_body(self, entry_type, body_end):
         key = self.required(self.KEY).value
-        fields = dict(self.parse_entry_fields(body_end))
-        self.process_entry(entry_type, key, fields)
+        yield key
+        yield dict(self.parse_entry_fields(body_end))
 
     def parse_entry_fields(self, body_end):
         while True:
             comma_or_body_end = self.required([self.COMMA, body_end])
             if comma_or_body_end.pattern is self.COMMA:
-                field = list(self.parse_field())
+                field = tuple(self.parse_field())
                 if field:
                     yield field
             else:
@@ -304,7 +309,7 @@ class Parser(BaseParser):
             return
         yield name.value
         self.required(self.EQUALS)
-        yield normalize_whitespace(self.parse_value())
+        yield tuple(self.parse_value())
 
     def parse_value(self):
         start = True
@@ -326,7 +331,7 @@ class Parser(BaseParser):
         elif token.pattern is self.NUMBER:
             return token.value
         else:
-            return self.substitute_macro(token.value)
+            return Macro(token.value)
 
     def flatten_string(self, parts):
         return ''.join(part.value for part in parts)[:-1]
@@ -349,6 +354,20 @@ class Parser(BaseParser):
             elif part.pattern is self.RBRACE and level == 0:
                 raise SyntaxError('unbalanced brace')
 
+
+class Parser(BaseParser):
+    name = 'bibtex'
+    suffixes = '.bib',
+    unicode_io = True
+
+    macros = None
+
+    def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):
+        BaseParser.__init__(self, encoding)
+
+        self.default_macros = dict(macros)
+        self.person_fields = person_fields
+
     def process_entry(self, entry_type, key, fields):
         entry = Entry(entry_type)
 
@@ -356,14 +375,22 @@ class Parser(BaseParser):
             key = 'unnamed-%i' % self.unnamed_entry_counter
             self.unnamed_entry_counter += 1
 
-        for field_name, field_value in fields.items():
+        for field_name, field_value_list in fields.items():
+            field_value = self.flatten_value_list(field_value_list)
             if field_name in self.person_fields:
                 for name in split_name_list(field_value):
                     entry.add_person(Person(name), field_name)
             else:
                 entry.fields[field_name] = field_value
-#        return (key, entry)
         self.data.add_entry(key, entry)
+
+    def process_preamble(self, value_list):
+        value = self.flatten_value_list(value_list)
+        self.data.add_to_preamble(value)
+
+    def process_macro(self, name, value_list):
+        value = self.flatten_value_list(value_list)
+        self.macros[name.lower()] = value
 
     def substitute_macro(self, name):
         try:
@@ -371,17 +398,24 @@ class Parser(BaseParser):
         except KeyError:
             raise PybtexError('undefined macro %s' % name)
 
-    def process_macro(self, name, value):
-        self.macros[name.lower()] = value
+    def flatten_value_list(self, value_list):
+        return textutils.normalize_whitespace(''.join(
+            self.substitute_macro(value.name) if isinstance(value, Macro) else value
+            for value in value_list
+        ))
 
     def parse_stream(self, stream):
         text = stream.read()
-        self.text = text
-        self.lineno = 1
-        self.pos = 0
-        self.end_pos = len(text)
         self.command_start = 0
         self.macros = dict(self.default_macros)
 
-        self.parse_bibliography()
+        entry_iterator = BibTeXEntryIterator(text)
+        for entry in entry_iterator:
+            entry_type = entry[0]
+            if entry_type == 'string':
+                self.process_macro(*entry[1])
+            elif entry_type == 'preamble':
+                self.process_preamble(*entry[1])
+            else:
+                self.process_entry(entry_type, *entry[1])
         return self.data
