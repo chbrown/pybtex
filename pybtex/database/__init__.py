@@ -36,7 +36,7 @@ class BibliographyData(object):
         if entries:
             self.entries.update(entries)
         if preamble:
-            self.preamble.extend(preamble)
+            self._preamble.extend(preamble)
 
     def __eq__(self, other):
         if not isinstance(other, BibliographyData):
@@ -48,6 +48,12 @@ class BibliographyData(object):
 
     def add_to_preamble(self, s):
         self._preamble.append(s)
+
+    def __repr__(self):
+        return 'BibliographyData(entries={entries}, preamble={preamble})'.format(
+            entries=repr(self.entries),
+            preamble=repr(self._preamble),
+        )
 
     def preamble(self):
         return ''.join(self._preamble)
