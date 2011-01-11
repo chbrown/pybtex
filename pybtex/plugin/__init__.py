@@ -119,7 +119,7 @@ class EntryPointPluginLoader(PluginLoader):
             raise PluginNotFound(plugin_group)
 
         def load_entry_point(group, name):
-            entry_points = pkg_resources.iter_entry_points(plugin_group, name)
+            entry_points = pkg_resources.iter_entry_points(group, name)
             try:
                 entry_point = entry_points.next()
             except StopIteration:
