@@ -101,7 +101,7 @@ class Parser(BaseParser):
     def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):
         BaseParser.__init__(self, encoding)
 
-        self.default_macros = dict(macros)
+        self.macros = dict(macros)
         self.person_fields = person_fields
 
         lbrace = Suppress('{')
@@ -185,7 +185,6 @@ class Parser(BaseParser):
     def parse_stream(self, stream):
         self.unnamed_entry_counter = 1
 
-        self.macros = dict(self.default_macros)
         try:
 #            entries = dict(entry[0][0] for entry in self.BibTeX_entry.scanString(s))
             self.BibTeX_entry.searchString(stream.read())
