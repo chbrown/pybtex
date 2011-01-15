@@ -1,7 +1,7 @@
 from pybtex.database import BibliographyData
 from pybtex.core import Entry, Person
 from pybtex.database.input.bibtex import Parser
-from cStringIO import StringIO
+from io import StringIO
 
 from unittest import TestCase
 
@@ -174,6 +174,46 @@ class InlineCommentTest(ParserTest, TestCase):
     correct_result = BibliographyData({
         'me2010': Entry('article'),
         'me2013': Entry('article'),
+    })
+
+
+class SimpleEntryTest(ParserTest, TestCase):
+    input = """
+        % maybe the simplest possible
+        % just a comment and one reference
+
+        @ARTICLE{Brett2002marsbar,
+        author = {Matthew Brett and Jean-Luc Anton and Romain Valabregue and Jean-Baptise
+            Poline},
+        title = {{Region of interest analysis using an SPM toolbox}},
+        journal = {Neuroimage},
+        institution = {},
+        year = {2002},
+        volume = {16},
+        pages = {1140--1141},
+        number = {2}
+        }
+    """
+    correct_result = BibliographyData({
+        'brett2002marsbar': Entry('article',
+            fields={
+                'title': '{Region of interest analysis using an SPM toolbox}',
+                'journal': 'Neuroimage',
+                'institution': '',
+                'year': '2002',
+                'volume': '16',
+                'pages': '1140--1141',
+                'number': '2',
+            },
+            persons={
+                'author': [
+                    Person(first='Matthew', last='Brett'),
+                    Person(first='Jean-Luc', last='Anton'),
+                    Person(first='Romain', last='Valabregue'),
+                    Person(first='Jean-Baptise', last='Poline'),
+                ],
+            },
+        )
     })
 
 

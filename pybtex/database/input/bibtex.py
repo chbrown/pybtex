@@ -223,22 +223,22 @@ class Literal(Pattern):
 
 
 class BibTeXEntryIterator(Scanner):
-    NAME_CHARS = ascii_letters + '@!$&*+-./:;<>?[\\]^_`|~\x7f'
-    NAME = Pattern(r'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
-    KEY_PAREN = Pattern(r'[^\s\,]+', 'entry key')
-    KEY_BRACE = Pattern(r'[^\s\,}]+', 'entry key')
-    NUMBER = Pattern(r'[{0}]+'.format(digits), 'a number')
-    LBRACE = Literal('{')
-    RBRACE = Literal('}')
-    LPAREN = Literal('(')
-    RPAREN = Literal(')')
-    QUOTE = Literal('"')
-    COMMA = Literal(',')
-    EQUALS = Literal('=')
-    HASH = Literal('#')
-    AT = Literal('@')
-    WHITESPACE = Pattern(r'\s+', 'whitespace')
-    NEWLINE = Pattern(r'[\r\n]', 'newline')
+    NAME_CHARS = ascii_letters + u'@!$&*+-./:;<>?[\\]^_`|~\x7f'
+    NAME = Pattern(ur'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
+    KEY_PAREN = Pattern(ur'[^\s\,]+', 'entry key')
+    KEY_BRACE = Pattern(ur'[^\s\,}]+', 'entry key')
+    NUMBER = Pattern(ur'[{0}]+'.format(digits), 'a number')
+    LBRACE = Literal(u'{')
+    RBRACE = Literal(u'}')
+    LPAREN = Literal(u'(')
+    RPAREN = Literal(u')')
+    QUOTE = Literal(u'"')
+    COMMA = Literal(u',')
+    EQUALS = Literal(u'=')
+    HASH = Literal(u'#')
+    AT = Literal(u'@')
+    WHITESPACE = Pattern(ur'\s+', 'whitespace')
+    NEWLINE = Pattern(ur'[\r\n]', 'newline')
 
     command_start = None
 
