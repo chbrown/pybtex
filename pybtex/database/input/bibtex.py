@@ -291,25 +291,21 @@ class BibTeXEntryIterator(Scanner):
         body_end = self.RBRACE if body_start.pattern == self.LBRACE else self.RPAREN
 
         if self.current_command == 'string':
-            try:
-                self.parse_string_body(body_end)
-            except BibTeXSyntaxError, e:
-                print unicode(e)
-            return self.current_command, (self.current_field_name, self.current_value)
+            parse_body = self.parse_string_body
+            make_result = lambda: (self.current_command, (self.current_field_name, self.current_value))
         elif self.current_command == 'preamble':
-            try:
-                self.parse_preamble_body(body_end)
-            except BibTeXSyntaxError, e:
-                print unicode(e)
-            return self.current_command, (self.current_value,)
+            parse_body = self.parse_preamble_body
+            make_result = lambda: (self.current_command, (self.current_value,))
         elif self.current_command == 'comment':
             raise SkipEntry
         else:
-            try:
-                self.parse_entry_body(body_end)
-            except BibTeXSyntaxError, e:
-                print unicode(e)
-            return self.current_command, (self.current_entry_key, self.current_fields)
+            parse_body = self.parse_entry_body
+            make_result = lambda: (self.current_command, (self.current_entry_key, self.current_fields))
+        try:
+            parse_body(body_end)
+        except BibTeXSyntaxError, error:
+            print unicode(error) # FIXME add proper error handling
+        return make_result()
 
     def parse_preamble_body(self, body_end):
         self.parse_value()
