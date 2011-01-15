@@ -146,7 +146,10 @@ class FieldNamesTest(ParserTest, TestCase):
         @article{2017, @name = "Myself"}
     """
     correct_result = BibliographyData({
+        '2010': Entry('article'),
         '2011': Entry('article', {'_author': 'Me'}),
+        '2012': Entry('article'),
+        '2013': Entry('article'),
         '2014': Entry('article', {'.name': 'Myself'}),
         '2015': Entry('article', {'+name': 'Myself'}),
         '2016': Entry('article', {'-name': 'Myself'}),
@@ -173,6 +176,10 @@ class InlineCommentTest(ParserTest, TestCase):
     """
     correct_result = BibliographyData({
         'me2010': Entry('article'),
+        'me2011': Entry('article', persons={'author': [
+            Person(first='Matthew', last='Brett-like'),
+        ]}),
+        'me2012': Entry('article'),
         'me2013': Entry('article'),
     })
 
@@ -232,6 +239,7 @@ class KeyParsingTest(ParserTest, TestCase):
         @article{test(braces2),}
     """
     correct_result = BibliographyData({
+        'test(parens1))': Entry('article'),
         'test(parens2)': Entry('article'),
         'test(braces1)': Entry('article'),
         'test(braces2)': Entry('article'),

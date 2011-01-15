@@ -241,6 +241,11 @@ class BibTeXEntryIterator(Scanner):
     NEWLINE = Pattern(ur'[\r\n]', 'newline')
 
     command_start = None
+    current_command = None
+    current_entry_key = None
+    current_fields = None
+    current_field_name = None
+    current_field_value = None
 
     def __iter__(self):
         return self.parse_bibliography()
@@ -274,44 +279,62 @@ class BibTeXEntryIterator(Scanner):
                 pass
 
     def parse_command(self):
+        self.current_command = None
+        self.current_entry_key = None
+        self.current_fields = []
+        self.current_field_name = None
+        self.current_value = []
+
         name = self.required([self.NAME])
+        self.current_command = name.value.lower()
         body_start = self.required([self.LPAREN, self.LBRACE])
         body_end = self.RBRACE if body_start.pattern == self.LBRACE else self.RPAREN
 
-        entry_type = name.value.lower()
-        yield entry_type
-        if entry_type == 'string':
-            yield tuple(self.parse_string_body(body_end))
-        elif entry_type == 'preamble':
-            yield tuple(self.parse_preamble_body(body_end))
-        elif entry_type == 'comment':
+        if self.current_command == 'string':
+            try:
+                self.parse_string_body(body_end)
+            except BibTeXSyntaxError, e:
+                print unicode(e)
+            return self.current_command, (self.current_field_name, self.current_value)
+        elif self.current_command == 'preamble':
+            try:
+                self.parse_preamble_body(body_end)
+            except BibTeXSyntaxError, e:
+                print unicode(e)
+            return self.current_command, (self.current_value,)
+        elif self.current_command == 'comment':
             raise SkipEntry
         else:
-            yield tuple(self.parse_entry_body(entry_type, body_end))
+            try:
+                self.parse_entry_body(body_end)
+            except BibTeXSyntaxError, e:
+                print unicode(e)
+            return self.current_command, (self.current_entry_key, self.current_fields)
 
     def parse_preamble_body(self, body_end):
-        yield tuple(self.parse_value())
+        self.parse_value()
         self.required([body_end])
 
     def parse_string_body(self, body_end):
-        yield self.required([self.NAME]).value.lower()
+        self.current_field_name = self.required([self.NAME]).value.lower()
         self.required([self.EQUALS])
-        yield tuple(self.parse_value())
+        self.parse_value()
         self.required([body_end])
 
-    def parse_entry_body(self, entry_type, body_end):
+    def parse_entry_body(self, body_end):
         key_pattern = self.KEY_PAREN if body_end == self.RPAREN else self.KEY_BRACE
-        key = self.required([key_pattern]).value.lower()
-        yield key
-        yield dict(self.parse_entry_fields(body_end))
+        self.current_entry_key = self.required([key_pattern]).value.lower()
+        self.parse_entry_fields(body_end)
 
     def parse_entry_fields(self, body_end):
         while True:
             comma_or_body_end = self.required([self.COMMA, body_end])
             if comma_or_body_end.pattern is self.COMMA:
-                field = tuple(self.parse_field())
-                if field:
-                    yield field
+                self.current_field_name = None
+                self.current_value = []
+                self.parse_field()
+                if self.current_field_name and self.current_value:
+                    self.current_fields.append((self.current_field_name, self.current_value))
             else:
                 return
 
@@ -319,9 +342,9 @@ class BibTeXEntryIterator(Scanner):
         name = self.optional([self.NAME])
         if not name:
             return
-        yield name.value.lower()
+        self.current_field_name = name.value.lower()
         self.required([self.EQUALS])
-        yield tuple(self.parse_value())
+        self.parse_value()
 
     def parse_value(self):
         start = True
@@ -331,7 +354,7 @@ class BibTeXEntryIterator(Scanner):
                 concatenation = self.optional([self.HASH])
             if not (start or concatenation):
                 break
-            yield self.parse_value_part()
+            self.parse_value_part()
             start = False
 
     def parse_value_part(self):
@@ -340,13 +363,14 @@ class BibTeXEntryIterator(Scanner):
             description='field value',
         )
         if token.pattern is self.QUOTE:
-            return self.flatten_string(self.parse_string(string_end=self.QUOTE))
+            value_part = self.flatten_string(self.parse_string(string_end=self.QUOTE))
         elif token.pattern is self.LBRACE:
-            return self.flatten_string(self.parse_string(string_end=self.RBRACE))
+            value_part = self.flatten_string(self.parse_string(string_end=self.RBRACE))
         elif token.pattern is self.NUMBER:
-            return token.value
+            value_part = token.value
         else:
-            return Macro(token.value)
+            value_part = Macro(token.value)
+        self.current_value.append(value_part)
 
     def flatten_string(self, parts):
         return ''.join(part.value for part in parts)[:-1]
@@ -390,7 +414,7 @@ class Parser(BaseParser):
             key = 'unnamed-%i' % self.unnamed_entry_counter
             self.unnamed_entry_counter += 1
 
-        for field_name, field_value_list in fields.items():
+        for field_name, field_value_list in fields:
             field_value = self.flatten_value_list(field_value_list)
             if field_name in self.person_fields:
                 for name in split_name_list(field_value):
