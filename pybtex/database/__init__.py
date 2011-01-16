@@ -31,6 +31,7 @@ class BibliographyDataError(PybtexError):
 class BibliographyData(object):
     def __init__(self, entries=None, preamble=None):
         self.entries = {}
+        self.entry_keys = []
         self._preamble = []
         self.crossref_counts = defaultdict(int)
         if entries:
@@ -64,6 +65,7 @@ class BibliographyData(object):
         entry.collection = self
         entry.key = key
         self.entries[key] = entry
+        self.entry_keys.append(key)
         if 'crossref' in entry.fields:
             self.crossref_counts[entry.fields['crossref']] += 1
 

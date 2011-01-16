@@ -260,12 +260,17 @@ class Interpreter(object):
         self.macros[name] = value
 
     def expand_wildcard_citations(self, citations):
+        citation_set = set()
         for citation in citations:
             if citation == '*':
-                for key in self.bib_data.entries.iterkeys():
-                    yield key
+                for key in self.bib_data.entry_keys:
+                    if key not in citation_set:
+                        citation_set.add(key)
+                        yield key
             else:
-                yield citation
+                if citation not in citation_set:
+                    citation_set.add(citation)
+                    yield citation
 
     def add_crossreferenced_citations(self, citations):
         citation_set = set(citations)
