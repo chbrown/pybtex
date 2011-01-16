@@ -116,24 +116,6 @@ class Field(object):
             return MissingField(self.name)
 
 
-class Crossref(Field):
-    def __init__(self, interpreter):
-        super(Crossref, self).__init__(interpreter, 'crossref')
-
-    def value(self):
-        entry = self.interpreter.current_entry
-        interpreter = self.interpreter
-        crossref = interpreter.current_entry.fields.get('crossref')
-        crossrefs = interpreter.bib_data.crossref_counts.get(crossref, 0)
-        if (
-            crossref in self.interpreter.citations
-            or crossrefs >= self.interpreter.min_crossrefs
-        ):
-            return super(Crossref, self).value()
-        else:
-            return MissingField(self.name)
-
-
 class Identifier(Variable):
     value_type = basestring
     def execute(self, interpreter):
@@ -239,7 +221,7 @@ class Interpreter(object):
         for id in self.get_token():
             name = id.value()
             self.add_variable(name, Field(self, name))
-        self.add_variable('crossref', Crossref(self))
+        self.add_variable('crossref', Field(self, 'crossref'))
         for id in self.get_token():
             name = id.value()
             self.add_variable(name, EntryInteger(self, name))
