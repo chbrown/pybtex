@@ -80,3 +80,16 @@ class BibliographyData(object):
             if crossref_count >= min_crossrefs
         )
         return sorted(citations)
+
+    def expand_wildcard_citations(self, citations):
+        citation_set = set()
+        for citation in citations:
+            if citation == '*':
+                for key in self.entry_keys:
+                    if key not in citation_set:
+                        citation_set.add(key)
+                        yield key
+            else:
+                if citation not in citation_set:
+                    citation_set.add(citation)
+                    yield citation

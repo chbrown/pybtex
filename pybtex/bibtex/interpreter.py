@@ -259,19 +259,6 @@ class Interpreter(object):
         value = self.get_token()[0].value()
         self.macros[name] = value
 
-    def expand_wildcard_citations(self, citations):
-        citation_set = set()
-        for citation in citations:
-            if citation == '*':
-                for key in self.bib_data.entry_keys:
-                    if key not in citation_set:
-                        citation_set.add(key)
-                        yield key
-            else:
-                if citation not in citation_set:
-                    citation_set.add(citation)
-                    yield citation
-
     def add_crossreferenced_citations(self, citations):
         citation_set = set(citations)
         extra_citations = self.bib_data.get_extra_citations(self.min_crossrefs)
@@ -281,7 +268,7 @@ class Interpreter(object):
 #        print 'READ'
         p = self.bib_format(encoding=self.bib_encoding, macros=self.macros, person_fields=[])
         self.bib_data = p.parse_files(self.bib_files)
-        citations = list(self.expand_wildcard_citations(self.citations))
+        citations = list(self.bib_data.expand_wildcard_citations(self.citations))
         self.citations = self.add_crossreferenced_citations(citations)
 #        for k, v in self.bib_data.iteritems():
 #            print k
