@@ -25,7 +25,7 @@ file_extension = 'bbl'
 
 class Backend(BaseBackend):
     name = 'latex'
-    suffixes = '.tex',
+    suffixes = '.bbl',
 
     symbols = {
         'ndash': u'--',
