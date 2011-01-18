@@ -33,7 +33,6 @@ class BibliographyData(object):
         self.entries = {}
         self.entry_keys = []
         self._preamble = []
-        self.crossref_counts = defaultdict(int)
         if entries:
             self.entries.update(entries)
         if preamble:
@@ -66,20 +65,27 @@ class BibliographyData(object):
         entry.key = key
         self.entries[key] = entry
         self.entry_keys.append(key)
-        if 'crossref' in entry.fields:
-            self.crossref_counts[entry.fields['crossref']] += 1
 
     def add_entries(self, entries):
         for key, entry in entries:
             self.add_entry(key, entry)
 
-    def get_extra_citations(self, min_crossrefs):
-        citations = (
-            citation
-            for citation, crossref_count in self.crossref_counts.items()
-            if crossref_count >= min_crossrefs
-        )
-        return sorted(citations)
+    def get_crossreferenced_citations(self, citations, min_crossrefs):
+        crossref_count = defaultdict(int)
+        citation_set = set(citations)
+        for citation in citations:
+            try:
+                entry = self.entries[citation]
+            except KeyError:
+                continue
+            try:
+                crossref = entry.fields['crossref']
+            except KeyError:
+                continue
+            crossref_count[crossref] += 1
+            if crossref_count[crossref] >= min_crossrefs and crossref not in citation_set:
+                citation_set.add(crossref)
+                yield crossref
 
     def expand_wildcard_citations(self, citations):
         citation_set = set()
@@ -93,3 +99,8 @@ class BibliographyData(object):
                 if citation not in citation_set:
                     citation_set.add(citation)
                     yield citation
+
+    def add_extra_citations(self, citations, min_crossrefs):
+        expanded_citations = list(self.expand_wildcard_citations(citations))
+        crossrefs = list(self.get_crossreferenced_citations(expanded_citations, min_crossrefs))
+        return expanded_citations + crossrefs

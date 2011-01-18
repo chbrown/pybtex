@@ -259,17 +259,11 @@ class Interpreter(object):
         value = self.get_token()[0].value()
         self.macros[name] = value
 
-    def add_crossreferenced_citations(self, citations):
-        citation_set = set(citations)
-        extra_citations = self.bib_data.get_extra_citations(self.min_crossrefs)
-        return citations + [citation for citation in extra_citations if citation not in citation_set]
-
     def command_read(self):
 #        print 'READ'
         p = self.bib_format(encoding=self.bib_encoding, macros=self.macros, person_fields=[])
         self.bib_data = p.parse_files(self.bib_files)
-        citations = list(self.bib_data.expand_wildcard_citations(self.citations))
-        self.citations = self.add_crossreferenced_citations(citations)
+        self.citations = self.bib_data.add_extra_citations(self.citations, self.min_crossrefs)
 #        for k, v in self.bib_data.iteritems():
 #            print k
 #            for field, value in v.fields.iteritems():
