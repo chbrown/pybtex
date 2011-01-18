@@ -19,7 +19,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from collections import defaultdict
+from collections import defaultdict, Mapping, Sequence
 
 from pybtex.exceptions import PybtexError
 
@@ -34,7 +34,10 @@ class BibliographyData(object):
         self.entry_keys = []
         self._preamble = []
         if entries:
-            self.entries.update(entries)
+            if isinstance(entries, Mapping):
+                entries = entries.iteritems()
+            for (key, entry) in entries:
+                self.add_entry(key, entry)
         if preamble:
             self._preamble.extend(preamble)
 
@@ -71,6 +74,25 @@ class BibliographyData(object):
             self.add_entry(key, entry)
 
     def get_crossreferenced_citations(self, citations, min_crossrefs):
+        """
+        Get cititations not cited explicitly but referenced by other citations.
+
+        >>> from pybtex.core import Entry
+        >>> data = BibliographyData({
+        ...     'main_article': Entry('article', {'crossref': 'xrefd_arcicle'}),
+        ...     'xrefd_arcicle': Entry('article'),
+        ... })
+        >>> list(data.get_crossreferenced_citations([], min_crossrefs=1))
+        []
+        >>> list(data.get_crossreferenced_citations(['main_article'], min_crossrefs=1))
+        ['xrefd_arcicle']
+        >>> list(data.get_crossreferenced_citations(['main_article'], min_crossrefs=2))
+        []
+        >>> list(data.get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
+        []
+
+        """
+
         crossref_count = defaultdict(int)
         citation_set = set(citations)
         for citation in citations:
@@ -88,6 +110,29 @@ class BibliographyData(object):
                 yield crossref
 
     def expand_wildcard_citations(self, citations):
+        """
+        Expand wildcard citations (\citation{*} in .aux file).
+
+        >>> from pybtex.core import Entry
+        >>> data = BibliographyData((
+        ...     ('uno', Entry('article')),
+        ...     ('dos', Entry('article')),
+        ...     ('tres', Entry('article')),
+        ...     ('cuatro', Entry('article')),
+        ... ))
+        >>> list(data.expand_wildcard_citations([]))
+        []
+        >>> list(data.expand_wildcard_citations(['*']))
+        ['uno', 'dos', 'tres', 'cuatro']
+        >>> list(data.expand_wildcard_citations(['uno', '*']))
+        ['uno', 'dos', 'tres', 'cuatro']
+        >>> list(data.expand_wildcard_citations(['dos', '*']))
+        ['dos', 'uno', 'tres', 'cuatro']
+        >>> list(data.expand_wildcard_citations(['*', 'uno']))
+        ['uno', 'dos', 'tres', 'cuatro']
+
+        """
+
         citation_set = set()
         for citation in citations:
             if citation == '*':
