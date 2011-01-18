@@ -27,6 +27,7 @@ def make_bibliography(aux_filename,
         bib_format=None,
         bib_encoding=None,
         output_encoding=None,
+        min_crossrefs=2,
         **kwargs
         ):
     """This functions extracts all nessessary information from .aux file
@@ -59,7 +60,8 @@ def make_bibliography(aux_filename,
             name_style=kwargs.get('name_style'),
             abbreviate_names=kwargs.get('abbreviate_names', True),
     )
-    entries = ((key, bib_data.entries[key]) for key in aux_data.citations)
+    citations = bib_data.add_extra_citations(aux_data.citations, min_crossrefs)
+    entries = ((key, bib_data.entries[key]) for key in citations)
     formatted_entries = style.format_entries(entries)
     del entries
 
