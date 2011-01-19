@@ -51,10 +51,13 @@ class BaseBackend(Plugin):
     def write_entry(self, label, key, text):
         raise NotImplementedError
 
-    def write_bibliography(self, formatted_entries, filename):
-        self.f = pybtex.io.open_unicode(filename, "w", self.encoding)
-        self.output = self.f.write
-        entries = list(formatted_entries)
+    def write_to_file(self, formatted_entries, filename):
+        with pybtex.io.open_unicode(filename, "w", self.encoding) as stream:
+            self.write_to_stream(formatted_entries, stream)
+
+    def write_to_stream(self, formatted_entries, stream):
+        self.output = stream.write
+        formatted_entries = list(formatted_entries)
 
         #FIXME: determine label width proprely
         maxlen = max([len(e.label) for e in formatted_entries])
@@ -64,4 +67,10 @@ class BaseBackend(Plugin):
             self.write_entry(entry.key, entry.label, entry.text.render(self))
         self.write_epilogue()
 
-        self.f.close()
+    def write_bibliography(self, entries, filename):
+        import warnings
+        warnings.warn(
+            'write_bibliography() is deprecated, use write_to_file() insted.',
+            DeprecationWarning,
+        )
+        self.write_to_file(entries, filename)

@@ -66,4 +66,4 @@ def make_bibliography(aux_filename,
     del entries
 
     output_filename = filename + output_backend.get_default_suffix()
-    output_backend(output_encoding).write_bibliography(formatted_entries, output_filename)
+    output_backend(output_encoding).write_to_file(formatted_entries, output_filename)
