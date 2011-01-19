@@ -49,8 +49,8 @@ class Style(BaseStyle):
         ]
         template = toplevel [
             self.format_names('author'),
-            sentence [field('title')],
-            sentence [
+            sentence(capfirst=False) [field('title')],
+            sentence(capfirst=False) [
                 tag('emph') [field('journal')], volume_and_pages, date],
         ]
         return template.format_data(e)
