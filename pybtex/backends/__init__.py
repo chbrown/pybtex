@@ -51,16 +51,16 @@ class BaseBackend(Plugin):
     def write_entry(self, label, key, text):
         raise NotImplementedError
 
-    def write_bibliography(self, entries, filename):
+    def write_bibliography(self, formatted_entries, filename):
         self.f = pybtex.io.open_unicode(filename, "w", self.encoding)
         self.output = self.f.write
-        entries = list(entries)
+        entries = list(formatted_entries)
 
         #FIXME: determine label width proprely
-        maxlen = max([len(e.label) for e in entries])
+        maxlen = max([len(e.label) for e in formatted_entries])
 
         self.write_prologue(maxlen)
-        for entry in entries:
+        for entry in formatted_entries:
             self.write_entry(entry.key, entry.label, entry.text.render(self))
         self.write_epilogue()
 
