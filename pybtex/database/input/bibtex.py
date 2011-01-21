@@ -21,9 +21,9 @@
 
 """BibTeX parser
 
->>> import StringIO
+>>> from io import StringIO
 >>> parser = Parser()
->>> bib_data = parser.parse_stream(StringIO.StringIO('''
+>>> bib_data = parser.parse_stream(StringIO(u'''
 ... @String{SCI = "Science"}
 ... 
 ... @String{JFernandez = "Fernandez, Julio M."}
@@ -120,7 +120,7 @@ class Parser(BaseParser):
         bibTeXString = (quotedString | bracedString)
 
         name_chars = alphanums + '!$&*+-./:;<>?[\\]^_`|~\x7f'
-        macro_substitution = Word(name_chars).setParseAction(self.substitute_macro)
+        macro_substitution = Word(name_chars).setParseAction(lambda toks: self.substitute_macro(toks))
         name = Word(name_chars).setParseAction(downcaseTokens)
         value = Combine(delimitedList(bibTeXString | Word(nums) | macro_substitution, delim='#'), adjacent=False)
         value.setParseAction(normalize_whitespace)
@@ -132,7 +132,7 @@ class Parser(BaseParser):
         #String (aka macro)
         string_body = bibtexGroup(fields)
         string = at + CaselessLiteral('STRING').suppress() + string_body
-        string.setParseAction(self.process_macro)
+        string.setParseAction(lambda toks: self.process_macro(toks))
 
         #preamble
         preamble_body = bibtexGroup(value)
@@ -172,14 +172,14 @@ class Parser(BaseParser):
 #        return (key, entry)
         self.data.add_entry(key, entry)
 
-    def substitute_macro(self, s, loc, toks):
+    def substitute_macro(self, toks):
         key = toks[0].lower()
         try:
             return self.macros[key]
         except KeyError:
             raise PybtexError('undefined macro %s' % key)
 
-    def process_macro(self, s, loc, toks):
+    def process_macro(self, toks):
         self.macros[toks[0][0].lower()] = toks[0][1]
 
     def parse_stream(self, stream):
