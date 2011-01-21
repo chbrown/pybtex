@@ -14,7 +14,7 @@
 {% else %}
         <h1>{{ title|mark_tail("Pybtex") }}</h1>
 {% endif %}
-{% if file_id != 'index' and toc %}
+{% if file_id not in  ('index', 'history') and toc %}
         <div id="toc">
             <h2>Contents</h2>
             <ul class="contents">
