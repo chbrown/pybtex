@@ -173,7 +173,7 @@ def bibtex_substring(string, start, length):
     Return a substring of the given length, starting from the given position.
 
     start and length are 1-based. If start is < 0, it is counted from the end
-    of the string.
+    of the string. If start is 0, an empty string is returned.
 
     >>> print bibtex_substring('abcdef', 1, 3)
     abc
@@ -181,6 +181,8 @@ def bibtex_substring(string, start, length):
     bcd
     >>> print bibtex_substring('abcdef', 2, 1000)
     bcdef
+    >>> print bibtex_substring('abcdef', 0, 1000)
+    <BLANKLINE>
     >>> print bibtex_substring('abcdef', -1, 1)
     f
     >>> print bibtex_substring('abcdef', -1, 2)
@@ -197,8 +199,8 @@ def bibtex_substring(string, start, length):
     elif start < 0:
         end0 = len(string) + start + 1
         start0 = end0 - length
-    else:
-        raise BibTeXError('start=0 passed to substring$')
+    else: # start == 0:
+        return u''
     return string[start0:end0]
 
 
