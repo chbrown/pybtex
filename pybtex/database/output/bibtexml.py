@@ -19,14 +19,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-try:
-    import cElementTree as ET
-except ImportError:
-    try:
-        from elementtree import ElementTree as ET
-    except ImportError:
-        from xml.etree import ElementTree as ET
-
+from xml.etree import cElementTree as ET
 from pybtex.core import Entry
 from pybtex.database.output import BaseWriter
 
@@ -36,10 +29,11 @@ doctype = """<!DOCTYPE bibtex:file PUBLIC
         "bibtexml.dtd" >
 """
 
-class PrettyTreeBuilder(ET.TreeBuilder):
-
+class PrettyTreeBuilder(object):
     def __init__(self):
-        ET.TreeBuilder.__init__(self)
+        self.tree_builder = ET.TreeBuilder()
+        self.close = self.tree_builder.close
+        self.data = self.tree_builder.data
         self.stack = []
 
     def newline(self):
@@ -53,7 +47,7 @@ class PrettyTreeBuilder(ET.TreeBuilder):
             attrs = {}
         self.indent_line()
         self.stack.append(tag)
-        ET.TreeBuilder.start(self, tag, attrs)
+        self.tree_builder.start(tag, attrs)
         if newline:
             self.newline()
 
@@ -61,7 +55,7 @@ class PrettyTreeBuilder(ET.TreeBuilder):
         tag = self.stack.pop()
         if indent:
             self.indent_line()
-        ET.TreeBuilder.end(self, tag)
+        self.tree_builder.end(tag)
         self.newline()
 
     def element(self, tag, data):

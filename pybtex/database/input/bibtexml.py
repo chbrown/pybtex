@@ -19,13 +19,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-try:
-    import cElementTree as ET
-except ImportError:
-    try:
-        from elementtree import ElementTree as ET
-    except ImportError:
-        from xml.etree import ElementTree as ET
+from xml.etree import cElementTree as ET
 from pybtex.core import Entry, Person
 from pybtex.database.input import BaseParser
 
