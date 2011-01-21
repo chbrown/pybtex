@@ -30,7 +30,7 @@ class BaseWriter(Plugin):
     default_plugin = 'bibtex'
 
     def __init__(self, encoding=None):
-        self.encoding = encoding
+        self.encoding = encoding or pybtex.io.get_default_encoding()
 
     def write_file(self, bib_data, filename):
         open_file = pybtex.io.open_unicode if self.unicode_io else pybtex.io.open_raw
