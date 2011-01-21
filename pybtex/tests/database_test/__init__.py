@@ -54,3 +54,14 @@ class DatabaseIOTest(TestCase):
         # BibTeXML does not support TeX preambles AFAIK
         self.reference_data._preamble = []
         self._test_input('bibtexml')
+
+    def test_repr(self):
+        from pybtex.database import BibliographyData
+        from pybtex.core import Entry, Person
+        data_repr = repr(self.reference_data)
+        data = eval(data_repr, {
+            'BibliographyData': BibliographyData,
+            'Entry': Entry,
+            'Person': Person,
+        })
+        self.assertEqual(data, self.reference_data)
