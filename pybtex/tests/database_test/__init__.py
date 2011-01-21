@@ -19,17 +19,19 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import pkgutil
+from copy import deepcopy
 from unittest import TestCase
-import yaml
 from io import BytesIO, TextIOWrapper, BufferedWriter
+
+from .data import reference_data
 
 from pybtex.plugin import find_plugin
 
 class DatabaseIOTest(TestCase):
     def setUp(self):
-        reference_data = pkgutil.get_data('pybtex', 'tests/database_test/reference_data.yaml')
-        self.reference_data = yaml.load(reference_data)
+        self.reference_data = deepcopy(reference_data)
+        self.assertTrue(self.reference_data.entries)
+        self.assertTrue(self.reference_data.preamble())
 
     def _test_input(self, plugin):
         parser = find_plugin('pybtex.database.input', plugin)(encoding='UTF-8')
