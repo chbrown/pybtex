@@ -21,7 +21,7 @@ Version 0.15
 
 Version 0.14.1
 --------------
-(released on September 30 2010)
+(released on September 30, 2010)
 
 - Added missing custom_fixers directory to the tarball - needed only for
   converting the sources to Python 3.
@@ -29,7 +29,7 @@ Version 0.14.1
 
 Version 0.14
 ------------
-(released on September 20 2010)
+(released on September 20, 2010)
 
 - BibTeX writer: fixed quoting ``"`` (double quote) characters.
 
@@ -44,14 +44,14 @@ Version 0.14
 
 Version 0.13.2
 --------------
-(released on February 26 2010)
+(released on February 26, 2010)
 
 - BibTeX parser: fixed a bug with parsing strings containing braces, like "Error in {DNA}".
 
 
 Version 0.13.1
 --------------
-(released on February 18 2010)
+(released on February 18, 2010)
 
 - Fixed ``ImportError: No module named kpathsea`` errors. One of the source files
   was missing from ``pybtex-0.13.tar.bz2`` for some strange reason. Sorry about that. ;)
@@ -59,7 +59,7 @@ Version 0.13.1
 
 Version 0.13
 ------------
-(released on February 14 2010)
+(released on February 14, 2010)
 
 - Implemented `--min-crossrefs` option.
 
@@ -74,7 +74,7 @@ Version 0.13
 
 Version 0.12
 ------------
-(released on November 21st 2009)
+(released on November 21, 2009)
 
 - Pybtex now works correctly with ``\input{filename}`` in LaTeX files.
 
@@ -93,7 +93,7 @@ Version 0.12
 
 Version 0.11
 ------------
-(released on September 7th 2009)
+(released on September 7, 2009)
 
 - Made ``text.lentgh$`` and ``text.prefix$`` BibTeX built-in functions treat
   braces and TeX special characters properly (like the original BibTeX
@@ -114,7 +114,7 @@ Version 0.11
 
 Version 0.10
 ------------
-(released on August 24th 2009)
+(released on August 24, 2009)
 
 - Added support for multiple bibliography databases.
 
@@ -143,7 +143,7 @@ Version 0.10
 
 Version 0.9
 -----------
-(released on August 17th 2009)
+(released on August 17, 2009)
 
 - Implemented ``\citation{*}``.  
 
@@ -160,7 +160,7 @@ Version 0.9
 
 Version 20090402
 ----------------
-(released on February 04th 2009)
+(released on February 04, 2009)
 
 - Fixed yet more encoding-related bugs.
 
@@ -169,7 +169,7 @@ Version 20090402
 
 Version 20080918
 ----------------
-(released on September 18th 2008)
+(released on September 18, 2008)
 
 - Added HTML backend. The pythonic bibliography formatter can now produce LaTeX,
   HTML, and plaintext.
@@ -188,7 +188,7 @@ Version 20080918
 
 Version 20070513
 ----------------
-(released on May 13th 2007)
+(released on May 13, 2007)
 
 - Added an interpreter for the BibTeX stack language. Pybtex now supports
   BibTeX style files.
@@ -212,7 +212,7 @@ Version 20070513
 
 Version 20060416
 ----------------
-(released on April 16th 2006)
+(released on April 16, 2006)
 
 - Added BibTeX and BibTeXML formatters for bibliography databases. Added a
   database conversion tool.
@@ -230,7 +230,7 @@ Version 20060416
 
 Version 20060402
 ----------------
-(released on April 2nd 2006)
+(released on April 2, 2006)
 
 - Added initial Unicode support and input/output encodings.
 
@@ -254,7 +254,7 @@ Version 20060402
 
 Version 0.1
 -----------
-(released on March 4th 2006)
+(released on March 4, 2006)
 
 Initial release. This version already has a basic BibTeX .bib parser, BibTeXML
 parser and a proof-of-concept pythonic bibliography formatter.
