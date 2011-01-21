@@ -1,3 +1,24 @@
+Version 0.15
+------------
+(not released yet)
+
+- Changed license from GPL-3 to MIT.
+
+- Added support for setuptools plugins.
+
+- BibTeX parser: fixed whitespace normalization in concatenated strings.
+
+- BibTeX parser: when parsing multiple BibTeX files, macros defined in
+  earlier files are now available to all subsequent files, like in BibTeX.
+
+- ``call.type$`` BibTeX built-in function now uses ``default.entry`` for
+  unknown entry types, like in BibTeX.
+
+- ``substrin$`` now accepts start=0 and returns an empty string.
+
+- Fixed incorrect entry order and duplicated entries with ``\nocite{*}``.
+
+
 Version 0.14.1
 --------------
 (released on September 30 2010)
