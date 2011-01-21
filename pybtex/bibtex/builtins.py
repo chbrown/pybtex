@@ -34,6 +34,11 @@ from pybtex.bibtex import utils
 from pybtex.core import Person
 from pybtex.bibtex.names import format as format_bibtex_name
 
+
+def print_warning(msg):
+    print >>pybtex.io.stderr, 'Warning--' + msg
+
+
 class Builtin(object):
     def __init__(self, f):
         self.f = f
@@ -112,8 +117,18 @@ def add_period(i):
 
 @builtin('call.type$')
 def call_type(i):
-    type = i.current_entry.type
-    i.vars[type].execute(i)
+    entry_type = i.current_entry.type
+    try:
+        func = i.vars[entry_type]
+    except KeyError:
+        print_warning(u'entry type for "{0}" isn\'t style-file defined'.format(
+            i.current_entry_key,
+        ))
+        try:
+            func = i.vars['default.type']
+        except KeyError:
+            return
+    func.execute(i)
 
 @builtin('change.case$')
 def change_case(i):
@@ -279,7 +294,7 @@ def type_(i):
 @builtin('warning$')
 def warning(i):
     msg = i.pop()
-    print >>pybtex.io.stderr, 'Warning--' + msg
+    print_warning(msg)
 
 @builtin('while$')
 def while_(i):
