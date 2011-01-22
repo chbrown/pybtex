@@ -236,7 +236,7 @@ class Interpreter(object):
     def command_function(self):
         name = self.get_token()[0].value()
         body = self.get_token()
-        self.vars[name] = Function(body)
+        self.add_variable(name, Function(body))
 
     def command_integers(self):
 #        print 'INTEGERS'
