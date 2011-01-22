@@ -189,7 +189,7 @@ class Interpreter(object):
 
     def add_variable(self, name, value):
         if name in self.vars:
-            raise BibTeXError('variable %s already declared' % name)
+            raise BibTeXError('variable "{0}" already declared as {1}'.format(name, type(value).__name__))
         self.vars[name] = value
 
     def output(self, string):
