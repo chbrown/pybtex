@@ -63,6 +63,9 @@ class BibTeXString(object):
         self.is_closed = False
         self.contents = list(self.find_closing_brace(iter(chars)))
 
+    def __iter__(self):
+        return self.traverse()
+
     def find_closing_brace(self, chars):
         for char in chars:
             if char == '{':
@@ -83,9 +86,11 @@ class BibTeXString(object):
         for child in self.contents:
             if hasattr(child, 'traverse'):
                 if child.is_special_char():
-                    yield open(child)
+                    if open is not None:
+                        yield open(child)
                     yield f(child.inner_string(), child)
-                    yield close(child)
+                    if close is not None:
+                        yield close(child)
                 else:
                     for result in child.traverse(open, f, close):
                         yield result
@@ -346,6 +351,7 @@ def split_name_list(string):
     """
     return split_tex_string(string, ' and ')
 
+
 def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     """Split a string using the given separator (regexp).
 
@@ -400,3 +406,29 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     if filter_empty:
         result = [part for part in result if part]
     return result
+
+
+def bibtex_first_letter(string):
+    """ Return the first letter or special character of the string.
+
+    >>> print bibtex_first_letter('Andrew Blake')
+    A
+    >>> print bibtex_first_letter('{Andrew} Blake')
+    A
+    >>> print bibtex_first_letter('1Andrew')
+    A
+    >>> print bibtex_first_letter('{\TeX} markup')
+    {\TeX}
+    >>> print bibtex_first_letter('')
+    <BLANKLINE>
+    >>> print bibtex_first_letter('123 123 123 {}')
+    <BLANKLINE>
+
+    """
+
+    for char in BibTeXString(string):
+        if char.startswith('\\'):
+            return u'{{{0}}}'.format(char)
+        elif char.isalpha():
+            return char
+    return ''

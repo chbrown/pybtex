@@ -34,7 +34,7 @@ from pyparsing import (
         Optional, StringEnd, CharsNotIn, alphas, removeQuotes,
 )
 from pybtex.core import Person
-from pybtex.bibtex.utils import bibtex_len
+from pybtex.bibtex.utils import bibtex_len, bibtex_first_letter
 
 class BibTeXNameFormatError(Exception):
     pass
@@ -85,7 +85,7 @@ class NamePart(object):
             return ''
 
         if self.abbreviate:
-            names = [name[0] for name in names]
+            names = [bibtex_first_letter(name) for name in names]
         if self.delimiter is None:
             if self.abbreviate:
                 names = join(names, '.~', '. ')
