@@ -122,6 +122,8 @@ def change_case(string, mode):
     And {\Now: booo!!!}
     >>> print change_case(r'And {\Now: {BOOO}!!!}', 'l')
     and {\Now: {booo}!!!}
+    >>> print change_case(r'{\TeX\ and databases\Dash\TeX DBI}', 't')
+    {\TeX\ and databases\Dash\TeX DBI}
     """
 
     def title(char, state):
@@ -133,17 +135,16 @@ def change_case(string, mode):
     lower = lambda char, state: char.lower()
     upper = lambda char, state: char.upper()
 
-    convert_level0 = {'l': lower, 'u': upper, 't': title}[mode]
-    convert_level1 = {'l': lower, 'u': upper, 't': lower}[mode]
+    convert = {'l': lower, 'u': upper, 't': title}[mode]
 
-    def convert_special_char(special_char):
+    def convert_special_char(special_char, state):
         # FIXME BibTeX treats some accented and foreign characterss specially
         def convert_words(words):
             for word in words:
                 if word.startswith('\\'):
                     yield word
                 else:
-                    yield convert_level1(word, 'normal')
+                    yield convert(word, state)
 
         return ' '.join(convert_words(special_char.split(' ')))
 
@@ -151,7 +152,7 @@ def change_case(string, mode):
         state = 'start'
         for char, brace_level in scan_bibtex_string(string):
             if brace_level == 0:
-                yield convert_level0(char, state)
+                yield convert(char, state)
                 if char == ':':
                     state = 'after colon'
                 elif char.isspace() and state == 'after colon':
@@ -160,10 +161,9 @@ def change_case(string, mode):
                     state = 'normal'
             else:
                 if brace_level == 1 and char.startswith('\\'):
-                    yield convert_special_char(char)
+                    yield convert_special_char(char, state)
                 else:
                     yield char
-                state = 'normal'
 
     return ''.join(change_case_iter(string, mode))
 
