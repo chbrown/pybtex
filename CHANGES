@@ -4,7 +4,7 @@ Version 0.15
 
 - Changed license from GPL-3 to MIT.
 
-- Added support for setuptools plugins.
+- Added support for `setuptools plugins <plugins.txt>`_.
 
 - BibTeX parser: fixed whitespace normalization in concatenated strings.
 
