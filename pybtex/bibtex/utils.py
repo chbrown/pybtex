@@ -423,11 +423,13 @@ def bibtex_first_letter(string):
     <BLANKLINE>
     >>> print bibtex_first_letter('123 123 123 {}')
     <BLANKLINE>
+    >>> print bibtex_first_letter('\LaTeX Project Team')
+    L
 
     """
 
     for char in BibTeXString(string):
-        if char.startswith('\\'):
+        if char.startswith('\\') and char != '\\':
             return u'{{{0}}}'.format(char)
         elif char.isalpha():
             return char
