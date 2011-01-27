@@ -11,12 +11,25 @@ Version 0.15
 - BibTeX parser: when parsing multiple BibTeX files, macros defined in
   earlier files are now available to all subsequent files, like in BibTeX.
 
+- BibTeX ``.bst`` interpreter now prints warnings on missing entries, like
+  BibTeX, instead of raising a ``KeyError``.
+
 - ``call.type$`` BibTeX built-in function now uses ``default.entry`` for
   unknown entry types, like in BibTeX.
 
-- ``substrin$`` now accepts start=0 and returns an empty string.
+- ``substring$`` now accepts start=0 and returns an empty string.
+
+- ``change.case$``: fixed incorrect formatting of strings starting with special
+  characters with "t" format.
+
+- Fixed abbreviation of names starting with special characters or
+  non-alphabetic characters.
 
 - Fixed incorrect entry order and duplicated entries with ``\nocite{*}``.
+
+- Added more detailed error messages for already defined variables in ``.bst``
+  files.
+
 
 
 Version 0.14.1
