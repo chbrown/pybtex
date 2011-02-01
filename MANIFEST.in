@@ -5,3 +5,4 @@ recursive-include docs/html *.html *.css
 recursive-include docs/rst *.rst *.css
 recursive-include docs/man1 *.1
 recursive-include pybtex/tests *.yaml
+recursive-include examples/sample_plugins *.py README
