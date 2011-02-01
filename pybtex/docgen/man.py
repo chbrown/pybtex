@@ -83,7 +83,7 @@ def format_option(opt_parser, option):
     yield '.TP'
     yield '.B "%s"' % opt_parser.formatter.format_option_strings(option)
     if option.help:
-        yield option.help
+        yield opt_parser.formatter.expand_default(option)
 
 
 man_head = r"""
