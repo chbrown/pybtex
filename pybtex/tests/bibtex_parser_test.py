@@ -1,3 +1,5 @@
+# vim:fileencoding=utf-8
+
 # Copyright (c) 2009, 2010, 2011  Andrey Golovizin
 # 
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -39,9 +41,10 @@ from unittest import TestCase
 class ParserTest(object):
     input = None
     correct_result = None
+    parser_options = {}
 
     def test_parser(self):
-        parser = Parser(encoding='UTF-8')
+        parser = Parser(encoding='UTF-8', **self.parser_options)
         parser.parse_stream(StringIO(self.input))
         result = parser.data
         correct_result = self.correct_result
@@ -273,4 +276,27 @@ class KeyParsingTest(ParserTest, TestCase):
         'test(parens2)': Entry('article'),
         'test(braces1)': Entry('article'),
         'test(braces2)': Entry('article'),
+    })
+
+
+class KeylessEntriesTest(ParserTest, TestCase):
+    parser_options = {'keyless_entries': True}
+    input = u"""
+        @BOOK(
+            title="I Am Jackie Chan: My Life in Action",
+            year=1999
+        )
+        @BOOK()
+        @BOOK{}
+
+        @BOOK{
+            title = "Der deutsche Jackie Chan Filmführer",
+        }
+
+    """
+    correct_result = BibliographyData({
+        'unnamed-1': Entry('book', {'title': 'I Am Jackie Chan: My Life in Action', 'year': '1999'}),
+        'unnamed-2': Entry('book'),
+        'unnamed-3': Entry('book'),
+        'unnamed-4': Entry('book', {'title': u'Der deutsche Jackie Chan Filmführer'}),
     })
