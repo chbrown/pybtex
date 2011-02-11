@@ -247,6 +247,10 @@ class BibTeXEntryIterator(Scanner):
     current_field_name = None
     current_field_value = None
 
+    def __init__(self, text, keyless_entries=False):
+        super(BibTeXEntryIterator, self).__init__(text)
+        self.keyless_entries = keyless_entries
+
     def __iter__(self):
         return self.parse_bibliography()
 
@@ -317,8 +321,9 @@ class BibTeXEntryIterator(Scanner):
         self.parse_value()
 
     def parse_entry_body(self, body_end):
-        key_pattern = self.KEY_PAREN if body_end == self.RPAREN else self.KEY_BRACE
-        self.current_entry_key = self.required([key_pattern]).value.lower()
+        if not self.keyless_entries:
+            key_pattern = self.KEY_PAREN if body_end == self.RPAREN else self.KEY_BRACE
+            self.current_entry_key = self.required([key_pattern]).value.lower()
         self.parse_entry_fields()
 
     def parse_entry_fields(self):
@@ -395,11 +400,12 @@ class Parser(BaseParser):
 
     macros = None
 
-    def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, **kwargs):
+    def __init__(self, encoding=None, macros=month_names, person_fields=Person.valid_roles, keyless_entries=False, **kwargs):
         BaseParser.__init__(self, encoding)
 
         self.macros = dict(macros)
         self.person_fields = person_fields
+        self.keyless_entries = keyless_entries
 
     def process_entry(self, entry_type, key, fields):
         entry = Entry(entry_type)
@@ -442,7 +448,7 @@ class Parser(BaseParser):
         text = stream.read()
         self.command_start = 0
 
-        entry_iterator = BibTeXEntryIterator(text)
+        entry_iterator = BibTeXEntryIterator(text, keyless_entries=self.keyless_entries)
         for entry in entry_iterator:
             entry_type = entry[0]
             if entry_type == 'string':
