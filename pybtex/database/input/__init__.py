@@ -30,6 +30,7 @@ from pybtex.database import BibliographyData
 
 class BaseParser(Plugin):
     default_plugin = 'bibtex'
+    filename = '<INPUT>'
 
     unicode_io = False
 
@@ -40,6 +41,7 @@ class BaseParser(Plugin):
     def parse_file(self, filename, file_suffix=None):
         if file_suffix is not None:
             filename = filename + file_suffix
+        self.filename = filename
         open_file = pybtex.io.open_unicode if self.unicode_io else pybtex.io.open_raw
         with open_file(filename, encoding=self.encoding) as f:
             self.parse_stream(f)

@@ -49,8 +49,14 @@ class BibliographyData(object):
             and self._preamble == other._preamble
         )
 
-    def add_to_preamble(self, s):
-        self._preamble.append(s)
+    def __repr__(self):
+        return 'BibliographyData(entries={entries}, preamble={preamble})'.format(
+            entries=repr(self.entries),
+            preamble=repr(self._preamble),
+        )
+
+    def add_to_preamble(self, *values):
+        self._preamble.extend(values)
 
     def __repr__(self):
         return 'BibliographyData(entries={entries}, preamble={preamble})'.format(
