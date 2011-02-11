@@ -303,35 +303,33 @@ class BibTeXEntryIterator(Scanner):
             make_result = lambda: (self.current_command, (self.current_entry_key, self.current_fields))
         try:
             parse_body(body_end)
+            self.required([body_end])
         except BibTeXSyntaxError, error:
             print unicode(error) # FIXME add proper error handling
         return make_result()
 
     def parse_preamble_body(self, body_end):
         self.parse_value()
-        self.required([body_end])
 
     def parse_string_body(self, body_end):
         self.current_field_name = self.required([self.NAME]).value.lower()
         self.required([self.EQUALS])
         self.parse_value()
-        self.required([body_end])
 
     def parse_entry_body(self, body_end):
         key_pattern = self.KEY_PAREN if body_end == self.RPAREN else self.KEY_BRACE
         self.current_entry_key = self.required([key_pattern]).value.lower()
-        self.parse_entry_fields(body_end)
+        self.parse_entry_fields()
 
-    def parse_entry_fields(self, body_end):
+    def parse_entry_fields(self):
         while True:
-            comma_or_body_end = self.required([self.COMMA, body_end])
-            if comma_or_body_end.pattern is self.COMMA:
-                self.current_field_name = None
-                self.current_value = []
-                self.parse_field()
-                if self.current_field_name and self.current_value:
-                    self.current_fields.append((self.current_field_name, self.current_value))
-            else:
+            self.current_field_name = None
+            self.current_value = []
+            self.parse_field()
+            if self.current_field_name and self.current_value:
+                self.current_fields.append((self.current_field_name, self.current_value))
+            comma = self.optional([self.COMMA])
+            if not comma:
                 return
 
     def parse_field(self):
@@ -440,7 +438,7 @@ class Parser(BaseParser):
         ))
 
     def parse_stream(self, stream):
-        #self.unnamed_entry_counter = 1
+        self.unnamed_entry_counter = 1
         text = stream.read()
         self.command_start = 0
 

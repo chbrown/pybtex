@@ -50,8 +50,8 @@ pybtex-convert converts bibliography database files between supported formats
                 type='load_plugin', plugin_group='pybtex.database.output',
             ),
             make_option(
-                '--allow-keyless-bibtex-entries',
-                action='store_true', dest='allow_keyless_entries',
+                '--keyless-bibtex-entries',
+                action='store_true', dest='keyless_entries',
                 help='allow BibTeX entries without keys and generate unnamed-<number> keys for them'
             ),
         )),
@@ -75,7 +75,7 @@ pybtex-convert converts bibliography database files between supported formats
         )),
     )
     option_defaults = {
-        'allow_keyless_entries': False,
+        'keyless_entries': False,
     }
 
     def run(self, options, args):
@@ -86,7 +86,7 @@ pybtex-convert converts bibliography database files between supported formats
                 options.to_format,
                 input_encoding=options.input_encoding or options.encoding,
                 output_encoding=options.output_encoding or options.encoding,
-                parser_options = {'allow_keyless_entries': options.allow_keyless_entries})
+                parser_options = {'keyless_entries': options.keyless_entries})
 
 main = PybtexConvertCommandLine()
 
