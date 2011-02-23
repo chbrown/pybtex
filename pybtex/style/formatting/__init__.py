@@ -32,12 +32,14 @@ def toplevel(children, data):
 
 class BaseStyle(Plugin):
     default_plugin = 'unsrt'
+    default_name_style = None
+    default_label_style = None
 
     def __init__(self, label_style=None, name_style=None, abbreviate_names=False, **kwargs):
         if name_style is None:
-            name_style = find_plugin('pybtex.style.names')
+            name_style = find_plugin('pybtex.style.names', self.default_name_style)
         if label_style is None:
-            label_style = find_plugin('pybtex.style.labels')
+            label_style = find_plugin('pybtex.style.labels', self.default_label_style)
         self.format_label = label_style().format
         self.format_name = name_style().format
         self.abbreviate_names = abbreviate_names
