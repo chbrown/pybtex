@@ -27,6 +27,7 @@ def make_bibliography(aux_filename,
         bib_format=None,
         bib_encoding=None,
         output_encoding=None,
+        output_backend=None,
         min_crossrefs=2,
         **kwargs
         ):
@@ -41,25 +42,16 @@ def make_bibliography(aux_filename,
     filename = path.splitext(aux_filename)[0]
     aux_data = auxfile.parse_file(aux_filename, output_encoding)
 
-    if bib_format is None:
-        from pybtex.database.input import bibtex as bib_format
-
-
-    try:
-        output_backend = kwargs['output_backend']
-    except KeyError:
-        from pybtex.backends.latex import Backend as output_backend
-
-
-    bib_format = bib_format.Parser
-    bib_data = bib_format(bib_encoding).parse_files(aux_data.data, bib_format.get_default_suffix())
+    output_backend = find_plugin('pybtex.backends', output_backend)
+    bib_parser = find_plugin('pybtex.database.input', bib_format)
+    bib_data = bib_parser(bib_encoding).parse_files(aux_data.data, bib_parser.get_default_suffix())
 
     style_cls = find_plugin('pybtex.style.formatting', aux_data.style)
     style = style_cls(
             label_style=kwargs.get('label_style'),
             name_style=kwargs.get('name_style'),
             sorting_style=kwargs.get('sorting_style'),
-            abbreviate_names=kwargs.get('abbreviate_names', True),
+            abbreviate_names=kwargs.get('abbreviate_names'),
     )
     citations = bib_data.add_extra_citations(aux_data.citations, min_crossrefs)
     entries = (bib_data.entries[key] for key in citations)

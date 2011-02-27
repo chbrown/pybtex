@@ -140,24 +140,6 @@ It is also possible to define bibliography formatting styles in Python.
                         '%s are only supported by the Pythonic style engine (-l python)' % what_is_not_supported
                     )
 
-
-        kwargs = {}
-        if options.label_style:
-            kwargs['label_style'] = find_plugin('pybtex.style.labels', options.label_style)
-        if options.name_style:
-            kwargs['name_style'] = find_plugin('pybtex.style.names', options.name_style)
-        kwargs['sorting_style'] = options.sorting_style
-        if options.output_backend:
-            kwargs['output_backend'] = find_plugin('pybtex.backends', options.output_backend)
-        if options.bib_format:
-            kwargs['bib_format'] = find_plugin('pybtex.database.input', options.bib_format)
-        kwargs['abbreviate_names'] = bool(options.abbreviate_names)
-        kwargs['min_crossrefs'] = options.min_crossrefs
-        for option in ('bib_encoding', 'output_encoding', 'bst_encoding'):
-            value = getattr(options, option) or options.encoding
-            if value:
-                kwargs[option] = value
-
         if options.style_language == 'bibtex':
             from pybtex import bibtex as engine
         elif options.style_language == 'python':
@@ -165,6 +147,12 @@ It is also possible to define bibliography formatting styles in Python.
         else:
             self.opt_parser.error('unknown style language %s' % options.style_language)
 
+        kwargs = {}
+        uninteresting_options = 'verbose', 'style_language'
+        kwargs = dict(
+            (key, value) for (key, value) in options.__dict__.iteritems()
+            if key not in uninteresting_options
+        )
         engine.make_bibliography(filename, **kwargs)
 
 main = PybtexCommandLine()
