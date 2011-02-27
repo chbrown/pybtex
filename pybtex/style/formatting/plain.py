@@ -24,4 +24,4 @@ from pybtex.style.formatting.unsrt import Style as UnsrtStyle
 
 class Style(UnsrtStyle):
     name = 'plain'
-    default_sorting_style = 'author'
+    default_sorting_style = 'author_year_title'
