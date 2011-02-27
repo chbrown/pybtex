@@ -24,6 +24,7 @@ plugin_registry = {
         "aliases": {}, 
         "default_plugin": "unsrt", 
         "plugins": [
+            "plain", 
             "unsrt"
         ]
     }, 
