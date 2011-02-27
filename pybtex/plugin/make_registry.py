@@ -12,6 +12,7 @@ plugin_types = (
     ('pybtex.backends', 'Backend'),
     ('pybtex.style.labels', 'LabelStyle'),
     ('pybtex.style.names', 'NameStyle'),
+    ('pybtex.style.sorting', 'SortingStyle'),
     ('pybtex.style.formatting', 'Style'),
 )
 

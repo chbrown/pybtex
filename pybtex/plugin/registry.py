@@ -40,8 +40,8 @@ plugin_registry = {
         "class_name": "Backend", 
         "suffixes": {
             ".html": "html", 
-            ".tex": "latex", 
-            ".txt": "plaintext"
+            ".txt": "plaintext", 
+            ".bbl": "latex"
         }, 
         "aliases": {
             "text": "plaintext"
@@ -82,6 +82,15 @@ plugin_registry = {
         "plugins": [
             "lastfirst", 
             "plain"
+        ]
+    }, 
+    "pybtex.style.sorting": {
+        "class_name": "SortingStyle", 
+        "suffixes": {}, 
+        "aliases": {}, 
+        "default_plugin": "author", 
+        "plugins": [
+            "author"
         ]
     }
 }
