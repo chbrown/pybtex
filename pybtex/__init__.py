@@ -58,6 +58,7 @@ def make_bibliography(aux_filename,
     style = style_cls(
             label_style=kwargs.get('label_style'),
             name_style=kwargs.get('name_style'),
+            sorting_style=kwargs.get('sorting_style'),
             abbreviate_names=kwargs.get('abbreviate_names', True),
     )
     citations = bib_data.add_extra_citations(aux_data.citations, min_crossrefs)

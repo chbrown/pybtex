@@ -80,6 +80,13 @@ It is also possible to define bibliography formatting styles in Python.
                 metavar='STYLE',
             ),
             make_option(
+                '--sorting-style', dest='sorting_style',
+                help='sorting style (%plugin_choices)',
+                type='load_plugin',
+                plugin_group='pybtex.style.sorting',
+                metavar='STYLE',
+            ),
+            make_option(
                 '--abbreviate-names',
                 action='store_true', dest='abbreviate_names',
                 help='use abbreviated name formatting style',
@@ -123,6 +130,7 @@ It is also possible to define bibliography formatting styles in Python.
             'output_backend': 'output backends',
             'label_style': 'label styles',
             'name_style': 'name styles',
+            'sorting_style': 'sorting styles',
             'abbreviate_names': 'abbreviated names',
         }
         if options.style_language != 'python':
@@ -138,6 +146,7 @@ It is also possible to define bibliography formatting styles in Python.
             kwargs['label_style'] = find_plugin('pybtex.style.labels', options.label_style)
         if options.name_style:
             kwargs['name_style'] = find_plugin('pybtex.style.names', options.name_style)
+        kwargs['sorting_style'] = options.sorting_style
         if options.output_backend:
             kwargs['output_backend'] = find_plugin('pybtex.backends', options.output_backend)
         if options.bib_format:
