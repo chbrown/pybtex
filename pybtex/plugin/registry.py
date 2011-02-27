@@ -88,9 +88,10 @@ plugin_registry = {
         "class_name": "SortingStyle", 
         "suffixes": {}, 
         "aliases": {}, 
-        "default_plugin": "author", 
+        "default_plugin": "none", 
         "plugins": [
-            "author"
+            "author", 
+            "none"
         ]
     }
 }

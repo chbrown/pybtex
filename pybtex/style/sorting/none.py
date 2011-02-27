@@ -19,20 +19,11 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pybtex.plugin import Plugin
+from pybtex.style.sorting import BaseSortingStyle
 
 
-class BaseSortingStyle(Plugin):
-    default_plugin = 'none'
-
-    def sorting_key(self, entry):
-        raise NotImplementedError
+class SortingStyle(BaseSortingStyle):
+    name = 'none'
 
     def sort(self, entries):
-        entry_dict = dict(
-            (self.sorting_key(entry), entry)
-            for entry in entries
-        )
-        sorted_keys = sorted(entry_dict)
-        sorted_entries = [entry_dict[key] for key in sorted_keys]
-        return sorted_entries
+        return entries
