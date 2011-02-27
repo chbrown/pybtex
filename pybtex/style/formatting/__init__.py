@@ -34,18 +34,23 @@ class BaseStyle(Plugin):
     default_plugin = 'unsrt'
     default_name_style = None
     default_label_style = None
+    default_sorting_style = None
 
-    def __init__(self, label_style=None, name_style=None, abbreviate_names=False, **kwargs):
+    def __init__(self, label_style=None, name_style=None, sorting_style=None, abbreviate_names=False, **kwargs):
         if name_style is None:
             name_style = find_plugin('pybtex.style.names', self.default_name_style)
         if label_style is None:
             label_style = find_plugin('pybtex.style.labels', self.default_label_style)
+        if sorting_style is None:
+            sorting_style = find_plugin('pybtex.style.sorting', self.default_sorting_style)
         self.format_label = label_style().format
         self.format_name = name_style().format
+        self.sort = sorting_style().sort
         self.abbreviate_names = abbreviate_names
 
     def format_entries(self, entries):
-        for number, (key, entry) in enumerate(entries):
+        sorted_entries = self.sort(entries)
+        for number, entry in enumerate(sorted_entries):
             entry.number = number + 1
             for persons in entry.persons.itervalues():
                 for person in persons:
@@ -54,4 +59,4 @@ class BaseStyle(Plugin):
             f = getattr(self, "format_" + entry.type)
             text = f(entry)
             label = self.format_label(entry)
-            yield FormattedEntry(key, text, label)
+            yield FormattedEntry(entry.key, text, label)

@@ -26,4 +26,4 @@ class SortingStyle(BaseSortingStyle):
     name = 'author'
 
     def sorting_key(self, entry):
-        return entry.persons['author'][0]  # XXX
+        return unicode(entry.persons['author'][0])  # XXX
