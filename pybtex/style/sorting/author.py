@@ -26,4 +26,17 @@ class SortingStyle(BaseSortingStyle):
     name = 'author'
 
     def sorting_key(self, entry):
-        return unicode(entry.persons['author'][0])  # XXX
+        return self.persons_key(entry.persons['author'])
+
+    def persons_key(self, persons):
+        return tuple(self.person_key(person) for person in persons)
+
+    def join(self, string_list):
+        return tuple(string.lower() for string in string_list)
+
+    def person_key(self, person):
+        return (
+            self.join(person.prelast() + person.last()), 
+            self.join(person.first() + person.middle()),
+            self.join(person.lineage()),
+        )
