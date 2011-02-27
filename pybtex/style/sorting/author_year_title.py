@@ -23,20 +23,27 @@ from pybtex.style.sorting import BaseSortingStyle
 
 
 class SortingStyle(BaseSortingStyle):
-    name = 'author'
+    name = 'author_year_title'
 
     def sorting_key(self, entry):
-        return self.persons_key(entry.persons['author'])
+        if entry.type in ('book', 'inbook'):
+            author_key = self.author_editor_key(entry)
+        else:
+            author_key = self.persons_key(entry.persons['author'])
+        return (author_key, entry.fields.get('year', ''), entry.fields.get('title', ''))
 
     def persons_key(self, persons):
-        return tuple(self.person_key(person) for person in persons)
-
-    def join(self, string_list):
-        return tuple(string.lower() for string in string_list)
+        return '   '.join(self.person_key(person) for person in persons)
 
     def person_key(self, person):
-        return (
-            self.join(person.prelast() + person.last()), 
-            self.join(person.first() + person.middle()),
-            self.join(person.lineage()),
-        )
+        return '  '.join((
+            ' '.join(person.prelast() + person.last()),
+            ' '.join(person.first() + person.middle()),
+            ' '.join(person.lineage()),
+        )).lower()
+
+    def author_editor_key(self, entry):
+        if entry.persons.get('author'):
+            return self.persons_key(entry.persons['author'])
+        elif entry.persons.get('editor'):
+            return self.persons_key(entry.persons['editor'])

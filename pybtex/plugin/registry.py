@@ -91,7 +91,7 @@ plugin_registry = {
         "aliases": {}, 
         "default_plugin": "none", 
         "plugins": [
-            "author", 
+            "author_year_title", 
             "none"
         ]
     }
