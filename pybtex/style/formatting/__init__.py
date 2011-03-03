@@ -19,7 +19,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pybtex.core import FormattedEntry
+from pybtex.style import FormattedEntry
 from pybtex.style.template import node, join
 from pybtex.richtext import Symbol, Text
 from pybtex.plugin import Plugin, find_plugin

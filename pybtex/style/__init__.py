@@ -20,6 +20,18 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+class FormattedEntry(object):
+    """Formatted bibliography entry. Consists of
+    - key (which is used for sorting);
+    - label (which appears in the resulting bibliography)
+    - text (usually RichText)
+    """
+    def __init__(self, key, text, label=None):
+        self.key = key
+        self.text = text
+        self.label = label
+
+
 class FormattedBibliography(object):
     def __init__(self, entries, style):
         self.entries = list(entries)

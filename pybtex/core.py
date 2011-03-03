@@ -27,18 +27,6 @@ import re
 from pybtex.exceptions import PybtexError
 from pybtex.bibtex.utils import split_tex_string
 
-class FormattedEntry(object):
-    """Formatted bibliography entry. Consists of
-    - key (which is used for sorting);
-    - label (which appears in the resulting bibliography)
-    - text (usually RichText)
-    """
-    def __init__(self, key, text, label=None):
-        self.key = key
-        self.text = text
-        self.label = label
-
-
 class FieldDict(dict):
     def __init__(self, parent, *args, **kwargw):
         self.parent = parent
