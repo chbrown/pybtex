@@ -19,5 +19,15 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from . import labels
-from . import names
+
+class FormattedBibliography(object):
+    def __init__(self, entries, style):
+        self.entries = list(entries)
+        self.style = style
+
+    def __iter__(self):
+        return iter(self.entries)
+
+    def get_longest_label(self):
+        label_style = self.style.label_style
+        return label_style.get_longest_label(self.entries)
