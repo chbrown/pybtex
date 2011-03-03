@@ -28,7 +28,7 @@ import imp
 from pybtex.database.output import BaseWriter
 from pybtex.database.input import BaseParser
 from pybtex.database import BibliographyData
-from pybtex.core import Entry, Person
+from pybtex.database import Entry, Person
 
 
 class PythonWriter(BaseWriter):

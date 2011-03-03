@@ -59,7 +59,7 @@ class DatabaseIOTest(TestCase):
 
     def test_repr(self):
         from pybtex.database import BibliographyData
-        from pybtex.core import Entry, Person
+        from pybtex.database import Entry, Person
         data_repr = repr(self.reference_data)
         data = eval(data_repr, {
             'BibliographyData': BibliographyData,

@@ -32,7 +32,7 @@ class NameStyle(BaseNameStyle):
         r"""
         Format names similarly to {vv~}{ll}{, jj}{, f.} in BibTeX.
 
-        >>> from pybtex.core import Person
+        >>> from pybtex.database import Person
         >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
         >>> lastfirst = NameStyle().format
         >>> print lastfirst(name).format().plaintext()

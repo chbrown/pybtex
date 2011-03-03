@@ -31,7 +31,7 @@ https://github.com/matthew-brett/babybib
 
 
 from pybtex.database import BibliographyData
-from pybtex.core import Entry, Person
+from pybtex.database import Entry, Person
 from pybtex.database.input.bibtex import Parser
 from io import StringIO
 

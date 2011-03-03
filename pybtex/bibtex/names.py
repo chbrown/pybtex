@@ -33,7 +33,7 @@ from pyparsing import (
         Literal, Word, Forward, Combine, Group, Suppress, ZeroOrMore,
         Optional, StringEnd, CharsNotIn, alphas, removeQuotes,
 )
-from pybtex.core import Person
+from pybtex.database import Person
 from pybtex.bibtex.utils import bibtex_len, bibtex_first_letter
 
 class BibTeXNameFormatError(Exception):

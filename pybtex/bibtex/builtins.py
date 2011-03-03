@@ -31,7 +31,7 @@ import pybtex.io
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.utils import memoize
 from pybtex.bibtex import utils
-from pybtex.core import Person
+from pybtex.database import Person
 from pybtex.bibtex.names import format as format_bibtex_name
 
 

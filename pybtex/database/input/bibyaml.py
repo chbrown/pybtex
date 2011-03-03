@@ -21,7 +21,7 @@
 
 import yaml
 from pybtex.database.input import BaseParser
-from pybtex.core import Entry, Person
+from pybtex.database import Entry, Person
 
 
 class Parser(BaseParser):

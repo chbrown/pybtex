@@ -1,4 +1,4 @@
-from pybtex.core import Person
+from pybtex.database import Person
 
 # name, (bibtex_first, prelast, last, lineage
 # as parsed by the bibtex program itself

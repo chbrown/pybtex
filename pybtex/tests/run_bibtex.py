@@ -32,7 +32,7 @@ from subprocess import Popen, PIPE
 
 from pybtex.database.output import bibtex
 from pybtex.database import BibliographyData
-from pybtex.core import Person, Entry
+from pybtex.database import Person, Entry
 
 
 writer = bibtex.Writer(encoding='ascii')

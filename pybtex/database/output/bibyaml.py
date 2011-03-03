@@ -20,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import yaml
-from pybtex.core import Entry
+from pybtex.database import Entry
 from pybtex.database.output import BaseWriter
 
 

@@ -34,7 +34,7 @@ styles. This is what is inside of ``.bst`` files.  For a Pythonic bibliography
 processor it is natural to use Python for writing styles. A Pybtex style file
 is basically a Python module containing a class named ``Formatter``. This
 class has methods like ``format_article``, ``format_book``, etc. They accept a
-bibliography entry (an instance of ``pybtex.core.Entry`` class) and return a
+bibliography entry (an instance of ``pybtex.database.Entry`` class) and return a
 formatted entry (an instance of ``pybtex.richtes.Text``).
 
 .. sourcecode:: python

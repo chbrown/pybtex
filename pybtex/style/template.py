@@ -26,7 +26,7 @@ A template engine for bibliography entries and more.
 
 Inspired by Brevé -- http://breve.twisty-industries.com/
 
->>> from pybtex.core import Entry, Person
+>>> from pybtex.database import Entry, Person
 >>> author = Person(first='First', last='Last', middle='Middle')
 >>> fields = {
 ...         'title': 'The Book',

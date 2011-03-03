@@ -20,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from xml.etree import cElementTree as ET
-from pybtex.core import Entry, Person
+from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
 
 

@@ -63,7 +63,7 @@ import re
 from string import ascii_letters, digits
 
 import pybtex.io
-from pybtex.core import Entry, Person
+from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
 from pybtex.bibtex.utils import split_name_list
 from pybtex.exceptions import PybtexError
