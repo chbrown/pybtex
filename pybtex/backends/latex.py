@@ -36,8 +36,9 @@ class Backend(BaseBackend):
     def format_tag(self, tag_name, text):
         return ur'\%s{%s}' % (tag_name, text)
     
-    def write_prologue(self, maxlen):
-        self.output(u'\\begin{thebibliography}{%s}' % ('8' * maxlen))
+    def write_prologue(self):
+        longest_label = self.formatted_bibliography.get_longest_label()
+        self.output(u'\\begin{thebibliography}{%s}' % longest_label)
 
     def write_epilogue(self):
         self.output(u'\n\n\\end{thebibliography}\n')

@@ -37,12 +37,12 @@ class BaseStyle(Plugin):
     default_sorting_style = None
 
     def __init__(self, label_style=None, name_style=None, sorting_style=None, abbreviate_names=False, **kwargs):
-        name_style = find_plugin('pybtex.style.names', name_style or self.default_name_style)
-        label_style = find_plugin('pybtex.style.labels', label_style or self.default_label_style)
-        sorting_style = find_plugin('pybtex.style.sorting', sorting_style or self.default_sorting_style)
-        self.format_name = name_style().format
-        self.format_label = label_style().format
-        self.sort = sorting_style().sort
+        self.name_style = find_plugin('pybtex.style.names', name_style or self.default_name_style)()
+        self.label_style = find_plugin('pybtex.style.labels', label_style or self.default_label_style)()
+        self.sorting_style = find_plugin('pybtex.style.sorting', sorting_style or self.default_sorting_style)()
+        self.format_name = self.name_style.format
+        self.format_label = self.label_style.format
+        self.sort = self.sorting_style.sort
         self.abbreviate_names = abbreviate_names
 
     def format_entries(self, entries):

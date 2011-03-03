@@ -55,7 +55,7 @@ class Backend(BaseBackend):
         tag = self.tags[tag_name]
         return ur'<%s>%s</%s>' % (tag, text, tag)
     
-    def write_prologue(self, maxlen):
+    def write_prologue(self):
         encoding = self.encoding or pybtex.io.get_default_encoding()
         self.output(PROLOGUE % encoding)
 

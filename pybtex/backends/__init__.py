@@ -32,7 +32,7 @@ class BaseBackend(Plugin):
     def __init__(self, encoding=None):
         self.encoding = encoding
 
-    def write_prologue(self, maxlen):
+    def write_prologue(self):
         pass
 
     def write_epilogue(self):
@@ -55,22 +55,19 @@ class BaseBackend(Plugin):
         with pybtex.io.open_unicode(filename, "w", self.encoding) as stream:
             self.write_to_stream(formatted_entries, stream)
 
-    def write_to_stream(self, formatted_entries, stream):
+    def write_to_stream(self, formatted_bibliography, stream):
         self.output = stream.write
-        formatted_entries = list(formatted_entries)
+        self.formatted_bibliography = formatted_bibliography
 
-        #FIXME: determine label width proprely
-        maxlen = max([len(e.label) for e in formatted_entries])
-
-        self.write_prologue(maxlen)
-        for entry in formatted_entries:
+        self.write_prologue()
+        for entry in formatted_bibliography:
             self.write_entry(entry.key, entry.label, entry.text.render(self))
         self.write_epilogue()
 
-    def write_bibliography(self, entries, filename):
+    def write_bibliography(self, formatted_bibliography, filename):
         import warnings
         warnings.warn(
             'write_bibliography() is deprecated, use write_to_file() insted.',
             DeprecationWarning,
         )
-        self.write_to_file(entries, filename)
+        self.write_to_file(formatted_bibliography, filename)
