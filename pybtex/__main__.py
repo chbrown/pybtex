@@ -47,6 +47,16 @@ It is also possible to define bibliography formatting styles in Python.
     options = (
         (None, (
             make_option(
+                '--min-crossrefs',
+                type='int', dest='min_crossrefs',
+                help='include item after NUMBER crossrefs; default 2',
+                metavar='NUMBER',
+            ),
+            make_option(
+                '--terse', dest='verbose', action='store_false',
+                help='ignored for compatibility with BibTeX',
+            ),
+            make_option(
                 '-f', '--bibliography-format', dest='bib_format',
                 help='bibliograpy format (%plugin_choices)',
                 type='load_plugin',
@@ -65,6 +75,8 @@ It is also possible to define bibliography formatting styles in Python.
                 help='style definition language to use (bibtex or python)',
                 metavar='LANGUAGE',
             ),
+        )),
+        ('Pythonic style options', (
             make_option(
                 '--label-style', dest='label_style',
                 help='label formatting style (%plugin_choices)',
@@ -91,17 +103,7 @@ It is also possible to define bibliography formatting styles in Python.
                 action='store_true', dest='abbreviate_names',
                 help='use abbreviated name formatting style',
             ),
-            make_option(
-                '--min-crossrefs',
-                type='int', dest='min_crossrefs',
-                help='include item after NUMBER crossrefs; default 2',
-                metavar='NUMBER',
-            ),
-            make_option(
-                '--terse', dest='verbose', action='store_false',
-                help='ignored for compatibility with BibTeX',
-            )
-    )),
+        )),
         ('Encoding options', (
             make_option(
                 '-e', '--encoding', dest='encoding', metavar='ENCODING',
