@@ -27,5 +27,9 @@ available_plugins = ('number',)
 class BaseLabelStyle(Plugin):
     default_plugin = 'number'
 
+    def get_longest_label(self, formatted_entries):
+        #FIXME: determine label width proprely
+        return max(formatted_entries, key=lambda entry: len(entry.label)).label
+
     def format(self, entry):
         raise NotImplementedError
