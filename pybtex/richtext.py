@@ -125,7 +125,7 @@ class Text(list):
                 text.append(backend.format_text(item))
             else:
                 text.append(item.render(backend))
-        return "".join(text)
+        return backend.render_sequence(text)
 
     def enumerate(self):
         for n, child in enumerate(self):

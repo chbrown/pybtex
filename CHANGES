@@ -1,3 +1,5 @@
+- Added support for non-string backends.
+
 Version 0.15
 ------------
 (released on February 1, 2011)

@@ -48,6 +48,10 @@ class BaseBackend(Plugin):
 
         raise NotImplementedError
 
+    def render_sequence(self, text):
+        """Render a sequence of rendered text objects."""
+        return "".join(text)
+
     def write_entry(self, label, key, text):
         raise NotImplementedError
 
