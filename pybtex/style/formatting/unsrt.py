@@ -136,3 +136,68 @@ class Style(BaseStyle):
             ]
         ]
         return template.format_data(e)
+
+    # TODO the following are quick stubs, need to be completed
+    
+    def format_incollection(self, e):
+        template = toplevel [
+            sentence [self.format_names('author')],
+            sentence [field('title')],
+        ]
+        return template.format_data(e)
+
+    def format_inproceedings(self, e):
+        template = toplevel [
+            sentence [self.format_names('author')],
+            sentence [field('title')],
+        ]
+        return template.format_data(e)
+
+    def format_manual(self, e):
+        template = toplevel [
+            sentence [self.format_names('author')],
+            sentence [field('title')],
+        ]
+        return template.format_data(e)
+
+    def format_mastersthesis(self, e):
+        template = toplevel [
+            sentence [self.format_names('author')],
+            sentence [field('title')],
+        ]
+        return template.format_data(e)
+
+    def format_misc(self, e):
+        template = toplevel [
+            sentence [self.format_names('author')],
+            sentence [field('title')],
+        ]
+        return template.format_data(e)
+
+    def format_phdthesis(self, e):
+        template = toplevel [
+            sentence [self.format_names('author')],
+            sentence [field('title')],
+        ]
+        return template.format_data(e)
+
+    def format_proceedings(self, e):
+        template = toplevel [
+            sentence [self.format_names('editor')],
+            sentence [field('title')],
+        ]
+        return template.format_data(e)
+
+    def format_techreport(self, e):
+        template = toplevel [
+            sentence [self.format_names('author')],
+            sentence [field('title')],
+        ]
+        return template.format_data(e)
+
+    def format_unpublished(self, e):
+        template = toplevel [
+            sentence [self.format_names('author')],
+            sentence [field('title')],
+        ]
+        return template.format_data(e)
