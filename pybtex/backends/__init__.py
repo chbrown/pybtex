@@ -23,7 +23,7 @@ import pybtex.io
 from pybtex.plugin import Plugin
 
 
-available_plugins = ('latex', 'html', 'plaintext')
+available_plugins = ('latex', 'html', 'plaintext', 'doctree')
 
 
 class BaseBackend(Plugin):
