@@ -137,8 +137,7 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
-    # TODO the following are quick stubs, need to be completed
-    
+    # TODO quick stub, needs to be completed
     def format_incollection(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
@@ -146,6 +145,7 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
+    # TODO quick stub, needs to be completed
     def format_inproceedings(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
@@ -153,6 +153,7 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
+    # TODO quick stub, needs to be completed
     def format_manual(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
@@ -160,6 +161,7 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
+    # TODO quick stub, needs to be completed
     def format_mastersthesis(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
@@ -167,6 +169,7 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
+    # TODO quick stub, needs to be completed
     def format_misc(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
@@ -174,6 +177,7 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
+    # TODO quick stub, needs to be completed
     def format_phdthesis(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
@@ -181,6 +185,7 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
+    # TODO quick stub, needs to be completed
     def format_proceedings(self, e):
         template = toplevel [
             sentence [self.format_names('editor')],
@@ -188,6 +193,7 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
+    # TODO quick stub, needs to be completed
     def format_techreport(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
@@ -199,5 +205,6 @@ class Style(BaseStyle):
         template = toplevel [
             sentence [self.format_names('author')],
             sentence [field('title')],
+            sentence [field('note'), date],
         ]
         return template.format_data(e)
