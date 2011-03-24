@@ -13,26 +13,26 @@ class Backend(BaseBackend):
         'newblock': docutils.nodes.inline(u' ', u' '),
         'nbsp': docutils.nodes.inline(u'\u00a0', u'\u00a0')
     }
+    tags = {
+         'emph': docutils.nodes.emphasis,
+    }
 
     def format_text(self, text):
         return docutils.nodes.inline(text, text)
 
     def format_tag(self, tag_name, text):
-        if tag_name == "emph":
-            if isinstance(text, basestring):
-                return docutils.nodes.emphasis(text, text)
-            else:
-                # must be a docutils node
-                node = docutils.nodes.emphasis('', '')
-                node.children.append(text)
-                return node
+        tag = self.tags[tag_name]
+        if isinstance(text, basestring):
+            return tag(text, text)
         else:
-            # no tag, or unknown tag, don't do anything special
-            print("DEBUG: unknown tag %s" % tag_name)
-            return self.format_text(text)
+            # must be a docutils node
+            node = tag('', '')
+            node.children.append(text)
+            return node
 
     def write_entry(self, key, label, text):
-        # TODO also include key and label
+        # This is a very simple implementation, does not include key
+        # and label yet.
         node = docutils.nodes.paragraph()
         node.children.append(text)
         return node
