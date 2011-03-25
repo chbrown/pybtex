@@ -45,26 +45,37 @@ class Style(BaseStyle):
 
     def format_article(self, e):
         volume_and_pages = first_of [
-            join [field('volume'), optional [':', pages]],
-            words ['pages', optional [pages]]
+            # volume and pages, with optional issue number
+            optional [
+                join [
+                    field('volume'),
+                    optional['(', field('number'),')'],
+                    ':', pages
+                ],
+            ],
+            # pages only
+            words ['pages', pages],
         ]
         template = toplevel [
             self.format_names('author'),
             sentence(capfirst=False) [field('title')],
             sentence(capfirst=False) [
-                tag('emph') [field('journal')], volume_and_pages, date],
+                tag('emph') [field('journal')],
+                optional[ volume_and_pages ],
+                date],
+            optional[ sentence [ field('note') ] ],
         ]
         return template.format_data(e)
         
     def format_author_or_editor(self, e):
-        if e.persons['author']:
-            return self.format_names('author')
-        else:
-            return self.format_editor(e)
+        return first_of [
+            optional[ self.format_names('author') ],
+            self.format_editor(e),
+        ]
 
     def format_editor(self, e):
         editors = self.format_names('editor')
-        if not 'editor' in e.persons:
+        if 'editor' not in e.persons:
             # when parsing the template, a FieldIsMissing exception
             # will be thrown anyway; no need to do anything now,
             # just return the template that will throw the exception
@@ -154,20 +165,39 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
-    # TODO not quite finished; still needs some updating to match unsrt.bst
     def format_inproceedings(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             sentence [field('title')],
             words [
-                'in',
-                sentence [
+                'In',
+                sentence(capfirst=False) [
                     optional[ self.format_editor(e) ],
                     tag('emph') [field('booktitle')],
                     self.format_volume_and_series(e),
                     optional[ pages ],
-                    optional_field('address'),
-                    date,
+                ],
+                # small difference from unsrt.bst here: unsrt.bst
+                # starts a new sentence only if the address is missing
+                # - for simplicity here we always start a new sentence
+                first_of[
+                    # this will be rendered if there is an address
+                    optional[
+                        sentence[
+                            field('address'),
+                            date,
+                        ],
+                        sentence[
+                            optional_field('organization'),
+                            optional_field('publisher'),
+                        ],
+                    ],
+                    # if there is no address then we have this
+                    sentence[
+                        optional_field('organization'),
+                        optional_field('publisher'),
+                        date,
+                    ],
                 ],
             ],
             optional[ sentence [field('note')] ],
@@ -193,8 +223,8 @@ class Style(BaseStyle):
     # TODO quick stub, needs to be completed
     def format_misc(self, e):
         template = toplevel [
-            sentence [self.format_names('author')],
-            sentence [field('title')],
+            optional[ sentence [self.format_names('author')] ],
+            sentence [optional_field('title')],
         ]
         return template.format_data(e)
 
@@ -222,10 +252,14 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
+    # TODO quick stub, needs to be completed
     def format_unpublished(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             sentence [field('title')],
-            sentence [field('note'), date],
+            sentence [
+                field('note'),
+                optional[ date ]
+            ],
         ]
         return template.format_data(e)
