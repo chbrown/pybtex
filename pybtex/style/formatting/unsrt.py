@@ -243,14 +243,16 @@ class Style(BaseStyle):
                 # - for simplicity here we always start a new sentence
                 first_of[
                     # this will be rendered if there is an address
-                    optional[
-                        sentence[
-                            field('address'),
-                            date,
-                        ],
-                        sentence[
-                            optional_field('organization'),
-                            optional_field('publisher'),
+                    optional [
+                        join(sep=" ") [
+                            sentence[
+                                field('address'),
+                                date,
+                            ],
+                            sentence[
+                                optional_field('organization'),
+                                optional_field('publisher'),
+                            ],
                         ],
                     ],
                     # if there is no address then we have this
