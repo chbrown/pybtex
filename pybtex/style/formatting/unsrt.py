@@ -73,10 +73,10 @@ class Style(BaseStyle):
     def format_author_or_editor(self, e):
         return first_of [
             optional[ self.format_names('author') ],
-            self.format_editor(e, as_sentence=True),
+            self.format_editor(e),
         ]
 
-    def format_editor(self, e, as_sentence=False):
+    def format_editor(self, e, as_sentence=True):
         editors = self.format_names('editor', as_sentence=as_sentence)
         if 'editor' not in e.persons:
             # when parsing the template, a FieldIsMissing exception
@@ -122,14 +122,10 @@ class Style(BaseStyle):
             optional [words ['pages', pages]],
         ]
 
-    def format_edition(self, e, mid_sentence=False):
-        if not mid_sentence:
-            apply_func = lambda x: x.capitalize()
-        else:
-            apply_func = lambda x: x.lower()
+    def format_edition(self, e):
         return optional [
             words [
-                field('edition', apply_func=apply_func),
+                field('edition', apply_func=lambda x: x.lower()),
                 'edition',
             ]
         ]
@@ -215,16 +211,16 @@ class Style(BaseStyle):
             words [
                 'In',
                 sentence(capfirst=False) [
-                    optional[ self.format_editor(e) ],
-                    self.format_btitle(e, 'booktitle'),
+                    optional[ self.format_editor(e, as_sentence=False) ],
+                    self.format_btitle(e, 'booktitle', as_sentence=False),
                     self.format_volume_and_series(e, as_sentence=False),
                     self.format_chapter_and_pages(e),
                 ],
             ],
-            sentence[
+            sentence [
                 optional_field('publisher'),
                 optional_field('address'),
-                self.format_edition(e, mid_sentence=True),
+                self.format_edition(e),
                 date,
             ],
         ]
@@ -237,7 +233,7 @@ class Style(BaseStyle):
             words [
                 'In',
                 sentence(capfirst=False) [
-                    optional[ self.format_editor(e) ],
+                    optional[ self.format_editor(e, as_sentence=False) ],
                     self.format_btitle(e, 'booktitle', as_sentence=False),
                     self.format_volume_and_series(e, as_sentence=False),
                     optional[ pages ],
