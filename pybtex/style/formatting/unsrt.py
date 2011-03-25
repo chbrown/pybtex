@@ -89,28 +89,32 @@ class Style(BaseStyle):
             word = 'editor'
         return join(sep=', ') [editors, word]
     
-    def format_volume_and_series(self, e):
+    def format_volume_and_series(self, e, as_sentence=True):
         volume_and_series = optional [
-            sentence(capfirst=False, sep=' ') [
+            words [
                 'Volume', field('volume'), optional [
                     words ['of', field('series')]
                 ]
             ]
         ]
         number_and_series = optional [
-            sentence(capfirst=False, sep=' ') [
+            words [
                 join(sep=Symbol('nbsp')) ['Number', field('number')],
                 optional [
                     words ['in', field('series')]
                 ]
             ]
         ]
-        series = optional [ sentence(capfirst=False) [field('series')] ]
-        return first_of [
+        series = optional_field('series')
+        result = first_of [
                 volume_and_series,
                 number_and_series,
                 series,
             ]
+        if as_sentence:
+            return sentence(capfirst=False) [result]
+        else:
+            return result
     
     def format_chapter_and_pages(self, e):
         return join(sep=', ') [
@@ -213,7 +217,7 @@ class Style(BaseStyle):
                 sentence(capfirst=False) [
                     optional[ self.format_editor(e) ],
                     self.format_btitle(e, 'booktitle'),
-                    self.format_volume_and_series(e),
+                    self.format_volume_and_series(e, as_sentence=False),
                     self.format_chapter_and_pages(e),
                 ],
             ],
@@ -235,7 +239,7 @@ class Style(BaseStyle):
                 sentence(capfirst=False) [
                     optional[ self.format_editor(e) ],
                     self.format_btitle(e, 'booktitle', as_sentence=False),
-                    self.format_volume_and_series(e),
+                    self.format_volume_and_series(e, as_sentence=False),
                     optional[ pages ],
                 ],
                 # small difference from unsrt.bst here: unsrt.bst
