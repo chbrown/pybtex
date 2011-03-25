@@ -383,7 +383,6 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
-    # TODO quick stub, needs to be completed
     def format_unpublished(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
