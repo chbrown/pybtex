@@ -24,8 +24,7 @@ import re
 from pybtex.style.formatting import BaseStyle, toplevel
 from pybtex.style.template import (
     join, words, field, optional, first_of,
-    names, sentence, tag, optional_field,
-    FieldIsMissing
+    names, sentence, tag, optional_field
 )
 from pybtex.richtext import Text, Symbol
 
