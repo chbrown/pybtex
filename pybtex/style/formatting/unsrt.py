@@ -24,7 +24,8 @@ import re
 from pybtex.style.formatting import BaseStyle, toplevel
 from pybtex.style.template import (
     join, words, field, optional, first_of,
-    names, sentence, tag, optional_field
+    names, sentence, tag, optional_field,
+    FieldIsMissing
 )
 from pybtex.richtext import Text, Symbol
 
@@ -59,12 +60,20 @@ class Style(BaseStyle):
         if e.persons['author']:
             return self.format_names('author')
         else:
-            editors = self.format_names('editors')
-            if len(e.persons['editors']) > 1:
-                word = 'editors'
-            else:
-                word = 'editor'
-            return words [editors, word]
+            return self.format_editor(e)
+
+    def format_editor(self, e):
+        editors = self.format_names('editor')
+        if not 'editor' in e.persons:
+            # when parsing the template, a FieldIsMissing exception
+            # will be thrown anyway; no need to do anything now,
+            # just return the template that will throw the exception
+            return editors
+        if len(e.persons['editor']) > 1:
+            word = 'editors'
+        else:
+            word = 'editor'
+        return words [editors, word]
     
     def format_volume_and_series(self, e):
         volume_and_series = optional [
@@ -145,11 +154,23 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
-    # TODO quick stub, needs to be completed
+    # TODO not quite finished; still needs some updating to match unsrt.bst
     def format_inproceedings(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             sentence [field('title')],
+            words [
+                'in',
+                sentence [
+                    optional[ self.format_editor(e) ],
+                    tag('emph') [field('booktitle')],
+                    self.format_volume_and_series(e),
+                    optional[ pages ],
+                    optional_field('address'),
+                    date,
+                ],
+            ],
+            optional[ sentence [field('note')] ],
         ]
         return template.format_data(e)
 
