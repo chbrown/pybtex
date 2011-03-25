@@ -61,7 +61,7 @@ class Style(BaseStyle):
         ]
         template = toplevel [
             self.format_names('author'),
-            sentence(capfirst=False) [field('title')],
+            self.format_title(e, 'title'),
             sentence(capfirst=False) [
                 tag('emph') [field('journal')],
                 optional[ volume_and_pages ],
@@ -119,8 +119,8 @@ class Style(BaseStyle):
         ]
 
     def format_edition(self, e, mid_sentence=False):
-        if mid_sentence:
-            apply_func = lambda x: x.title()
+        if not mid_sentence:
+            apply_func = lambda x: x.capitalize()
         else:
             apply_func = lambda x: x.lower()
         return optional [
@@ -130,10 +130,42 @@ class Style(BaseStyle):
             ]
         ]
 
+    def format_title(self, e, which_field, as_sentence=True):
+
+        def protected_capitalize(x):
+            """Capitalize string, but protect {...} parts."""
+            result = ""
+            level = 0
+            for pos, c in enumerate(x):
+                if c == '{':
+                    level += 1
+                elif c == '}':
+                    level -= 1
+                elif pos == 0:
+                    c = c.upper()
+                elif level <= 0:
+                    c = c.lower()
+                result += c
+            return result
+
+        formatted_title = field(
+            which_field, apply_func=protected_capitalize)
+        if as_sentence:
+            return sentence(capfirst=False) [ formatted_title ]
+        else:
+            return formatted_title
+
+    def format_btitle(self, e, which_field, as_sentence=True):
+        formatted_title = tag('emph') [ field(which_field) ]
+        if as_sentence:
+            return sentence[ formatted_title ]
+        else:
+            return formatted_title
+
     def format_book(self, e):
         template = toplevel [
             self.format_author_or_editor(e),
-            tag('emph') [sentence [field('title')]],
+            self.format_btitle(e, 'title'),
             self.format_volume_and_series(e),
             sentence [field('publisher'), date],
         ]
@@ -141,8 +173,8 @@ class Style(BaseStyle):
 
     def format_booklet(self, e):
         template = toplevel [
-            sentence [self.format_names('author')],
-            sentence [field('title')],
+            self.format_names('author'),
+            self.format_title(e, 'title'),
             sentence [
                 optional_field('howpublished'),
                 optional_field('address'),
@@ -156,7 +188,7 @@ class Style(BaseStyle):
         template = toplevel [
             sentence [self.format_names('author')],
             sentence [
-                tag('emph') [field('title')],
+                self.format_btitle(e, 'title'),
                 self.format_chapter_and_pages(e),
             ],
             self.format_volume_and_series(e),
@@ -175,12 +207,12 @@ class Style(BaseStyle):
     def format_incollection(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
-            sentence [field('title')],
+            self.format_title(e, 'title'),
             words [
                 'In',
                 sentence(capfirst=False) [
                     optional[ self.format_editor(e) ],
-                    tag('emph') [field('booktitle')],
+                    self.format_btitle(e, 'booktitle'),
                     self.format_volume_and_series(e),
                     self.format_chapter_and_pages(e),
                 ],
@@ -197,12 +229,12 @@ class Style(BaseStyle):
     def format_inproceedings(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
-            sentence [field('title')],
+            self.format_title(e, 'title'),
             words [
                 'In',
                 sentence(capfirst=False) [
                     optional[ self.format_editor(e) ],
-                    tag('emph') [field('booktitle')],
+                    self.format_btitle(e, 'booktitle', as_sentence=False),
                     self.format_volume_and_series(e),
                     optional[ pages ],
                 ],
@@ -237,7 +269,7 @@ class Style(BaseStyle):
     def format_manual(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
-            sentence [field('title')],
+            self.format_btitle(e, 'title'),
         ]
         return template.format_data(e)
 
@@ -245,15 +277,21 @@ class Style(BaseStyle):
     def format_mastersthesis(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
-            sentence [field('title')],
+            self.format_title(e, 'title'),
         ]
         return template.format_data(e)
 
-    # TODO quick stub, needs to be completed
     def format_misc(self, e):
         template = toplevel [
             optional[ sentence [self.format_names('author')] ],
-            sentence [optional_field('title')],
+            optional[ self.format_title(e, 'title') ],
+            sentence[
+                optional[ field('howpublished') ],
+                optional[ date ],
+            ],
+            sentence[
+                optional_field('note'),
+            ],
         ]
         return template.format_data(e)
 
@@ -261,7 +299,7 @@ class Style(BaseStyle):
     def format_phdthesis(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
-            sentence [field('title')],
+            self.format_btitle(e, 'title'),
         ]
         return template.format_data(e)
 
@@ -269,14 +307,14 @@ class Style(BaseStyle):
     def format_proceedings(self, e):
         template = toplevel [
             sentence [self.format_names('editor')],
-            sentence [field('title')],
+            self.format_btitle(e, 'title'),
         ]
         return template.format_data(e)
 
     def format_techreport(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
-            sentence [field('title')],
+            self.format_title(e, 'title'),
             sentence [
                 words[
                     first_of [
@@ -299,7 +337,7 @@ class Style(BaseStyle):
     def format_unpublished(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
-            sentence [field('title')],
+            self.format_title(e, 'title'),
             sentence [
                 field('note'),
                 optional[ date ]
