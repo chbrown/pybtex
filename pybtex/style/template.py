@@ -149,7 +149,7 @@ def _format_data(node, data):
         return f(data)
 
 def _format_list(list_, data):
-    return [_format_data(part, data) for part in list_]
+    return (_format_data(part, data) for part in list_)
 
 def node(f):
     if f.__doc__:
