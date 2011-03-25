@@ -301,11 +301,17 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
-    # TODO quick stub, needs to be completed
     def format_phdthesis(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             self.format_btitle(e, 'title'),
+            sentence[
+                'PhD thesis',
+                field('school'),
+                optional_field('address'),
+                date,
+            ],
+            sentence(capfirst=False) [ optional_field('note') ],
         ]
         return template.format_data(e)
 
