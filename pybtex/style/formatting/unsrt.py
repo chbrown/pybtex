@@ -77,7 +77,7 @@ class Style(BaseStyle):
         ]
 
     def format_editor(self, e, as_sentence=True):
-        editors = self.format_names('editor', as_sentence=as_sentence)
+        editors = self.format_names('editor', as_sentence=False)
         if 'editor' not in e.persons:
             # when parsing the template, a FieldIsMissing exception
             # will be thrown anyway; no need to do anything now,
@@ -87,19 +87,23 @@ class Style(BaseStyle):
             word = 'editors'
         else:
             word = 'editor'
-        return join(sep=', ') [editors, word]
+        result = join(sep=', ') [editors, word]
+        if as_sentence:
+            return sentence(capfirst=False) [result]
+        else:
+            return result
     
     def format_volume_and_series(self, e, as_sentence=True):
         volume_and_series = optional [
             words [
-                'Volume', field('volume'), optional [
+                'volume', field('volume'), optional [
                     words ['of', field('series')]
                 ]
             ]
         ]
         number_and_series = optional [
             words [
-                join(sep=Symbol('nbsp')) ['Number', field('number')],
+                join(sep=Symbol('nbsp')) ['number', field('number')],
                 optional [
                     words ['in', field('series')]
                 ]
@@ -161,6 +165,40 @@ class Style(BaseStyle):
             return sentence[ formatted_title ]
         else:
             return formatted_title
+
+    def format_address_organization_publisher_date(
+        self, e, include_organization=True):
+        """Format address, organization, publisher, and date.
+        Everything is optional, except the date.
+        """
+        # small difference from unsrt.bst here: unsrt.bst
+        # starts a new sentence only if the address is missing;
+        # for simplicity here we always start a new sentence
+        if include_organization:
+            organization = optional_field('organization')
+        else:
+            organization = None
+        return first_of[
+            # this will be rendered if there is an address
+            optional [
+                join(sep=' ') [
+                    sentence[
+                        field('address'),
+                        date,
+                    ],
+                    sentence[
+                        organization,
+                        optional_field('publisher'),
+                    ],
+                ],
+            ],
+            # if there is no address then we have this
+            sentence[
+                organization,
+                optional_field('publisher'),
+                date,
+            ],
+        ]
 
     def format_book(self, e):
         template = toplevel [
@@ -244,30 +282,7 @@ class Style(BaseStyle):
                     self.format_volume_and_series(e, as_sentence=False),
                     optional[ pages ],
                 ],
-                # small difference from unsrt.bst here: unsrt.bst
-                # starts a new sentence only if the address is missing
-                # - for simplicity here we always start a new sentence
-                first_of[
-                    # this will be rendered if there is an address
-                    optional [
-                        join(sep=" ") [
-                            sentence[
-                                field('address'),
-                                date,
-                            ],
-                            sentence[
-                                optional_field('organization'),
-                                optional_field('publisher'),
-                            ],
-                        ],
-                    ],
-                    # if there is no address then we have this
-                    sentence[
-                        optional_field('organization'),
-                        optional_field('publisher'),
-                        date,
-                    ],
-                ],
+                self.format_address_organization_publisher_date(e),
             ],
             sentence(capfirst=False) [ optional_field('note') ],
         ]
@@ -281,11 +296,17 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
-    # TODO quick stub, needs to be completed
     def format_mastersthesis(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             self.format_title(e, 'title'),
+            sentence[
+                "Master's thesis",
+                field('school'),
+                optional_field('address'),
+                date,
+            ],
+            sentence(capfirst=False) [ optional_field('note') ],
         ]
         return template.format_data(e)
 
@@ -315,11 +336,30 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
-    # TODO quick stub, needs to be completed
     def format_proceedings(self, e):
         template = toplevel [
-            sentence [self.format_names('editor')],
-            self.format_btitle(e, 'title'),
+            first_of [
+                # there are editors
+                optional [
+                    join(' ')[
+                        self.format_editor(e),
+                        sentence [
+                            self.format_btitle(e, 'title', as_sentence=False),
+                            self.format_volume_and_series(e, as_sentence=False),
+                            self.format_address_organization_publisher_date(e),
+                        ],
+                    ],
+                ],
+                # there is no editor
+                optional_field('organization'),
+                sentence [
+                    self.format_btitle(e, 'title', as_sentence=False),
+                    self.format_volume_and_series(e, as_sentence=False),
+                    self.format_address_organization_publisher_date(
+                        e, include_organization=False),
+                ],
+            ],
+            sentence(capfirst=False) [ optional_field('note') ],
         ]
         return template.format_data(e)
 
