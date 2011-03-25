@@ -288,11 +288,19 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
-    # TODO quick stub, needs to be completed
     def format_manual(self, e):
+        # TODO this only corresponds to the bst style if author is non-empty
+        # for empty author we should put the organization first
         template = toplevel [
-            sentence [self.format_names('author')],
+            optional [ sentence [ self.format_names('author') ] ],
             self.format_btitle(e, 'title'),
+            sentence [
+                optional_field('organization'),
+                optional_field('address'),
+                self.format_edition(e),
+                optional[ date ],
+            ],
+            sentence(capfirst=False) [ optional_field('note') ],
         ]
         return template.format_data(e)
 
