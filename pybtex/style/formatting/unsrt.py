@@ -167,7 +167,13 @@ class Style(BaseStyle):
             self.format_author_or_editor(e),
             self.format_btitle(e, 'title'),
             self.format_volume_and_series(e),
-            sentence [field('publisher'), date],
+            sentence [
+                field('publisher'),
+                optional_field('address'),
+                self.format_edition(e),
+                date
+            ],
+            sentence(capfirst=False) [ optional_field('note') ],
         ]
         return template.format_data(e)
 
