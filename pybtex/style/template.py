@@ -232,9 +232,10 @@ def sentence(children, data, capfirst=True, add_period=True, sep=', '):
     return text
 
 class FieldIsMissing(PybtexError):
-    def __init__(self, field_name):
+    def __init__(self, field_name, entry):
         self.field_name = field_name
-        super(FieldIsMissing, self).__init__('missing field: %s' % field_name)
+        super(FieldIsMissing, self).__init__(
+            'missing field: %s in %s' % (field_name, entry))
 
 @node
 def field(children, data, name, apply_func=None):
@@ -244,7 +245,7 @@ def field(children, data, name, apply_func=None):
     try:
         field = data.fields[name]
     except KeyError:
-        raise FieldIsMissing(name)
+        raise FieldIsMissing(name, data)
     else:
         if apply_func:
             field = apply_func(field)
@@ -260,7 +261,7 @@ def names(children, data, role, **kwargs):
     except KeyError:
         # role is a bibtex field so it makes sense
         # to raise FieldIsMissing; optional will catch it
-        raise FieldIsMissing(role)
+        raise FieldIsMissing(role, data)
     return join(**kwargs) [[person.text for person in persons]].format_data(data)
 
 @node
