@@ -39,8 +39,12 @@ date = words [optional_field('month'), field('year')]
 class Style(BaseStyle):
     name = 'unsrt'
 
-    def format_names(self, role):
-        return sentence(capfirst=False) [names(role, sep=', ', sep2 = ' and ', last_sep=', and ')]
+    def format_names(self, role, as_sentence=True):
+        formatted_names = names(role, sep=', ', sep2 = ' and ', last_sep=', and ')
+        if as_sentence:
+            return sentence(capfirst=False) [formatted_names]
+        else:
+            return formatted_names
 
     def format_article(self, e):
         volume_and_pages = first_of [
@@ -65,15 +69,15 @@ class Style(BaseStyle):
             optional[ sentence [ field('note') ] ],
         ]
         return template.format_data(e)
-        
+
     def format_author_or_editor(self, e):
         return first_of [
             optional[ self.format_names('author') ],
-            self.format_editor(e),
+            self.format_editor(e, as_sentence=True),
         ]
 
-    def format_editor(self, e):
-        editors = self.format_names('editor')
+    def format_editor(self, e, as_sentence=False):
+        editors = self.format_names('editor', as_sentence=as_sentence)
         if 'editor' not in e.persons:
             # when parsing the template, a FieldIsMissing exception
             # will be thrown anyway; no need to do anything now,
@@ -83,7 +87,7 @@ class Style(BaseStyle):
             word = 'editors'
         else:
             word = 'editor'
-        return words [editors, word]
+        return join(sep=', ') [editors, word]
     
     def format_volume_and_series(self, e):
         volume_and_series = optional [
@@ -112,6 +116,18 @@ class Style(BaseStyle):
         return join(sep=', ') [
             optional [words ['chapter', field('chapter')]],
             optional [words ['pages', pages]],
+        ]
+
+    def format_edition(self, e, mid_sentence=False):
+        if mid_sentence:
+            apply_func = lambda x: x.title()
+        else:
+            apply_func = lambda x: x.lower()
+        return optional [
+            words [
+                field('edition', apply_func=apply_func),
+                'edition',
+            ]
         ]
 
     def format_book(self, e):
@@ -156,11 +172,25 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
-    # TODO quick stub, needs to be completed
     def format_incollection(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             sentence [field('title')],
+            words [
+                'In',
+                sentence(capfirst=False) [
+                    optional[ self.format_editor(e) ],
+                    tag('emph') [field('booktitle')],
+                    self.format_volume_and_series(e),
+                    self.format_chapter_and_pages(e),
+                ],
+            ],
+            sentence[
+                optional_field('publisher'),
+                optional_field('address'),
+                self.format_edition(e, mid_sentence=True),
+                date,
+            ],
         ]
         return template.format_data(e)
 
