@@ -273,11 +273,25 @@ class Style(BaseStyle):
         ]
         return template.format_data(e)
 
-    # TODO quick stub, needs to be completed
     def format_techreport(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             sentence [field('title')],
+            sentence [
+                words[
+                    first_of [
+                        optional_field('type'),
+                        'Technical Report',
+                    ],
+                    optional_field('number'),
+                ],
+                field('institution'),
+                optional_field('address'),
+                date,
+            ],
+            sentence [
+                optional_field('note'),
+            ],
         ]
         return template.format_data(e)
 
