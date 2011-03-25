@@ -1,3 +1,5 @@
+- Fix for crossref lookups when key is not lower case.
+
 - Completed unsrt python style: it now contains all entry types.
 
 - Added doctree backend for rendering into a tree of docutils nodes.
