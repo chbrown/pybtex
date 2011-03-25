@@ -255,7 +255,12 @@ def names(children, data, role, **kwargs):
     """Return formatted names."""
 
     assert not children
-    persons = data.persons[role]
+    try:
+        persons = data.persons[role]
+    except KeyError:
+        # role is a bibtex field so it makes sense
+        # to raise FieldIsMissing; optional will catch it
+        raise FieldIsMissing(role)
     return join(**kwargs) [[person.text for person in persons]].format_data(data)
 
 @node
