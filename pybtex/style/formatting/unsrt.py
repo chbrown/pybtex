@@ -66,7 +66,7 @@ class Style(BaseStyle):
                 tag('emph') [field('journal')],
                 optional[ volume_and_pages ],
                 date],
-            optional[ sentence [ field('note') ] ],
+            sentence(capfirst=False) [ optional_field('note') ],
         ]
         return template.format_data(e)
 
@@ -261,7 +261,7 @@ class Style(BaseStyle):
                     ],
                 ],
             ],
-            optional[ sentence [field('note')] ],
+            sentence(capfirst=False) [ optional_field('note') ],
         ]
         return template.format_data(e)
 
@@ -289,9 +289,7 @@ class Style(BaseStyle):
                 optional[ field('howpublished') ],
                 optional[ date ],
             ],
-            sentence[
-                optional_field('note'),
-            ],
+            sentence(capfirst=False) [ optional_field('note') ],
         ]
         return template.format_data(e)
 
@@ -327,9 +325,7 @@ class Style(BaseStyle):
                 optional_field('address'),
                 date,
             ],
-            sentence [
-                optional_field('note'),
-            ],
+            sentence(capfirst=False) [ optional_field('note') ],
         ]
         return template.format_data(e)
 
@@ -338,7 +334,7 @@ class Style(BaseStyle):
         template = toplevel [
             sentence [self.format_names('author')],
             self.format_title(e, 'title'),
-            sentence [
+            sentence(capfirst=False) [
                 field('note'),
                 optional[ date ]
             ],
