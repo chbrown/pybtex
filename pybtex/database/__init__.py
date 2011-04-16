@@ -292,29 +292,31 @@ class Person(object):
                 pass
 
         def process_von_last(parts):
-            i = 0
-            for i, part in enumerate(reversed(parts[:-1])):
-                if part.islower():
-                    break
-            pos = len(parts) - i - 1
-            von = parts[:pos]
-            last = parts[pos:]
+            von, last = rsplit_at(parts, lambda part: part.islower())
+            if von and not last:
+                last.append(von.pop())
             self._prelast.extend(von)
             self._last.extend(last)
+
+        def find_pos(lst, pred):
+            for i, item in enumerate(lst):
+                if pred(item):
+                    return i
+            return i + 1
 
         def split_at(lst, pred):
             """Split the given list into two parts.
 
             The second part starts with the first item for which the given
-            predicate is True. If the predicate is False for all items, the
-            last element still comes to the last part. This is how BibTeX
-            parses names.
-
+            predicate is True.
             """
-            for i, item in enumerate(lst):
-                if pred(item):
-                    break
-            return lst[:i], lst[i:]
+            pos = find_pos(lst, pred)
+            return lst[:pos], lst[pos:]
+
+        def rsplit_at(lst, pred):
+            rpos = find_pos(reversed(lst), pred)
+            pos = len(lst) - rpos
+            return lst[:pos], lst[pos:]
 
         parts = split_tex_string(name, ',')
         if len(parts) == 3: # von Last, Jr, First
@@ -327,6 +329,9 @@ class Person(object):
         elif len(parts) == 1: # First von Last
             parts = split_tex_string(name)
             first_middle, von_last = split_at(parts, lambda part: part.islower())
+            if not von_last and first_middle:
+                last = first_middle.pop()
+                von_last.append(last)
             process_first_middle(first_middle)
             process_von_last(von_last)
         else:
