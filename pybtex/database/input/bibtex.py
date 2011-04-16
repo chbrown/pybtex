@@ -415,7 +415,7 @@ class Parser(BaseParser):
             self.unnamed_entry_counter += 1
 
         for field_name, field_value_list in fields:
-            field_value = self.flatten_value_list(field_value_list)
+            field_value = textutils.normalize_whitespace(self.flatten_value_list(field_value_list))
             if field_name in self.person_fields:
                 for name in split_name_list(field_value):
                     entry.add_person(Person(name), field_name)
@@ -424,7 +424,7 @@ class Parser(BaseParser):
         self.data.add_entry(key, entry)
 
     def process_preamble(self, value_list):
-        value = self.flatten_value_list(value_list)
+        value = textutils.normalize_whitespace(self.flatten_value_list(value_list))
         self.data.add_to_preamble(value)
 
     def process_macro(self, name, value_list):
@@ -438,10 +438,10 @@ class Parser(BaseParser):
             raise PybtexError('undefined macro %s' % name)
 
     def flatten_value_list(self, value_list):
-        return textutils.normalize_whitespace(''.join(
+        return ''.join(
             self.substitute_macro(value.name) if isinstance(value, Macro) else value
             for value in value_list
-        ))
+        )
 
     def parse_stream(self, stream):
         self.unnamed_entry_counter = 1
