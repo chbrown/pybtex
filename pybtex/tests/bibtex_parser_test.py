@@ -300,3 +300,17 @@ class KeylessEntriesTest(ParserTest, TestCase):
         'unnamed-3': Entry('book'),
         'unnamed-4': Entry('book', {'title': u'Der deutsche Jackie Chan Filmführer'}),
     })
+
+
+class MacrosTest(ParserTest, TestCase):
+    input = u"""
+        @String{and = { and }}
+        @String{etal = and # { {et al.}}}
+        @Article(
+            gsl,
+            author = "Gough, Brian"#etal,
+        )
+    """
+    correct_result = BibliographyData({
+        'gsl': Entry('article', persons={u'author': [Person(u'Gough, Brian'), Person(u'{et al.}')]}),
+    })

@@ -133,6 +133,8 @@ sample_names = [
     ([], [], ['{\\NTG{} \\TeX{} future working group}'], [])),
     ('{{\\LaTeX\\,3} Project Team}',
     ([], [], ['{{\\LaTeX\\,3} Project Team}'], [])),
+    ('Johansen Kyle, Derik Mamania M.',
+    (['Derik', 'Mamania', 'M.'], [], ['Johansen', 'Kyle'], [])),
 ]
 
 def parse_name_test():
