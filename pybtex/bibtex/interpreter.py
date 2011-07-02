@@ -35,6 +35,8 @@ class Variable(object):
 
     def __init__(self, value=None):
         self.set(value)
+    def __repr__(self):
+        return '{0}({1})'.format(type(self).__name__, repr(self._value))
     def set(self, value):
         if value is None:
             value = self.default
@@ -68,8 +70,6 @@ class EntryVariable(Variable):
 class Integer(Variable):
     value_type = int
     default = 0
-    def __repr__(self):
-        return str(self.value())
 
 
 class EntryInteger(Integer, EntryVariable):
@@ -79,11 +79,6 @@ class EntryInteger(Integer, EntryVariable):
 class String(Variable):
     value_type = basestring
     default = ''
-    def __repr__(self):
-        if self.value() is None:
-            return '<empty>'
-        #FIXME encodings
-        return '"%s"' % self.value().encode('UTF-8')
 
 
 class EntryString(String, EntryVariable):
@@ -95,8 +90,6 @@ class MissingField(str):
         self = str.__new__(cls)
         self.name = name
         return self
-    def __repr__(self):
-        return 'MISSING<%s>' % self.name
     def __nonzero__(self):
         return False
 
@@ -124,8 +117,6 @@ class Identifier(Variable):
         except KeyError:
             raise BibTeXError('can not execute undefined function %s' % self)
         f.execute(interpreter)
-    def __repr__(self):
-        return self.value()
 
 
 class QuotedVar(Variable):
@@ -136,8 +127,6 @@ class QuotedVar(Variable):
         except KeyError:
             raise BibTeXError('can not push undefined variable %s' % self.value())
         interpreter.push(var)
-    def __repr__(self):
-        return "'%s" % self.value()
 
 
 class Function(object):
@@ -150,7 +139,7 @@ class Function(object):
         for element in self.body:
             element.execute(interpreter)
     def __repr__(self):
-        return repr(self.body)
+        return '{0}({1})'.format(type(self).__name__, repr(self.body))
 
 
 class FunctionLiteral(Function):
