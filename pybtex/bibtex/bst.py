@@ -94,7 +94,7 @@ def strip_comment(line):
         pos += 1
     return line[:pos]
 
-def parse_file(filename, encoding):
+def parse_file(filename, encoding=None):
     bst_file = pybtex.io.open_unicode(filename, encoding=encoding)
     bst = ''.join(strip_comment(line) for line in bst_file)
     return bstGrammar.parseString(bst)
