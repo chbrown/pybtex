@@ -59,15 +59,19 @@ Gaub, Hermann E.
 
 """
 
-import re
 from string import ascii_letters, digits
 
+import re
 import pybtex.io
 from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
 from pybtex.bibtex.utils import split_name_list
 from pybtex.exceptions import PybtexError
 from pybtex import textutils
+from pybtex.scanner import (
+    Scanner, Pattern, Literal,
+    PrematureEOF, PybtexSyntaxError,
+)
 
 month_names = {
     'jan': 'January',
@@ -85,15 +89,6 @@ month_names = {
 }
 
 
-class Token(object):
-    def __init__(self, value, pattern):
-        self.value = value
-        self.pattern = pattern
-
-    def __repr__(self):
-        return repr(self.value)
-
-
 class Macro(object):
     def __init__(self, name):
         self.name = name
@@ -104,122 +99,6 @@ class Macro(object):
 
 class SkipEntry(Exception):
     pass
-
-
-class BibTeXSyntaxError(PybtexError):
-    def __init__(self, message, parser):
-        super(BibTeXSyntaxError, self).__init__(message)
-        self.parser = parser
-        self.lineno = parser.lineno
-        self.error_context_info = parser.get_error_context_info()
-
-    def __unicode__(self):
-        base_message = super(BibTeXSyntaxError, self).__unicode__()
-        return 'Syntax error in line {parser.lineno}: {message}'.format(
-            parser=self.parser,
-            message=base_message,
-        )
-
-
-class TokenRequired(BibTeXSyntaxError):
-    def __init__(self, description, context):
-        message = '{0} expected'.format(description)
-        super(TokenRequired, self).__init__(message, context)
-
-    def __unicode__(self):
-        self.context, self.lineno, self.colno = self.parser.get_error_context(self.error_context_info)
-        message = super(TokenRequired, self).__unicode__()
-        if self.context is None:
-            return message
-        if self.colno == 0:
-            marker = '^^'
-        else:
-            marker = ' ' * (self.colno - 1) + '^^^'
-        return '\n'.join((message, self.context, marker))
-
-
-class PrematureEOF(BibTeXSyntaxError):
-    def __init__(self, parser):
-        message = 'premature end of file'
-        super(PrematureEOF, self).__init__(message, parser)
-
-
-class Scanner(object):
-    text = None
-    lineno = None
-    pos = None
-    end_pos = None
-
-    def __init__(self, text):
-        self.text = text
-        self.lineno = 1
-        self.pos = 0
-        self.end_pos = len(text)
-
-    def skip_to(self, patterns):
-        end = None
-        winning_pattern = None
-        for pattern in patterns:
-            match = pattern.search(self.text, self.pos)
-            if match and (not end or match.end() < end):
-                end = match.end()
-                winning_pattern = pattern
-        if winning_pattern:
-            value = self.text[self.pos : end]
-            self.pos = end
-            #print '>>', value
-            self.update_lineno(value)
-            return Token(value, winning_pattern)
-
-    def update_lineno(self, value):
-        num_newlines = len(self.NEWLINE.findall(value))
-        self.lineno += num_newlines
-
-    def eat_whitespace_and_check_eof(self):
-        whitespace = self.WHITESPACE.match(self.text, self.pos)
-        if whitespace:
-            self.pos = whitespace.end()
-            self.update_lineno(whitespace.group())
-        if self.pos == self.end_pos:
-            raise PrematureEOF(self)
-
-    def get_token(self, patterns):
-        self.eat_whitespace_and_check_eof()
-        for i, pattern in enumerate(patterns):
-            match = pattern.match(self.text, self.pos)
-            if match:
-                value = match.group()
-                self.pos = match.end()
-                #print '->', value
-                return Token(value, pattern)
-
-    def optional(self, patterns):
-        return self.get_token(patterns)
-
-    def required(self, patterns, description=None):
-        token =  self.get_token(patterns)
-        if token is None:
-            if not description:
-                description = ' or '.join(pattern.description for pattern in patterns)
-            raise TokenRequired(description, self)
-        else:
-            return token
-
-
-class Pattern(object):
-    def __init__(self, regexp, description):
-        self.description = description
-        compiled_regexp = re.compile(regexp)
-        self.search = compiled_regexp.search
-        self.match = compiled_regexp.match
-        self.findall = compiled_regexp.findall
-
-
-class Literal(Pattern):
-    def __init__(self, literal):
-        pattern = re.compile(re.escape(literal))
-        description = "'{0}'".format(literal)
-        super(Literal, self).__init__(pattern, description)
 
 
 class BibTeXEntryIterator(Scanner):
@@ -237,8 +116,6 @@ class BibTeXEntryIterator(Scanner):
     EQUALS = Literal(u'=')
     HASH = Literal(u'#')
     AT = Literal(u'@')
-    WHITESPACE = Pattern(ur'\s+', 'whitespace')
-    NEWLINE = Pattern(ur'[\r\n]', 'newline')
 
     command_start = None
     current_command = None
@@ -276,7 +153,7 @@ class BibTeXEntryIterator(Scanner):
             self.command_start = self.pos - 1
             try:
                 yield tuple(self.parse_command())
-            except BibTeXSyntaxError as error:
+            except PybtexSyntaxError as error:
                 print unicode(error) # FIXME
                 #raise
             except SkipEntry:
@@ -308,7 +185,7 @@ class BibTeXEntryIterator(Scanner):
         try:
             parse_body(body_end)
             self.required([body_end])
-        except BibTeXSyntaxError, error:
+        except PybtexSyntaxError, error:
             print unicode(error) # FIXME add proper error handling
         return make_result()
 
@@ -390,7 +267,7 @@ class BibTeXEntryIterator(Scanner):
                 for subpart in self.parse_string(self.RBRACE, level + 1):
                     yield subpart
             elif part.pattern is self.RBRACE and level == 0:
-                raise BibTeXSyntaxError('unbalanced braces', self)
+                raise PybtexSyntaxError('unbalanced braces', self)
 
 
 class Parser(BaseParser):
