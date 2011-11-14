@@ -32,10 +32,11 @@ class Backend(BaseBackend):
 
     def write_entry(self, key, label, text):
         """Return footnote node, with key as id, label as first child,
-        and text as second child. Note that key is formatted with
-        make_id.
+        and text as second child. To form the id, the key is prepended with
+        ``bibtex-cite-`` and then formatted with :meth:`docutils.nodes.make_id`.
         """
-        node = docutils.nodes.footnote(ids=[docutils.nodes.make_id(key)])
+        id_ = docutils.nodes.make_id("bibtex-cite-%s" % key)
+        node = docutils.nodes.footnote(ids=[id_])
         node.children.append(docutils.nodes.label(rawsource=label, text=label))
         node.children.append(text)
         return node
