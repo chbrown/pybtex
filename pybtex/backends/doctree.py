@@ -31,9 +31,12 @@ class Backend(BaseBackend):
             return node
 
     def write_entry(self, key, label, text):
-        # This is a very simple implementation, does not include key
-        # and label yet.
-        node = docutils.nodes.paragraph()
+        """Return footnote node, with key as id, label as first child,
+        and text as second child. Note that key is formatted with
+        make_id.
+        """
+        node = docutils.nodes.footnote(ids=[docutils.nodes.make_id(key)])
+        node.children.append(docutils.nodes.label(rawsource=label, text=label))
         node.children.append(text)
         return node
 
