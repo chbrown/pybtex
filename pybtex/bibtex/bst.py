@@ -44,6 +44,7 @@ def process_function(toks):
     return FunctionLiteral(toks[0])
 
 
+quote_or_comment = re.compile(ur'[%"]')
 def strip_comment(line):
     """Strip the commented part of the line."
 
@@ -57,16 +58,19 @@ def strip_comment(line):
     "100% compatibility" is a myth
 
     """
-    quotes = 0
     pos = 0
-    for char in line:
-        if char == '"':
-            quotes += 1
-        elif char == '%':
-            if quotes % 2 == 0:
-                break 
-        pos += 1
-    return line[:pos]
+    end = len(line) - 1
+    in_string = False
+    while pos < end:
+        match = quote_or_comment.search(line, pos)
+        if not match:
+            break
+        if match.group() == '%' and not in_string:
+            return line[:match.start()]
+        elif match.group() == '"':
+            in_string = not in_string
+        pos = match.end()
+    return line
 
 
 from pybtex.scanner import (
