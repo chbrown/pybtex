@@ -50,6 +50,12 @@ class Variable(object):
     def value(self):
         return self._value
 
+    def __repr__(self):
+        return u'{0}({1})'.format(type(self).__name__, repr(self.value()))
+
+    def __eq__(self, other):
+        return type(self) == type(other) and self._value == other._value
+
 
 class EntryVariable(Variable):
     def __init__(self, interpreter, name):
@@ -134,12 +140,17 @@ class Function(object):
         if body is None:
             body = []
         self.body = body
+
+    def __repr__(self):
+        return u'{0}({1})'.format(type(self).__name__, repr(self.body))
+
+    def __eq__(self, other):
+        return type(self) == type(other) and self.body == other.body
+
     def execute(self, interpreter):
 #        print 'executing function', self.body
         for element in self.body:
             element.execute(interpreter)
-    def __repr__(self):
-        return '{0}({1})'.format(type(self).__name__, repr(self.body))
 
 
 class FunctionLiteral(Function):
