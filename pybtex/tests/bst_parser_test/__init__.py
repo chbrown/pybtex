@@ -18,7 +18,6 @@ def check_bst_parser(dataset_name):
     bst_data = pkgutil.get_data('pybtex.tests.bst_parser_test', dataset_name + '.bst').decode('latin1')
     actual_result = list(bst.parse_stream(StringIO(bst_data)))
 
-    # XXX pyparsing return list-like object which are not equal to plain lists
     for correct_element, actual_element in zip(actual_result, correct_result):
         assert correct_element == actual_element, '\n{0}\n{1}'.format(correct_element, actual_element)
 
