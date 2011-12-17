@@ -116,10 +116,17 @@ class Scanner(object):
             return token
 
     def get_error_context_info(self):
-        raise NotImplementedError
+        print self.lineno, self.pos
+        return self.lineno, self.pos
 
     def get_error_context(self, context_info):
-        raise NotImplementedError
+        error_lineno, error_pos  = context_info
+        error_lineno0 = error_lineno - 1
+        lines = self.text.splitlines(True)
+        before_error = ''.join(lines[:error_lineno0])
+        colno = error_pos - len(before_error)
+        context = lines[error_lineno0].rstrip('\r\n')
+        return context, error_lineno, colno
 
 
 class PybtexSyntaxError(PybtexError):
