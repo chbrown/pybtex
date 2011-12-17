@@ -37,9 +37,9 @@ class Token(object):
 
 
 class Pattern(object):
-    def __init__(self, regexp, description):
+    def __init__(self, regexp, description, flags=0):
         self.description = description
-        compiled_regexp = re.compile(regexp)
+        compiled_regexp = re.compile(regexp, flags=flags)
         self.search = compiled_regexp.search
         self.match = compiled_regexp.match
         self.findall = compiled_regexp.findall
@@ -85,16 +85,22 @@ class Scanner(object):
         num_newlines = len(self.NEWLINE.findall(value))
         self.lineno += num_newlines
 
-    def eat_whitespace_and_check_eof(self):
+    def eat_whitespace(self):
         whitespace = self.WHITESPACE.match(self.text, self.pos)
         if whitespace:
             self.pos = whitespace.end()
             self.update_lineno(whitespace.group())
-        if self.pos == self.end_pos:
-            raise PrematureEOF(self)
 
-    def get_token(self, patterns):
-        self.eat_whitespace_and_check_eof()
+    def eof(self):
+        return self.pos == self.end_pos
+
+    def get_token(self, patterns, allow_eof=False):
+        self.eat_whitespace()
+        if self.eof():
+            if allow_eof:
+                raise EOFError
+            else:
+                raise PrematureEOF(self)
         for i, pattern in enumerate(patterns):
             match = pattern.match(self.text, self.pos)
             if match:
@@ -103,11 +109,11 @@ class Scanner(object):
                 #print '->', value
                 return Token(value, pattern)
 
-    def optional(self, patterns):
-        return self.get_token(patterns)
+    def optional(self, patterns, allow_eof=False):
+        return self.get_token(patterns, allow_eof=allow_eof)
 
-    def required(self, patterns, description=None):
-        token =  self.get_token(patterns)
+    def required(self, patterns, description=None, allow_eof=False):
+        token =  self.get_token(patterns, allow_eof=allow_eof)
         if token is None:
             if not description:
                 description = ' or '.join(pattern.description for pattern in patterns)
@@ -116,7 +122,6 @@ class Scanner(object):
             return token
 
     def get_error_context_info(self):
-        print self.lineno, self.pos
         return self.lineno, self.pos
 
     def get_error_context(self, context_info):
@@ -151,9 +156,9 @@ class PrematureEOF(PybtexSyntaxError):
 
 
 class TokenRequired(PybtexSyntaxError):
-    def __init__(self, description, context):
+    def __init__(self, description, parser):
         message = '{0} expected'.format(description)
-        super(TokenRequired, self).__init__(message, context)
+        super(TokenRequired, self).__init__(message, parser)
 
     def __unicode__(self):
         self.context, self.lineno, self.colno = self.parser.get_error_context(self.error_context_info)

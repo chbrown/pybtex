@@ -19,28 +19,22 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pyparsing import (Suppress, QuotedString, Word,
-        alphas, printables, Regex, lineno, line, col,
-        Forward, ZeroOrMore, OneOrMore, Group,
-        restOfLine, StringEnd, ParserElement, downcaseTokens)
+import re
 from pybtex.bibtex.interpreter import (Integer, String, QuotedVar,
         Identifier, FunctionLiteral, BibTeXError)
 import pybtex.io
 
 #ParserElement.enablePackrat()
 
-def process_int_literal(s, loc, toks):
-    try:
-        return Integer(int(toks[0][1:]))
-    except ValueError:
-        raise BibTeXError('%i:%i invalid integer literal\n%s' %
-                (lineno(loc, s), col(loc, s), line(loc, s)))
+def process_int_literal(value):
+    return Integer(int(value.strip('#')))
 
-def process_string_literal(toks):
-    return String(toks[0])
+def process_string_literal(value):
+    assert value.startswith('"')
+    assert value.endswith('"')
+    return String(value[1:-1])
 
-def process_identifier(toks):
-    name = toks[0].lower()
+def process_identifier(name):
     if name[0] == "'":
         return QuotedVar(name[1:])
     else:
@@ -49,27 +43,7 @@ def process_identifier(toks):
 def process_function(toks):
     return FunctionLiteral(toks[0])
 
-comment = '%' + restOfLine
-lbrace = Suppress('{')
-rbrace = Suppress('}')
-intLiteral = Regex(r'#-?\d+').setParseAction(process_int_literal)
-stringLiteral = QuotedString('"').setParseAction(process_string_literal)
-restrictedPrintables = ''.join(c for c in printables if not c in '#%^&{}~\\')
-nonnums = ''.join(c for c in restrictedPrintables if not c.isdigit())
-identifier = Word(nonnums, restrictedPrintables).setParseAction(process_identifier)
-token = stringLiteral | intLiteral | identifier
-tokenList = Forward()
-tokenList.setParseAction(process_function)
-tokenList << Group(lbrace + ZeroOrMore(token | tokenList) + rbrace)
-commandName = Word(alphas).setParseAction(downcaseTokens)
-arg = Group(lbrace + ZeroOrMore(token | tokenList) + rbrace)
-command = commandName + ZeroOrMore(arg)
-bstGrammar = OneOrMore(command) + StringEnd()
 
-# sloooooow
-# bstGrammar.ignore(comment)
-
-# somewhat faster
 def strip_comment(line):
     """Strip the commented part of the line."
 
@@ -94,10 +68,79 @@ def strip_comment(line):
         pos += 1
     return line[:pos]
 
+
+from pybtex.scanner import (
+    Scanner, Pattern, Literal,
+    TokenRequired, PybtexSyntaxError,
+)
+
+
+class BstParser(Scanner):
+    LBRACE = Literal(u'{')
+    RBRACE = Literal(u'}')
+    STRING = Pattern(ur'"[^\"]*"', 'string')
+    INTEGER = Pattern(ur'#-?\d+', 'integer')
+    NAME = Pattern(ur'[^#\"\{\}\s]+', 'name')
+    WHITESPACE = Pattern(ur'\s+', 'whitespace')
+
+    COMMANDS = {
+        'ENTRY': 3,
+        'EXECUTE': 1,
+        'FUNCTION': 2,
+        'INTEGERS': 1,
+        'ITERATE': 1,
+        'MACRO': 2,
+        'READ': 0,
+        'REVERSE': 1,
+        'SORT': 0,
+        'STRINGS': 1,
+    }
+
+    LITERAL_TYPES = {
+        STRING: process_string_literal,
+        INTEGER: process_int_literal,
+        NAME: process_identifier,
+    }
+
+    def parse(self):
+        while True:
+            try:
+                yield list(self.parse_command())
+            except EOFError:
+                break
+            except PybtexSyntaxError, e:
+                print unicode(e)
+                raise
+                break
+
+    def parse_group(self):
+        while True:
+            token = self.required([self.LBRACE, self.RBRACE, self.STRING, self.INTEGER, self.NAME])
+            if token.pattern is self.LBRACE:
+                yield FunctionLiteral(list(self.parse_group()))
+            elif token.pattern is self.RBRACE:
+                break
+            else:
+                yield self.LITERAL_TYPES[token.pattern](token.value)
+
+    def parse_command(self):
+        command_name = self.required([self.NAME], 'BST command', allow_eof=True).value
+        try:
+            arity = self.COMMANDS[command_name.upper()]
+        except KeyError:
+            raise TokenRequired('BST command', self)
+        yield command_name
+        for i in range(arity):
+            brace = self.optional([self.LBRACE])
+            if not brace:
+                break
+            yield list(self.parse_group())
+
+
 def parse_file(filename, encoding=None):
     bst_file = pybtex.io.open_unicode(filename, encoding=encoding)
-    bst = ''.join(strip_comment(line) for line in bst_file)
-    return bstGrammar.parseString(bst)
+    bst = '\n'.join(strip_comment(line.rstrip()) for line in bst_file)
+    return list(BstParser(bst).parse())
 
 
 if __name__ == '__main__':
