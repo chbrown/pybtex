@@ -20,7 +20,7 @@ def check_bst_parser(dataset_name):
 
     # XXX pyparsing return list-like object which are not equal to plain lists
     for correct_element, actual_element in zip(actual_result, correct_result):
-        assert repr(correct_element) == repr(actual_element), '\n{0}\n{1}'.format(correct_element, actual_element)
+        assert correct_element == actual_element, '\n{0}\n{1}'.format(correct_element, actual_element)
 
  
 def test_bst_parser():
