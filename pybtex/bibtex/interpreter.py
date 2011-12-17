@@ -197,55 +197,57 @@ class Interpreter(object):
         self.output_file = bbl_file
         self.min_crossrefs = min_crossrefs
 
-        for i in self.bst_script:
-            commandname = 'command_' + i
-            if hasattr(self, commandname):
-                getattr(self, commandname)()
+        for command in self.bst_script:
+            name = command[0]
+            args = command[1:]
+            method = 'command_' + name.lower()
+            if hasattr(self, method):
+                getattr(self, method)(*args)
             else:
-                print 'Unknown command', commandname
+                print 'Unknown command', name
 
         self.output_file.close()
 
-    def command_entry(self):
-        for id in self.get_token():
+    def command_entry(self, fields, ints, strings):
+        for id in fields:
             name = id.value()
             self.add_variable(name, Field(self, name))
         self.add_variable('crossref', Field(self, 'crossref'))
-        for id in self.get_token():
+        for id in ints:
             name = id.value()
             self.add_variable(name, EntryInteger(self, name))
-        for id in self.get_token():
+        for id in strings:
             name = id.value()
             self.add_variable(name, EntryString(self, name))
 
-    def command_execute(self):
+    def command_execute(self, command_):
 #        print 'EXECUTE'
-        self.get_token()[0].execute(self)
+        command_[0].execute(self)
 
-    def command_function(self):
-        name = self.get_token()[0].value()
-        body = self.get_token()
+    def command_function(self, name_, body):
+        name = name_[0].value()
         self.add_variable(name, Function(body))
 
-    def command_integers(self):
+    def command_integers(self, identifiers):
 #        print 'INTEGERS'
-        for id in self.get_token():
-            self.vars[id.value()] = Integer()
+        for identifier in identifiers:
+            self.vars[identifier.value()] = Integer()
 
-    def command_iterate(self):
-        self._iterate(self.citations)
+    def command_iterate(self, function_group):
+        function = function_group[0].value()
+        self._iterate(function, self.citations)
 
-    def _iterate(self, citations):
-        f = self.vars[self.get_token()[0].value()]
+    def _iterate(self, function, citations):
+        f = self.vars[function]
         for key in citations:
             self.current_entry_key = key
             self.current_entry = self.bib_data.entries[key]
             f.execute(self)
         self.currentEntry = None
 
-    def command_macro(self):
-        name = self.get_token()[0].value()
-        value = self.get_token()[0].value()
+    def command_macro(self, name_, value_):
+        name = name_[0].value()
+        value = value_[0].value()
         self.macros[name] = value
 
     def command_read(self):
@@ -267,18 +269,19 @@ class Interpreter(object):
             else:
                 print_warning('missing database entry for "{0}"'.format(citation))
 
-    def command_reverse(self):
-        self._iterate(reversed(self.citations))
+    def command_reverse(self, function_group):
+        function = function_group[0].value()
+        self._iterate(function, reversed(self.citations))
 
     def command_sort(self):
         def key(citation):
             return self.bib_data.entries[citation].vars['sort.key$']
         self.citations.sort(key=key)
 
-    def command_strings(self):
+    def command_strings(self, identifiers):
         #print 'STRINGS'
-        for id in self.get_token():
-            self.vars[id.value()] = String()
+        for identifier in identifiers:
+            self.vars[identifier.value()] = String()
 
     @staticmethod
     def is_missing_field(field):
