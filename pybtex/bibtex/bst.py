@@ -139,10 +139,15 @@ class BstParser(Scanner):
 
 def parse_file(filename, encoding=None):
     bst_file = pybtex.io.open_unicode(filename, encoding=encoding)
-    bst = '\n'.join(strip_comment(line.rstrip()) for line in bst_file)
+    return parse_stream(bst_file)
+
+
+def parse_stream(stream):
+    bst = '\n'.join(strip_comment(line.rstrip()) for line in stream)
     return list(BstParser(bst).parse())
 
 
 if __name__ == '__main__':
     import sys
-    print parse_file(sys.argv[1])
+    from pprint import pprint
+    pprint(parse_file(sys.argv[1]))
