@@ -35,6 +35,8 @@ class Variable(object):
 
     def __init__(self, value=None):
         self.set(value)
+    def __repr__(self):
+        return '{0}({1})'.format(type(self).__name__, repr(self._value))
     def set(self, value):
         if value is None:
             value = self.default
@@ -47,6 +49,12 @@ class Variable(object):
         interpreter.push(self.value())
     def value(self):
         return self._value
+
+    def __repr__(self):
+        return u'{0}({1})'.format(type(self).__name__, repr(self.value()))
+
+    def __eq__(self, other):
+        return type(self) == type(other) and self._value == other._value
 
 
 class EntryVariable(Variable):
@@ -68,8 +76,6 @@ class EntryVariable(Variable):
 class Integer(Variable):
     value_type = int
     default = 0
-    def __repr__(self):
-        return str(self.value())
 
 
 class EntryInteger(Integer, EntryVariable):
@@ -79,11 +85,6 @@ class EntryInteger(Integer, EntryVariable):
 class String(Variable):
     value_type = basestring
     default = ''
-    def __repr__(self):
-        if self.value() is None:
-            return '<empty>'
-        #FIXME encodings
-        return '"%s"' % self.value().encode('UTF-8')
 
 
 class EntryString(String, EntryVariable):
@@ -95,8 +96,6 @@ class MissingField(str):
         self = str.__new__(cls)
         self.name = name
         return self
-    def __repr__(self):
-        return 'MISSING<%s>' % self.name
     def __nonzero__(self):
         return False
 
@@ -124,8 +123,6 @@ class Identifier(Variable):
         except KeyError:
             raise BibTeXError('can not execute undefined function %s' % self)
         f.execute(interpreter)
-    def __repr__(self):
-        return self.value()
 
 
 class QuotedVar(Variable):
@@ -136,8 +133,6 @@ class QuotedVar(Variable):
         except KeyError:
             raise BibTeXError('can not push undefined variable %s' % self.value())
         interpreter.push(var)
-    def __repr__(self):
-        return "'%s" % self.value()
 
 
 class Function(object):
@@ -145,12 +140,17 @@ class Function(object):
         if body is None:
             body = []
         self.body = body
+
+    def __repr__(self):
+        return u'{0}({1})'.format(type(self).__name__, repr(self.body))
+
+    def __eq__(self, other):
+        return type(self) == type(other) and self.body == other.body
+
     def execute(self, interpreter):
 #        print 'executing function', self.body
         for element in self.body:
             element.execute(interpreter)
-    def __repr__(self):
-        return repr(self.body)
 
 
 class FunctionLiteral(Function):
@@ -208,55 +208,57 @@ class Interpreter(object):
         self.output_file = bbl_file
         self.min_crossrefs = min_crossrefs
 
-        for i in self.bst_script:
-            commandname = 'command_' + i
-            if hasattr(self, commandname):
-                getattr(self, commandname)()
+        for command in self.bst_script:
+            name = command[0]
+            args = command[1:]
+            method = 'command_' + name.lower()
+            if hasattr(self, method):
+                getattr(self, method)(*args)
             else:
-                print 'Unknown command', commandname
+                print 'Unknown command', name
 
         self.output_file.close()
 
-    def command_entry(self):
-        for id in self.get_token():
+    def command_entry(self, fields, ints, strings):
+        for id in fields:
             name = id.value()
             self.add_variable(name, Field(self, name))
         self.add_variable('crossref', Field(self, 'crossref'))
-        for id in self.get_token():
+        for id in ints:
             name = id.value()
             self.add_variable(name, EntryInteger(self, name))
-        for id in self.get_token():
+        for id in strings:
             name = id.value()
             self.add_variable(name, EntryString(self, name))
 
-    def command_execute(self):
+    def command_execute(self, command_):
 #        print 'EXECUTE'
-        self.get_token()[0].execute(self)
+        command_[0].execute(self)
 
-    def command_function(self):
-        name = self.get_token()[0].value()
-        body = self.get_token()
+    def command_function(self, name_, body):
+        name = name_[0].value()
         self.add_variable(name, Function(body))
 
-    def command_integers(self):
+    def command_integers(self, identifiers):
 #        print 'INTEGERS'
-        for id in self.get_token():
-            self.vars[id.value()] = Integer()
+        for identifier in identifiers:
+            self.vars[identifier.value()] = Integer()
 
-    def command_iterate(self):
-        self._iterate(self.citations)
+    def command_iterate(self, function_group):
+        function = function_group[0].value()
+        self._iterate(function, self.citations)
 
-    def _iterate(self, citations):
-        f = self.vars[self.get_token()[0].value()]
+    def _iterate(self, function, citations):
+        f = self.vars[function]
         for key in citations:
             self.current_entry_key = key
             self.current_entry = self.bib_data.entries[key]
             f.execute(self)
         self.currentEntry = None
 
-    def command_macro(self):
-        name = self.get_token()[0].value()
-        value = self.get_token()[0].value()
+    def command_macro(self, name_, value_):
+        name = name_[0].value()
+        value = value_[0].value()
         self.macros[name] = value
 
     def command_read(self):
@@ -278,18 +280,19 @@ class Interpreter(object):
             else:
                 print_warning('missing database entry for "{0}"'.format(citation))
 
-    def command_reverse(self):
-        self._iterate(reversed(self.citations))
+    def command_reverse(self, function_group):
+        function = function_group[0].value()
+        self._iterate(function, reversed(self.citations))
 
     def command_sort(self):
         def key(citation):
             return self.bib_data.entries[citation].vars['sort.key$']
         self.citations.sort(key=key)
 
-    def command_strings(self):
+    def command_strings(self, identifiers):
         #print 'STRINGS'
-        for id in self.get_token():
-            self.vars[id.value()] = String()
+        for identifier in identifiers:
+            self.vars[identifier.value()] = String()
 
     @staticmethod
     def is_missing_field(field):
