@@ -137,14 +137,14 @@ class Scanner(object):
 class PybtexSyntaxError(PybtexError):
     def __init__(self, message, parser):
         super(PybtexSyntaxError, self).__init__(message)
-        self.parser = parser
         self.lineno = parser.lineno
+        self.parser = parser
         self.error_context_info = parser.get_error_context_info()
 
     def __unicode__(self):
         base_message = super(PybtexSyntaxError, self).__unicode__()
-        return 'Syntax error in line {parser.lineno}: {message}'.format(
-            parser=self.parser,
+        return 'Syntax error in line {lineno}: {message}'.format(
+            lineno=self.lineno,
             message=base_message,
         )
 

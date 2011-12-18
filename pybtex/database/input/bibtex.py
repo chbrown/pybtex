@@ -134,10 +134,10 @@ class BibTeXEntryIterator(Scanner):
         return self.parse_bibliography()
 
     def get_error_context_info(self):
-        return self.command_start, self.pos
+        return self.command_start, self.lineno, self.pos
 
     def get_error_context(self, context_info):
-        error_start, error_pos  = context_info
+        error_start, lineno, error_pos  = context_info
         before_error = self.text[error_start:error_pos]
         if not before_error.endswith('\n'):
             eol = self.NEWLINE.search(self.text, error_pos)
@@ -146,7 +146,7 @@ class BibTeXEntryIterator(Scanner):
             error_end = error_pos
         context = self.text[error_start:error_end].rstrip('\r\n')
         colno = len(before_error.splitlines()[-1])
-        return context, self.lineno, colno
+        return context, lineno, colno
 
     def handle_error(self, error):
         raise error
