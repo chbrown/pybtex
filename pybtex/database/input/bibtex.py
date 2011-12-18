@@ -154,8 +154,8 @@ class BibTeXEntryIterator(Scanner):
             try:
                 yield tuple(self.parse_command())
             except PybtexSyntaxError as error:
-                print unicode(error) # FIXME
-                #raise
+                from pybtex.errors import report_error
+                report_error(error)
             except SkipEntry:
                 pass
 
@@ -186,7 +186,8 @@ class BibTeXEntryIterator(Scanner):
             parse_body(body_end)
             self.required([body_end])
         except PybtexSyntaxError, error:
-            print unicode(error) # FIXME add proper error handling
+            from pybtex.errors import report_error
+            report_error(error)
         return make_result()
 
     def parse_preamble_body(self, body_end):

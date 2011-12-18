@@ -26,6 +26,7 @@ import optparse
 
 from pybtex.__version__ import version
 
+from pybtex import errors
 from pybtex.textutils import capfirst, add_period
 from pybtex.plugin import find_plugin, enumerate_plugin_names
 
@@ -74,7 +75,7 @@ class CommandLine(object):
         try:
             self.main()
         except PybtexError, error:
-            print >>pybtex.io.stderr, 'ERROR: %s' % capfirst(add_period(unicode(error)))
+            errors.print_error(error)
             sys.exit(1)
 
     def make_option_parser(self):
@@ -117,3 +118,4 @@ class CommandLine(object):
             sys.exit(1)
 
         self.run(options, args)
+        sys.exit(errors.error_code)
