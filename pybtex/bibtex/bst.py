@@ -113,7 +113,6 @@ class BstParser(Scanner):
             except EOFError:
                 break
             except PybtexSyntaxError, e:
-                print unicode(e)
                 raise
                 break
 
