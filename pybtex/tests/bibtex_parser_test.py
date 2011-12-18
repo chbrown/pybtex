@@ -34,6 +34,7 @@ from pybtex.database import BibliographyData
 from pybtex.database import Entry, Person
 from pybtex.database.input.bibtex import Parser
 from io import StringIO
+from itertools import izip_longest
 
 from unittest import TestCase
 
@@ -51,6 +52,7 @@ class ParserTest(object):
     input = None
     correct_result = None
     parser_options = {}
+    errors = []
 
     def test_parser(self):
         parser = TestParser(encoding='UTF-8', **self.parser_options)
@@ -58,6 +60,11 @@ class ParserTest(object):
         result = parser.data
         correct_result = self.correct_result
         assert result == correct_result
+        import sys
+        print '------'
+        for error, correct_error in izip_longest(parser.errors, self.errors):
+            actual_error = unicode(error)
+            assert actual_error == correct_error
     
 
 class EmptyDataTest(ParserTest, TestCase):
@@ -138,6 +145,11 @@ class AtTest(ParserTest, TestCase):
         'me2010': Entry('article', {'title': 'An @tey article'}),
         'me2009': Entry('article', {'title': 'A @tey short story'}),
     })
+    errors = [
+        "Syntax error in line 2: '(' or '{' expected\n"
+        "@ here parses fine in both cases\n"
+        "      ^^^",
+    ]
 
 class EntryTypesTest(ParserTest, TestCase):
     input = u"""
@@ -163,6 +175,20 @@ class EntryTypesTest(ParserTest, TestCase):
         'aa1_id': Entry('t+'),
         'aa2_id': Entry('_t'),
     })
+    errors = [
+        "Syntax error in line 12: a valid name expected\n"
+        "@2thou{further_id,}\n"
+        "^^^",
+        "Syntax error in line 13: '(' or '{' expected\n"
+        "@some name{id3,}\n"
+        "     ^^^",
+        "Syntax error in line 14: '(' or '{' expected\n"
+        "@some#{id4,}\n"
+        "    ^^^",
+        "Syntax error in line 15: '(' or '{' expected\n"
+        "@some%{id4,}\n"
+        "    ^^^",
+    ]
 
 
 class FieldNamesTest(ParserTest, TestCase):
@@ -197,6 +223,17 @@ class FieldNamesTest(ParserTest, TestCase):
         '2016': Entry('article', {'-name': 'Myself'}),
         '2017': Entry('article', {'@name': 'Myself'}),
     })
+    errors = [
+        "Syntax error in line 5: '}' expected\n"
+        '@article{2010, 0author="Me"}'
+        '\n              ^^^',
+        "Syntax error in line 11: '=' expected\n"
+        '@article{2012, author name = "Myself"}\n'
+        '                     ^^^',
+        'Syntax error in line 14: \'}\' expected\n'
+        '@article{2013, #name = "Myself"}\n'
+        '              ^^^',
+    ]
 
 
 class InlineCommentTest(ParserTest, TestCase):
@@ -224,6 +261,16 @@ class InlineCommentTest(ParserTest, TestCase):
         'me2012': Entry('article'),
         'me2013': Entry('article'),
     })
+    errors = [
+        "Syntax error in line 10: '}' expected\n"
+        '@article{Me2011,\n'
+        '            author="Brett-like, Matthew",\n'
+        '        % some text\n'
+        '       ^^^',
+        "Syntax error in line 12: '}' expected\n"
+        "@article{Me2012, % some text\n"
+        "                ^^^",
+    ]
 
 
 class SimpleEntryTest(ParserTest, TestCase):
@@ -286,6 +333,13 @@ class KeyParsingTest(ParserTest, TestCase):
         'test(braces1)': Entry('article'),
         'test(braces2)': Entry('article'),
     })
+    errors = [
+        "Syntax error in line 5: ')' expected\n"
+        "@article(test(parens1))\n"
+        "\n"
+        "        # works fine\n"
+        "       ^^^",
+    ]
 
 
 class KeylessEntriesTest(ParserTest, TestCase):
