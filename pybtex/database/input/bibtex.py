@@ -124,9 +124,11 @@ class BibTeXEntryIterator(Scanner):
     current_field_name = None
     current_field_value = None
 
-    def __init__(self, text, keyless_entries=False):
+    def __init__(self, text, keyless_entries=False, handle_error=None):
         super(BibTeXEntryIterator, self).__init__(text)
         self.keyless_entries = keyless_entries
+        if handle_error:
+            self.handle_error = handle_error
 
     def __iter__(self):
         return self.parse_bibliography()
@@ -146,6 +148,9 @@ class BibTeXEntryIterator(Scanner):
         colno = len(before_error.splitlines()[-1])
         return context, self.lineno, colno
 
+    def handle_error(self, error):
+        raise error
+
     def parse_bibliography(self):
         while True:
             if not self.skip_to([self.AT]):
@@ -154,8 +159,7 @@ class BibTeXEntryIterator(Scanner):
             try:
                 yield tuple(self.parse_command())
             except PybtexSyntaxError as error:
-                from pybtex.errors import report_error
-                report_error(error)
+                self.handle_error(error)
             except SkipEntry:
                 pass
 
@@ -186,8 +190,7 @@ class BibTeXEntryIterator(Scanner):
             parse_body(body_end)
             self.required([body_end])
         except PybtexSyntaxError, error:
-            from pybtex.errors import report_error
-            report_error(error)
+            self.handle_error(error)
         return make_result()
 
     def parse_preamble_body(self, body_end):
@@ -321,12 +324,16 @@ class Parser(BaseParser):
             for value in value_list
         )
 
+    def handle_error(self, error):
+        from pybtex.errors import report_error
+        report_error(error)
+
     def parse_stream(self, stream):
         self.unnamed_entry_counter = 1
         text = stream.read()
         self.command_start = 0
 
-        entry_iterator = BibTeXEntryIterator(text, keyless_entries=self.keyless_entries)
+        entry_iterator = BibTeXEntryIterator(text, keyless_entries=self.keyless_entries, handle_error=self.handle_error)
         for entry in entry_iterator:
             entry_type = entry[0]
             if entry_type == 'string':

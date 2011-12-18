@@ -38,13 +38,22 @@ from io import StringIO
 from unittest import TestCase
 
 
+class TestParser(Parser):
+    def __init__(self, *args, **kwargs):
+        super(TestParser, self).__init__(*args, **kwargs)
+        self.errors = []
+
+    def handle_error(self, error):
+        self.errors.append(error)
+
+
 class ParserTest(object):
     input = None
     correct_result = None
     parser_options = {}
 
     def test_parser(self):
-        parser = Parser(encoding='UTF-8', **self.parser_options)
+        parser = TestParser(encoding='UTF-8', **self.parser_options)
         parser.parse_stream(StringIO(self.input))
         result = parser.data
         correct_result = self.correct_result
