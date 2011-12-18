@@ -23,7 +23,7 @@ import pybtex.io
 from pybtex.plugin import Plugin
 
 
-available_plugins = ('latex', 'html', 'plaintext')
+available_plugins = ('latex', 'html', 'plaintext', 'doctree')
 
 
 class BaseBackend(Plugin):
@@ -47,6 +47,10 @@ class BaseBackend(Plugin):
         Text is already formatted with format_text."""
 
         raise NotImplementedError
+
+    def render_sequence(self, text):
+        """Render a sequence of rendered text objects."""
+        return "".join(text)
 
     def write_entry(self, label, key, text):
         raise NotImplementedError

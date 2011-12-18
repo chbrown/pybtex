@@ -210,7 +210,8 @@ class Entry(object):
         )
 
     def get_crossref(self):
-        return self.collection.entries[self.fields['crossref']]
+        # TODO should convert crossref to lower case during parsing?
+        return self.collection.entries[self.fields['crossref'].lower()]
 
     def add_person(self, person, role):
         self.persons.setdefault(role, []).append(person)

@@ -1,3 +1,14 @@
+- Fix for first_of when non-empty child is followed by a child that has a
+  missing field.
+
+- Fix for crossref lookups when key is not lower case.
+
+- Completed unsrt python style: it now contains all entry types.
+
+- Added doctree backend for rendering into a tree of docutils nodes.
+
+- Added support for non-string backends.
+
 Version 0.15
 ------------
 (released on February 1, 2011)
