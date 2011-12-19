@@ -183,6 +183,15 @@ class NameFormat(object):
     >>> f = NameFormat('{{abc}{def}ff{xyz}{#@${}{sdf}}}')
     >>> f.parts == [NamePart(['{abc}{def}', 'ff', 'xyz', '{#@${}{sdf}}'])]
     True
+    >>> f = NameFormat('{f.~}')
+    >>> f.parts == [NamePart(['', 'f', None, '.'])]
+    True
+    >>> f = NameFormat('{f~.}')
+    >>> f.parts == [NamePart(['', 'f', None, '~.'])]
+    True
+    >>> f = NameFormat('{f{.}~}')
+    >>> f.parts == [NamePart(['', 'f', '.', ''])]
+    True
 
     """
 
