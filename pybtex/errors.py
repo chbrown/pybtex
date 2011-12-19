@@ -28,6 +28,11 @@ strict = False
 error_code = 0
 
 
+def enable_strict_mode(enable=True):
+    global strict
+    strict = enable
+
+
 def print_error(exception, prefix='ERROR: '):
     print >>pybtex.io.stderr, u'{0}{1}'.format(prefix, capfirst(add_period(unicode(exception))))
 

@@ -42,16 +42,24 @@ class BibTeXNameFormatError(Exception):
 
 class Text(object):
     def __init__(self, text):
-        self.text = text[0]
+        self.text = text
+
+    def __repr__(self):
+        return u'{0}({1})'.format(type(self).__name__, repr(self.text))
+
+    def __eq__(self, other):
+        return type(self) == type(other) and self.text == other.text
+
     def format(self, person):
         return self.text
+
     def to_python(self):
         return repr(self.text)
 
 
 class NamePart(object):
     def __init__(self, format_list):
-        self.pre_text, format_chars, self.delimiter, self.post_text = format_list[0]
+        self.pre_text, format_chars, self.delimiter, self.post_text = format_list
 
         if self.post_text.endswith('~~'):
             self.tie = '~~'
@@ -70,6 +78,21 @@ class NamePart(object):
         else:
             raise BibTeXNameFormatError('invalid format string')
         self.format_char = format_chars[0]
+
+    def __repr__(self):
+        format_chars = self.format_char * (1 if self.abbreviate else 2)
+        format_list = [self.pre_text, format_chars, self.delimiter, self.post_text]
+        return u'{0}({1})'.format(type(self).__name__, repr(format_list))
+
+    def __eq__(self, other):
+        return (
+            type(self) == type(other)
+            and self.pre_text == other.pre_text
+            and self.format_char == other.format_char
+            and self.abbreviate == other.abbreviate
+            and self.delimiter == other.delimiter
+            and self.post_text == other.post_text
+        )
 
     types = {
             'f': 'bibtex_first',
@@ -126,9 +149,43 @@ class NamePart(object):
         
 
 class NameFormat(object):
+    """
+    BibTeX name format string.
+    
+    >>> f = NameFormat('{ff~}{vv~}{ll}{, jj}')
+    >>> f.parts == [
+    ...     NamePart(['', 'ff', None, '']),
+    ...     NamePart(['', 'vv', None, '']),
+    ...     NamePart(['', 'll', None, '']),
+    ...     NamePart([', ', 'jj', None, ''])
+    ... ]
+    True
+    >>> f = NameFormat('{{ }ff~{ }}{vv~{- Test text here -}~}{ll}{, jj}')
+    >>> f.parts == [
+    ...     NamePart(['{ }', 'ff', None, '~{ }']),
+    ...     NamePart(['', 'vv', None, '~{- Test text here -}']),
+    ...     NamePart(['', 'll', None, '']),
+    ...     NamePart([u', ', 'jj', None, ''])
+    ... ]
+    True
+    >>> f = NameFormat('abc def {f~} xyz {f}?')
+    >>> f.parts == [
+    ...     Text('abc def '),
+    ...     NamePart(['', 'f', None, '']),
+    ...     Text(' xyz '),
+    ...     NamePart(['', 'f', None, '']),
+    ...     Text('?'),
+    ... ]
+    True
+    >>> f = NameFormat('{{abc}{def}ff~{xyz}{#@$}}')
+    >>> f.parts == [NamePart(['{abc}{def}', 'ff', None, '~{xyz}{#@$}'])]
+    True
+
+    """
+
     def __init__(self, format):
         self.format_string = format
-        self.parts = name_format_grammar.parseString(format)
+        self.parts = list(name_format_grammar.parseString(format))
 
     def format(self, name):
         person = Person(name)
@@ -191,7 +248,7 @@ verbatim = Combine(ZeroOrMore(CharsNotIn(alphas + '{}') | braced_string))
 delimiter = braced_string.copy().setParseAction(removeQuotes)
 group = Group(Suppress(lbrace) + verbatim + format_chars + Optional(delimiter, None) +
         verbatim + Suppress(rbrace))
-group.setParseAction(lambda toks: NamePart(toks))
-toplevel_text = CharsNotIn('{}').setParseAction(lambda toks: Text(toks))
+group.setParseAction(lambda toks: NamePart(toks[0]))
+toplevel_text = CharsNotIn('{}').setParseAction(lambda toks: Text(toks[0]))
 name_format_grammar = ZeroOrMore(toplevel_text | group) + StringEnd()
 name_format_grammar.leaveWhitespace()
