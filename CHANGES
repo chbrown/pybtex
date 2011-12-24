@@ -1,13 +1,28 @@
-- Fix for first_of when non-empty child is followed by a child that has a
+Version 0.16
+------------
+(not released yet)
+
+- BibTeX ``.bib`` and ``.bst`` parsers were completely rewritten. They are now
+  much faster and more BibTeX-compatible.
+
+- Pythonic style engine now supports sorting.
+
+- Fixed parsing of some names with a Last part but no von part.
+
+The following changes were contributed by Matthias C. M. Troffaes:
+
+- Fixed first_of behavior when non-empty child is followed by a child that has a
   missing field.
 
-- Fix for crossref lookups when key is not lower case.
+- Fixed crossref lookups when key is not lower case.
 
-- Completed unsrt python style: it now contains all entry types.
+- Completed unsrt and plain python styles: they now contain all entry types.
 
 - Added doctree backend for rendering into a tree of docutils nodes.
 
 - Added support for non-string backends.
+
+
 
 Version 0.15
 ------------
@@ -40,7 +55,6 @@ Version 0.15
 
 - Added more detailed error messages for already defined variables in ``.bst``
   files.
-
 
 
 Version 0.14.1
