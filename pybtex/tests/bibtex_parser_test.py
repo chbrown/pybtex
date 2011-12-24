@@ -146,9 +146,7 @@ class AtTest(ParserTest, TestCase):
         'me2009': Entry('article', {'title': 'A @tey short story'}),
     })
     errors = [
-        "Syntax error in line 2: '(' or '{' expected\n"
-        "@ here parses fine in both cases\n"
-        "      ^^^",
+        "Syntax error in line 2: '(' or '{' expected",
     ]
 
 class EntryTypesTest(ParserTest, TestCase):
@@ -176,18 +174,10 @@ class EntryTypesTest(ParserTest, TestCase):
         'aa2_id': Entry('_t'),
     })
     errors = [
-        "Syntax error in line 12: a valid name expected\n"
-        "@2thou{further_id,}\n"
-        "^^^",
-        "Syntax error in line 13: '(' or '{' expected\n"
-        "@some name{id3,}\n"
-        "     ^^^",
-        "Syntax error in line 14: '(' or '{' expected\n"
-        "@some#{id4,}\n"
-        "    ^^^",
-        "Syntax error in line 15: '(' or '{' expected\n"
-        "@some%{id4,}\n"
-        "    ^^^",
+        "Syntax error in line 12: a valid name expected",
+        "Syntax error in line 13: '(' or '{' expected",
+        "Syntax error in line 14: '(' or '{' expected",
+        "Syntax error in line 15: '(' or '{' expected",
     ]
 
 
@@ -224,15 +214,9 @@ class FieldNamesTest(ParserTest, TestCase):
         '2017': Entry('article', {'@name': 'Myself'}),
     })
     errors = [
-        "Syntax error in line 5: '}' expected\n"
-        '@article{2010, 0author="Me"}'
-        '\n              ^^^',
-        "Syntax error in line 11: '=' expected\n"
-        '@article{2012, author name = "Myself"}\n'
-        '                     ^^^',
-        'Syntax error in line 14: \'}\' expected\n'
-        '@article{2013, #name = "Myself"}\n'
-        '              ^^^',
+        "Syntax error in line 5: '}' expected",
+        "Syntax error in line 11: '=' expected",
+        'Syntax error in line 14: \'}\' expected',
     ]
 
 
@@ -262,14 +246,8 @@ class InlineCommentTest(ParserTest, TestCase):
         'me2013': Entry('article'),
     })
     errors = [
-        "Syntax error in line 10: '}' expected\n"
-        '@article{Me2011,\n'
-        '            author="Brett-like, Matthew",\n'
-        '        % some text\n'
-        '       ^^^',
-        "Syntax error in line 12: '}' expected\n"
-        "@article{Me2012, % some text\n"
-        "                ^^^",
+        "Syntax error in line 10: '}' expected",
+        "Syntax error in line 12: '}' expected",
     ]
 
 
@@ -334,11 +312,7 @@ class KeyParsingTest(ParserTest, TestCase):
         'test(braces2)': Entry('article'),
     })
     errors = [
-        "Syntax error in line 5: ')' expected\n"
-        "@article(test(parens1))\n"
-        "\n"
-        "        # works fine\n"
-        "       ^^^",
+        "Syntax error in line 5: ')' expected",
     ]
 
 
