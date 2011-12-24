@@ -62,16 +62,21 @@ class Text(object):
 
 class NamePart(object):
     def __init__(self, format_list):
-        self.pre_text, format_chars, self.delimiter, self.post_text = format_list
+        pre_text, format_chars, self.delimiter, post_text = format_list
 
-        if self.post_text.endswith('~~'):
+        if not format_chars and pre_text and not post_text:
+            post_text = pre_text
+            pre_text = ''
+            
+        if post_text.endswith('~~'):
             self.tie = '~~'
-        elif self.post_text.endswith('~'):
+        elif post_text.endswith('~'):
             self.tie = '~'
         else:
             self.tie = None
 
-        self.post_text = self.post_text.rstrip('~')
+        self.pre_text = pre_text
+        self.post_text = post_text.rstrip('~')
 
         if not format_chars:
             self.format_char = ''
@@ -109,9 +114,9 @@ class NamePart(object):
     }
 
     def format(self, person):
-        names = getattr(person, self.types[self.format_char])()
+        names = getattr(person, self.types[self.format_char])() if self.format_char else []
 
-        if not names:
+        if self.format_char and not names:
             return ''
 
         if self.abbreviate:
