@@ -59,7 +59,7 @@ class Scanner(object):
     WHITESPACE = Pattern(ur'\s+', 'whitespace')
     NEWLINE = Pattern(ur'[\r\n]', 'newline')
 
-    def __init__(self, text):
+    def __init__(self, text, filename=None):
         self.text = text
         self.end_pos = len(text)
 
@@ -158,13 +158,12 @@ class TokenRequired(PybtexSyntaxError):
         message = '{0} expected'.format(description)
         super(TokenRequired, self).__init__(message, parser)
 
-    def __unicode__(self):
-        self.context, self.lineno, self.colno = self.parser.get_error_context(self.error_context_info)
-        message = super(TokenRequired, self).__unicode__()
-        if self.context is None:
-            return message
-        if self.colno == 0:
+    def get_context(self):
+        context, lineno, colno = self.parser.get_error_context(self.error_context_info)
+        if context is None:
+            return ''
+        if colno == 0:
             marker = '^^'
         else:
-            marker = ' ' * (self.colno - 1) + '^^^'
-        return '\n'.join((message, self.context, marker))
+            marker = ' ' * (colno - 1) + '^^^'
+        return '\n'.join((context, marker))

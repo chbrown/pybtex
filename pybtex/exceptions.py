@@ -20,4 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class PybtexError(Exception):
-    pass
+    def get_context(self):
+        """Get extra error context info."""
+        return ''
+

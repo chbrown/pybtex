@@ -35,6 +35,9 @@ def enable_strict_mode(enable=True):
 
 def print_error(exception, prefix='ERROR: '):
     print >>pybtex.io.stderr, u'{0}{1}'.format(prefix, capfirst(add_period(unicode(exception))))
+    context = exception.get_context()
+    if context:
+        print >>pybtex.io.stderr, context
 
 
 def report_error(exception):
