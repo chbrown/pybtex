@@ -85,7 +85,6 @@ class BstParser(Scanner):
     STRING = Pattern(ur'"[^\"]*"', 'string')
     INTEGER = Pattern(ur'#-?\d+', 'integer')
     NAME = Pattern(ur'[^#\"\{\}\s]+', 'name')
-    WHITESPACE = Pattern(ur'\s+', 'whitespace')
 
     COMMANDS = {
         'ENTRY': 3,
