@@ -54,16 +54,13 @@ class Literal(Pattern):
 
 class Scanner(object):
     text = None
-    lineno = None
-    pos = None
-    end_pos = None
+    lineno = 1
+    pos = 0
     WHITESPACE = Pattern(ur'\s+', 'whitespace')
     NEWLINE = Pattern(ur'[\r\n]', 'newline')
 
     def __init__(self, text):
         self.text = text
-        self.lineno = 1
-        self.pos = 0
         self.end_pos = len(text)
 
     def skip_to(self, patterns):
@@ -143,8 +140,9 @@ class PybtexSyntaxError(PybtexError):
 
     def __unicode__(self):
         base_message = super(PybtexSyntaxError, self).__unicode__()
-        return 'Syntax error in line {lineno}: {message}'.format(
-            lineno=self.lineno,
+        pos = u' in line {0}'.format(self.lineno) if self.lineno is not None else ''
+        return 'Syntax error{pos}: {message}'.format(
+            pos=pos,
             message=base_message,
         )
 

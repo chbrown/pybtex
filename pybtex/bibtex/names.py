@@ -277,6 +277,8 @@ class NameFormatParser(Scanner):
     NON_LETTERS = Pattern(ur'[^{}a-zA-Z]+', 'non-letter characters', flags=re.IGNORECASE)
     FORMAT_CHARS = Pattern(ur'[a-zA-Z]+', 'format chars', flags=re.IGNORECASE)
 
+    lineno = None
+
     def parse(self):
         while True:
             try:
