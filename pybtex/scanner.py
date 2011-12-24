@@ -101,7 +101,7 @@ class Scanner(object):
                 raise EOFError
             else:
                 raise PrematureEOF(self)
-        for i, pattern in enumerate(patterns):
+        for pattern in patterns:
             match = pattern.match(self.text, self.pos)
             if match:
                 value = match.group()
