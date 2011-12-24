@@ -274,8 +274,8 @@ class NameFormatParser(Scanner):
     LBRACE = Literal(u'{')
     RBRACE = Literal(u'}')
     TEXT = Pattern(ur'[^{}]+', 'text')
-    NON_LETTERS = Pattern(ur'[^{}a-zA-Z]+', 'non-letter characters', flags=re.IGNORECASE)
-    FORMAT_CHARS = Pattern(ur'[a-zA-Z]+', 'format chars', flags=re.IGNORECASE)
+    NON_LETTERS = Pattern(ur'[^{}\w]|\d+', 'non-letter characters', flags=re.IGNORECASE | re.UNICODE)
+    FORMAT_CHARS = Pattern(ur'[^\W\d_]+', 'format chars', flags=re.IGNORECASE | re.UNICODE)
 
     lineno = None
 
