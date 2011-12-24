@@ -48,7 +48,7 @@ class Pattern(object):
 class Literal(Pattern):
     def __init__(self, literal):
         pattern = re.compile(re.escape(literal))
-        description = "'{0}'".format(literal)
+        description = u"'{0}'".format(literal)
         super(Literal, self).__init__(pattern, description)
 
 
@@ -142,7 +142,7 @@ class PybtexSyntaxError(PybtexError):
     def __unicode__(self):
         base_message = super(PybtexSyntaxError, self).__unicode__()
         pos = u' in line {0}'.format(self.lineno) if self.lineno is not None else ''
-        return 'Syntax error{pos}: {message}'.format(
+        return u'Syntax error{pos}: {message}'.format(
             pos=pos,
             message=base_message,
         )
@@ -156,7 +156,7 @@ class PrematureEOF(PybtexSyntaxError):
 
 class TokenRequired(PybtexSyntaxError):
     def __init__(self, description, parser):
-        message = '{0} expected'.format(description)
+        message = u'{0} expected'.format(description)
         super(TokenRequired, self).__init__(message, parser)
 
     def get_context(self):
