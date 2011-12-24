@@ -33,11 +33,24 @@ def enable_strict_mode(enable=True):
     strict = enable
 
 
-def print_error(exception, prefix='ERROR: '):
-    print >>pybtex.io.stderr, u'{0}{1}'.format(prefix, capfirst(add_period(unicode(exception))))
+def format_error(exception, prefix='ERROR: '):
+    lines = []
     context = exception.get_context()
     if context:
-        print >>pybtex.io.stderr, context
+        filename = exception.get_filename()
+        if filename:
+            context = '\n'.join(
+                u'{0}: {1}'.format(filename, line)
+                for line in context.splitlines()
+            )
+        lines += (context.splitlines())
+    lines.append(u'{0}{1}'.format(prefix, capfirst(add_period(unicode(exception)))))
+    filename = exception.get_filename()
+    return '\n'.join(lines)
+
+
+def print_error(exception, prefix='ERROR: '):
+    print >>pybtex.io.stderr, format_error(exception, prefix)
 
 
 def report_error(exception):

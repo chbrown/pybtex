@@ -124,8 +124,8 @@ class BibTeXEntryIterator(Scanner):
     current_field_name = None
     current_field_value = None
 
-    def __init__(self, text, keyless_entries=False, handle_error=None):
-        super(BibTeXEntryIterator, self).__init__(text)
+    def __init__(self, text, keyless_entries=False, handle_error=None, filename=None):
+        super(BibTeXEntryIterator, self).__init__(text, filename)
         self.keyless_entries = keyless_entries
         if handle_error:
             self.handle_error = handle_error
@@ -333,7 +333,7 @@ class Parser(BaseParser):
         text = stream.read()
         self.command_start = 0
 
-        entry_iterator = BibTeXEntryIterator(text, keyless_entries=self.keyless_entries, handle_error=self.handle_error)
+        entry_iterator = BibTeXEntryIterator(text, keyless_entries=self.keyless_entries, handle_error=self.handle_error, filename=self.filename)
         for entry in entry_iterator:
             entry_type = entry[0]
             if entry_type == 'string':

@@ -20,7 +20,15 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class PybtexError(Exception):
+    def __init__(self, message, filename=None):
+        super(PybtexError, self).__init__(message)
+        self.filename = filename
+
     def get_context(self):
-        """Get extra error context info."""
-        return ''
+        """Return extra error context info."""
+        return None
+
+    def get_filename(self):
+        """Return filename, if relevant."""
+        return self.filename
 

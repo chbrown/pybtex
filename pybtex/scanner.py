@@ -62,6 +62,7 @@ class Scanner(object):
     def __init__(self, text, filename=None):
         self.text = text
         self.end_pos = len(text)
+        self.filename = filename
 
     def skip_to(self, patterns):
         end = None
@@ -133,7 +134,7 @@ class Scanner(object):
 
 class PybtexSyntaxError(PybtexError):
     def __init__(self, message, parser):
-        super(PybtexSyntaxError, self).__init__(message)
+        super(PybtexSyntaxError, self).__init__(message, filename=parser.filename)
         self.lineno = parser.lineno
         self.parser = parser
         self.error_context_info = parser.get_error_context_info()
