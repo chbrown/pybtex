@@ -284,9 +284,6 @@ class NameFormatParser(Scanner):
                 yield result
             except EOFError:
                 break
-            except Exception, e:
-                print unicode(e)
-                raise
             
     def parse_toplevel(self):
         token = self.required([self.TEXT, self.LBRACE, self.RBRACE], allow_eof=True)
