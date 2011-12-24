@@ -73,7 +73,6 @@ setup(name=progname,
         'Topic :: Text Processing :: Markup :: XML'
     ],
     install_requires = [
-        'pyparsing>=1.4.5',
         'PyYAML>=3.01'
     ],
     packages=find_packages(exclude=['docs']),
