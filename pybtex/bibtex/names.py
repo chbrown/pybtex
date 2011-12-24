@@ -29,12 +29,15 @@ de~la Vallee~Poussin, C.~L. X.~J.
 abc
 """
 
-from pyparsing import (
-        Literal, Word, Forward, Combine, Group, Suppress, ZeroOrMore,
-        Optional, StringEnd, CharsNotIn, alphas, removeQuotes,
-)
+import re
+
 from pybtex.database import Person
 from pybtex.bibtex.utils import bibtex_len, bibtex_first_letter
+from pybtex.scanner import (
+    Scanner, Pattern, Literal,
+    PybtexSyntaxError, PrematureEOF
+)
+
 
 class BibTeXNameFormatError(Exception):
     pass
@@ -70,14 +73,18 @@ class NamePart(object):
 
         self.post_text = self.post_text.rstrip('~')
 
-        l = len(format_chars)
-        if l == 1:
-            self.abbreviate = True
-        elif l == 2 and format_chars[0] == format_chars[1]:
+        if not format_chars:
+            self.format_char = ''
             self.abbreviate = False
         else:
-            raise BibTeXNameFormatError('invalid format string')
-        self.format_char = format_chars[0]
+            l = len(format_chars)
+            if l == 1:
+                self.abbreviate = True
+            elif l == 2 and format_chars[0] == format_chars[1]:
+                self.abbreviate = False
+            else:
+                raise BibTeXNameFormatError('invalid format string')
+            self.format_char = format_chars[0]
 
     def __repr__(self):
         format_chars = self.format_char * (1 if self.abbreviate else 2)
@@ -197,7 +204,7 @@ class NameFormat(object):
 
     def __init__(self, format):
         self.format_string = format
-        self.parts = list(name_format_grammar.parseString(format))
+        self.parts = list(NameFormatParser(format).parse())
 
     def format(self, name):
         person = Person(name)
@@ -251,16 +258,92 @@ def join(words, tie='~', space=' '):
 def format(name, format):
     return NameFormat(format).format(name)
 
-lbrace = Literal('{')
-rbrace = Literal('}')
-format_chars = Word(alphas)
-braced_string = Forward()
-braced_string << Combine(lbrace + ZeroOrMore(CharsNotIn('{}')| braced_string) + rbrace)
-verbatim = Combine(ZeroOrMore(CharsNotIn(alphas + '{}') | braced_string))
-delimiter = braced_string.copy().setParseAction(removeQuotes)
-group = Group(Suppress(lbrace) + verbatim + format_chars + Optional(delimiter, None) +
-        verbatim + Suppress(rbrace))
-group.setParseAction(lambda toks: NamePart(toks[0]))
-toplevel_text = CharsNotIn('{}').setParseAction(lambda toks: Text(toks[0]))
-name_format_grammar = ZeroOrMore(toplevel_text | group) + StringEnd()
-name_format_grammar.leaveWhitespace()
+
+class UnbalancedBraceError(PybtexSyntaxError):
+    def __init__(self, parser):
+        message = u'name format string "{0}" has unbalanced braces'.format(parser.text)
+        super(UnbalancedBraceError, self).__init__(message, parser)
+
+
+class NameFormatParser(Scanner):
+    LBRACE = Literal(u'{')
+    RBRACE = Literal(u'}')
+    TEXT = Pattern(ur'[^{}]+', 'text')
+    NON_LETTERS = Pattern(ur'[^{}a-zA-Z]+', 'non-letter characters', flags=re.IGNORECASE)
+    FORMAT_CHARS = Pattern(ur'[a-zA-Z]+', 'format chars', flags=re.IGNORECASE)
+
+    def parse(self):
+        while True:
+            try:
+                result = self.parse_toplevel()
+                yield result
+            except EOFError:
+                break
+            except Exception, e:
+                print unicode(e)
+                raise
+            
+    def parse_toplevel(self):
+        token = self.required([self.TEXT, self.LBRACE, self.RBRACE], allow_eof=True)
+        if token.pattern is self.TEXT:
+            return Text(token.value)
+        elif token.pattern is self.LBRACE:
+            return NamePart(self.parse_name_part())
+        elif token.pattern is self.RBRACE:
+            raise UnbalancedBraceError(self)
+
+    def parse_braced_string(self):
+        while True:
+            try:
+                token = self.required([self.TEXT, self.RBRACE, self.LBRACE]) 
+            except PrematureEOF:
+                raise UnbalancedBraceError(self)
+            if token.pattern is self.TEXT:
+                yield token.value
+            elif token.pattern is self.RBRACE:
+                break
+            elif token.pattern is self.LBRACE:
+                yield u'{{{0}}}'.format(''.join(self.parse_braced_string()))
+            else:
+                raise ValueError(token)
+
+    def parse_name_part(self):
+        verbatim_prefix = []
+        format_chars = None
+        verbatim_postfix = []
+        verbatim = verbatim_prefix
+        delimiter = None
+
+        def check_format_chars(value):
+            value = value.lower()
+            if (
+                format_chars is not None
+                or len(value) not in [1, 2]
+                or value[0] != value[-1]
+                or value[0] not in 'flvj'
+            ):
+                raise PybtexSyntaxError(u'name format string "{0}" has illegal brace-level-1 letters: {1}'.format(self.text, token.value), self)
+
+        while True:
+            try:
+                token = self.required([self.LBRACE, self.NON_LETTERS, self.FORMAT_CHARS, self.RBRACE])
+            except PrematureEOF:
+                raise UnbalancedBraceError(self)
+
+            if token.pattern is self.LBRACE:
+                verbatim.append(u'{{{0}}}'.format(''.join(self.parse_braced_string())))
+            elif token.pattern is self.FORMAT_CHARS:
+                check_format_chars(token.value)
+                format_chars = token.value
+                verbatim = verbatim_postfix
+                if self.optional([self.LBRACE]):
+                    delimiter = ''.join(self.parse_braced_string())
+            elif token.pattern is self.NON_LETTERS:
+                verbatim.append(token.value)
+            elif token.pattern is self.RBRACE:
+                return ''.join(verbatim_prefix), format_chars, delimiter, ''.join(verbatim_postfix)
+            else:
+                raise ValueError(token)
+
+    def eat_whitespace(self):
+        pass
