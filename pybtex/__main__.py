@@ -149,6 +149,10 @@ It is also possible to define bibliography formatting styles in Python.
         else:
             self.opt_parser.error('unknown style language %s' % options.style_language)
 
+        for encoding_option in 'bib_encoding', 'bst_encoding', 'output_encoding':
+            if not getattr(options, encoding_option):
+                setattr(options, encoding_option, options.encoding)
+
         kwargs = {}
         uninteresting_options = 'verbose', 'style_language'
         kwargs = dict(
