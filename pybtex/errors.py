@@ -37,15 +37,14 @@ def format_error(exception, prefix='ERROR: '):
     lines = []
     context = exception.get_context()
     if context:
-        filename = exception.get_filename()
-        if filename:
-            context = '\n'.join(
-                u'{0}: {1}'.format(filename, line)
-                for line in context.splitlines()
-            )
         lines += (context.splitlines())
     lines.append(u'{0}{1}'.format(prefix, capfirst(add_period(unicode(exception)))))
     filename = exception.get_filename()
+    if filename:
+        lines = (
+            u'{0}: {1}'.format(filename, line)
+            for line in lines
+        )
     return '\n'.join(lines)
 
 
