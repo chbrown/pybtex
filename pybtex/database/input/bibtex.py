@@ -101,6 +101,9 @@ class SkipEntry(Exception):
     pass
 
 
+class UndefinedMacro(PybtexSyntaxError):
+    error_type = 'Undefined string'
+
 class BibTeXEntryIterator(Scanner):
     NAME_CHARS = ascii_letters + u'@!$&*+-./:;<>?[\\]^_`|~\x7f'
     NAME = Pattern(ur'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
@@ -124,10 +127,11 @@ class BibTeXEntryIterator(Scanner):
     current_field_name = None
     current_field_value = None
 
-    def __init__(self, text, keyless_entries=False, wanted_entries=None, handle_error=None, filename=None):
+    def __init__(self, text, keyless_entries=False, wanted_entries=None, macros=month_names, handle_error=None, filename=None):
         super(BibTeXEntryIterator, self).__init__(text, filename)
         self.keyless_entries = keyless_entries
         self.wanted_entries = wanted_entries
+        self.macros = dict(macros)
         if handle_error:
             self.handle_error = handle_error
 
@@ -201,6 +205,7 @@ class BibTeXEntryIterator(Scanner):
         self.current_field_name = self.required([self.NAME]).value.lower()
         self.required([self.EQUALS])
         self.parse_value()
+        self.macros[self.current_field_name.lower()] = ''.join(self.current_value)
 
     def parse_entry_body(self, body_end):
         if not self.keyless_entries:
@@ -235,13 +240,15 @@ class BibTeXEntryIterator(Scanner):
     def parse_value(self):
         start = True
         concatenation = False
+        value_parts = []
         while True:
             if not start:
                 concatenation = self.optional([self.HASH])
             if not (start or concatenation):
                 break
-            self.parse_value_part()
+            value_parts.append(self.parse_value_part())
             start = False
+        self.current_value = value_parts
 
     def parse_value_part(self):
         token = self.required(
@@ -255,11 +262,18 @@ class BibTeXEntryIterator(Scanner):
         elif token.pattern is self.NUMBER:
             value_part = token.value
         else:
-            value_part = Macro(token.value)
-        self.current_value.append(value_part)
+            value_part = self.substitute_macro(token.value)
+        return value_part
 
     def flatten_string(self, parts):
         return ''.join(part.value for part in parts)[:-1]
+
+    def substitute_macro(self, name):
+        try:
+            return self.macros[name.lower()]
+        except KeyError:
+            self.handle_error(UndefinedMacro(name, self))
+            return ''
 
     def parse_string(self, string_end, level=0):
         special_chars = [self.RBRACE, self.LBRACE]
@@ -321,21 +335,8 @@ class Parser(BaseParser):
         value = textutils.normalize_whitespace(self.flatten_value_list(value_list))
         self.data.add_to_preamble(value)
 
-    def process_macro(self, name, value_list):
-        value = self.flatten_value_list(value_list)
-        self.macros[name.lower()] = value
-
-    def substitute_macro(self, name):
-        try:
-            return self.macros[name.lower()]
-        except KeyError:
-            raise PybtexError('undefined macro %s' % name)
-
     def flatten_value_list(self, value_list):
-        return ''.join(
-            self.substitute_macro(value.name) if isinstance(value, Macro) else value
-            for value in value_list
-        )
+        return ''.join(value_list)
 
     def handle_error(self, error):
         from pybtex.errors import report_error
@@ -352,11 +353,12 @@ class Parser(BaseParser):
             wanted_entries=self.wanted_entries,
             handle_error=self.handle_error,
             filename=self.filename,
+            macros=self.macros,
         )
         for entry in entry_iterator:
             entry_type = entry[0]
             if entry_type == 'string':
-                self.process_macro(*entry[1])
+                pass
             elif entry_type == 'preamble':
                 self.process_preamble(*entry[1])
             else:

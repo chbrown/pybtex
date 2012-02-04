@@ -60,8 +60,6 @@ class ParserTest(object):
         result = parser.data
         correct_result = self.correct_result
         assert result == correct_result
-        import sys
-        print '------'
         for error, correct_error in izip_longest(parser.errors, self.errors):
             actual_error = unicode(error)
             assert actual_error == correct_error
@@ -344,13 +342,21 @@ class MacrosTest(ParserTest, TestCase):
         @String{and = { and }}
         @String{etal = and # { {et al.}}}
         @Article(
+            unknown,
+            author = nobody,
+        )
+        @Article(
             gsl,
             author = "Gough, Brian"#etal,
         )
     """
     correct_result = BibliographyData({
+        'unknown': Entry('article'),
         'gsl': Entry('article', persons={u'author': [Person(u'Gough, Brian'), Person(u'{et al.}')]}),
     })
+    errors = [
+        'Undefined string in line 6: nobody',
+    ]
 
 
 class UnusedEntryTest(ParserTest, TestCase):

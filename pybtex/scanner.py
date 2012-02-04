@@ -137,6 +137,8 @@ class Scanner(object):
 
 
 class PybtexSyntaxError(PybtexError):
+    error_type = 'Syntax error'
+
     def __init__(self, message, parser):
         super(PybtexSyntaxError, self).__init__(message, filename=parser.filename)
         self.lineno = parser.lineno
@@ -146,7 +148,8 @@ class PybtexSyntaxError(PybtexError):
     def __unicode__(self):
         base_message = super(PybtexSyntaxError, self).__unicode__()
         pos = u' in line {0}'.format(self.lineno) if self.lineno is not None else ''
-        return u'Syntax error{pos}: {message}'.format(
+        return u'{error_type}{pos}: {message}'.format(
+            error_type=self.error_type,
             pos=pos,
             message=base_message,
         )
