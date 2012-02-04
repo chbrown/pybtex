@@ -47,6 +47,7 @@ from pybtex.exceptions import PybtexError
 
 __test__ = {} # for doctest
 
+
 class Proto(object):
     def __init__(self, *args, **kwargs):
         self.args = args
@@ -148,13 +149,16 @@ def _format_data(node, data):
     else:
         return f(data)
 
+
 def _format_list(list_, data):
     return (_format_data(part, data) for part in list_)
+
 
 def node(f):
     if f.__doc__:
         __test__[f.__name__] = f
     return Proto(f.__name__, f)
+
 
 @node
 def join(children, data, sep='', sep2=None, last_sep=None):
@@ -181,11 +185,13 @@ def join(children, data, sep='', sep2=None, last_sep=None):
     else:
         return richtext.Text(last_sep).join([richtext.Text(sep).join(parts[:-1]), parts[-1]])
 
+
 @node
 def words(children, data, sep=' '):
     """Join text fragments with spaces or something else."""
 
     return join(sep) [children].format_data(data)
+
 
 @node
 def together(children, data, last_tie=True):
@@ -231,6 +237,7 @@ def sentence(children, data, capfirst=True, add_period=True, sep=', '):
         text = text.add_period()
     return text
 
+
 class FieldIsMissing(PybtexError):
     def __init__(self, field_name, entry):
         self.field_name = field_name
@@ -251,6 +258,7 @@ def field(children, data, name, apply_func=None):
             field = apply_func(field)
         return field
 
+
 @node
 def names(children, data, role, **kwargs):
     """Return formatted names."""
@@ -263,6 +271,7 @@ def names(children, data, role, **kwargs):
         # to raise FieldIsMissing; optional will catch it
         raise FieldIsMissing(role, data)
     return join(**kwargs) [[person.text for person in persons]].format_data(data)
+
 
 @node
 def optional(children, data):
@@ -293,6 +302,7 @@ def tag(children, data, name):
     """
     parts = _format_list(children, data)
     return richtext.Tag(name, *_format_list(children, data))
+
 
 @node
 def first_of(children, data):
