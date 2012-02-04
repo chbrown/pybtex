@@ -213,7 +213,12 @@ class Text(list):
         return ''.join(unicode(l[i]) for l, i in self.enumerate())
 
     def capfirst(self):
-        """Capitalize the first letter of the text"""
+        """Capitalize the first letter of the text.
+
+        >>> Text(Text(), Text('mary ', 'had ', 'a little lamb')).capfirst()
+        [['Mary ', 'had ', 'a little lamb']]
+
+        """
         return self.apply_to_start(textutils.capfirst)
 
     def add_period(self, period='.'):
