@@ -26,6 +26,7 @@ from os import path
 import pybtex.io
 from pybtex.plugin import Plugin
 from pybtex.database import BibliographyData
+from pybtex.exceptions import PybtexError
 
 
 class BaseParser(Plugin):
@@ -44,7 +45,10 @@ class BaseParser(Plugin):
         self.filename = filename
         open_file = pybtex.io.open_unicode if self.unicode_io else pybtex.io.open_raw
         with open_file(filename, encoding=self.encoding) as f:
-            self.parse_stream(f)
+            try:
+                self.parse_stream(f)
+            except UnicodeDecodeError, e:
+                raise PybtexError(unicode(e), filename=self.filename)
         return self.data
 
     def parse_files(self, base_filenames, file_suffix=None):
