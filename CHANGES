@@ -5,9 +5,19 @@ Version 0.16
 - BibTeX ``.bib`` and ``.bst`` parsers were completely rewritten. They are now
   much faster and more BibTeX-compatible.
 
+- Syntax errors and undefined strings in ``.bib`` files now result in warnings
+  instead of errors, like in BibTeX.
+
+- Unused entries in ``.bib`` files are now skipped, like in BibTeX.
+
 - Pythonic style engine now supports sorting.
 
+- Pythonic style engine: fixed nested optional() blocks.
+
 - Fixed parsing of some names with a Last part but no von part.
+
+- Added proper error messages on encoding errors in .bib files.
+
 
 The following changes were contributed by Matthias C. M. Troffaes:
 
