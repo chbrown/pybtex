@@ -263,7 +263,12 @@ class Interpreter(object):
 
     def command_read(self):
 #        print 'READ'
-        p = self.bib_format(encoding=self.bib_encoding, macros=self.macros, person_fields=[])
+        p = self.bib_format(
+            encoding=self.bib_encoding,
+            macros=self.macros,
+            person_fields=[],
+            wanted_entries=self.citations,
+        )
         self.bib_data = p.parse_files(self.bib_files)
         self.citations = self.bib_data.add_extra_citations(self.citations, self.min_crossrefs)
         self.citations = list(self.remove_missing_citations(self.citations))

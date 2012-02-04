@@ -351,3 +351,14 @@ class MacrosTest(ParserTest, TestCase):
     correct_result = BibliographyData({
         'gsl': Entry('article', persons={u'author': [Person(u'Gough, Brian'), Person(u'{et al.}')]}),
     })
+
+
+class UnusedEntryTest(ParserTest, TestCase):
+    parser_options = {'wanted_entries': []}
+    input = u"""
+        @Article(
+            gsl,
+            author = nobody,
+        )
+    """
+    correct_result = BibliographyData()
