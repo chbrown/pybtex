@@ -277,12 +277,18 @@ def names(children, data, role, **kwargs):
 def optional(children, data):
     """If children contain a missing bibliography field, return None.
     Else return formatted children.
+
+    >>> from pybtex.database import Entry
+    >>> template = optional [field('volume'), optional['(', field('number'), ')']]
+    >>> print template.format_data(Entry('article'))
+    []
+
     """
 
     try:
         return richtext.Text(*_format_list(children, data))
     except FieldIsMissing:
-        return None
+        return richtext.Text()
 
 @node
 def optional_field(children, data, *args, **kwargs):
