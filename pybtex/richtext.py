@@ -74,12 +74,20 @@ class Text(list):
 
     Text is used as an internal formatting language of Pybtex,
     being rendered to to HTML or LaTeX markup or whatever in the end.
+
+    >>> Text()
+    []
+    >>> Text('a', '', 'c')
+    ['a', 'c']
+    >>> Text('a', Text(), 'c')
+    ['a', 'c']
+
     """
 
     def __init__(self, *parts):
         """Create a Text consisting of one or more parts."""
 
-        list.__init__(self, parts)
+        list.__init__(self, [part for part in parts if part])
 
     def __len__(self):
         """Return the number of characters in this Text."""
