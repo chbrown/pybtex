@@ -156,6 +156,13 @@ class BibTeXEntryIterator(Scanner):
     def handle_error(self, error):
         raise error
 
+    def want_entry(self, key):
+        return (
+            self.wanted_entries is None
+            or key in self.wanted_entries
+            or '*' in self.wanted_entries
+        )
+
     def parse_bibliography(self):
         while True:
             if not self.skip_to([self.AT]):
@@ -211,10 +218,7 @@ class BibTeXEntryIterator(Scanner):
         if not self.keyless_entries:
             key_pattern = self.KEY_PAREN if body_end == self.RPAREN else self.KEY_BRACE
             self.current_entry_key = self.required([key_pattern]).value.lower()
-            if (
-                self.wanted_entries is not None
-                and self.current_entry_key not in self.wanted_entries
-            ):
+            if not self.want_entry(self.current_entry_key):
                 raise SkipEntry
         self.parse_entry_fields()
 
