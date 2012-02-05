@@ -1,4 +1,6 @@
-include examples/foo.bib examples/foo.bibtexml examples/foo.yaml examples/foo.tex
+include examples/xampl.bib examples/xampl.bibtexml examples/xampl.yaml examples/xampl.tex
+include examples/cyrillic/cyrillic.aux examples/cyrillic/cyrillic.bib
+include examples/tugboat/tugboat.aux examples/tugboat/tugboat.bib examples/tugboat/README
 include COPYING CHANGES
 include pybtex/docgen/template.html
 recursive-include docs/html *.html *.css

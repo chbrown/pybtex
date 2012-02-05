@@ -28,13 +28,13 @@ from pybtex.__version__ import version
 class Sdist(sdist):
     def run(self):
         from pybtex.database.convert import convert
-        bibtex_yaml = os.path.join('examples', 'foo.yaml')
-        bibtexml = os.path.join('examples', 'foo.bibtexml')
-        bibtex = os.path.join('examples', 'foo.bib')
-        if not os.path.exists(bibtex) or newer(bibtex_yaml, bibtex):
-            convert(bibtex_yaml, bibtex)
-        if not os.path.exists(bibtexml) or newer(bibtex_yaml, bibtexml):
-            convert(bibtex_yaml, bibtexml)
+        bibtex_yaml = os.path.join('examples', 'xampl.yaml')
+        bibtexml = os.path.join('examples', 'xampl.bibtexml')
+        bibtex = os.path.join('examples', 'xampl.bib')
+        if not os.path.exists(bibtex_yaml) or newer(bibtex, bibtex_yaml):
+            convert(bibtex, bibtex_yaml)
+        if not os.path.exists(bibtexml) or newer(bibtex, bibtexml):
+            convert(bibtex, bibtexml)
 
         from pybtex.docgen import generate_docs
         generate_docs(os.path.join(ROOT, 'docs'), ('html', 'manpages'))
