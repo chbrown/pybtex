@@ -375,12 +375,12 @@ class CrossrefTest(ParserTest, TestCase):
     parser_options = {'wanted_entries': ['GSL', 'GSL2']}
     input = u"""
         @Article(gsl, crossref="the_journal")
-        @Article(gsl2, crossref="the_journal")
+        @Article(gsl2, crossref="The_Journal")
         @Journal{the_journal,}
     """
     correct_result = BibliographyData(entries={
         'gsl': Entry('article', {'crossref': 'the_journal'}),
-        'gsl2': Entry('article', {'crossref': 'the_journal'}),
+        'gsl2': Entry('article', {'crossref': 'The_Journal'}),
         'the_journal': Entry('journal'),
     })
 

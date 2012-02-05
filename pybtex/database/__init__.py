@@ -93,6 +93,7 @@ class BibliographyData(object):
         except KeyError:
             pass
         else:
+            crossref = crossref.lower()
             self.crossref_count[crossref] += 1
             if self.crossref_count[crossref] >= self.min_crossrefs:
                 if self.wanted_entries is not None:
@@ -126,13 +127,14 @@ class BibliographyData(object):
         citation_set = set(citations)
         for citation in citations:
             try:
-                entry = self.entries[citation]
+                entry = self.entries[citation.lower()]
             except KeyError:
                 continue
             try:
                 crossref = entry.fields['crossref']
             except KeyError:
                 continue
+            crossref = crossref.lower()
             crossref_count[crossref] += 1
             if crossref_count[crossref] >= min_crossrefs and crossref not in citation_set:
                 citation_set.add(crossref)
