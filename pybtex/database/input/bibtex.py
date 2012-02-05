@@ -127,16 +127,14 @@ class BibTeXEntryIterator(Scanner):
     current_field_name = None
     current_field_value = None
 
-    def __init__(self, text, keyless_entries=False, wanted_entries=None, macros=month_names, handle_error=None, filename=None):
+    def __init__(self, text, keyless_entries=False, macros=month_names, handle_error=None, want_entry=None, filename=None):
         super(BibTeXEntryIterator, self).__init__(text, filename)
         self.keyless_entries = keyless_entries
-        if wanted_entries is not None:
-            self.wanted_entries = set(key.lower() for key in wanted_entries)
-        else:
-            self.wanted_entries = None
         self.macros = dict(macros)
         if handle_error:
             self.handle_error = handle_error
+        if want_entry:
+            self.want_entry = want_entry
 
     def __iter__(self):
         return self.parse_bibliography()
@@ -160,11 +158,7 @@ class BibTeXEntryIterator(Scanner):
         raise error
 
     def want_entry(self, key):
-        return (
-            self.wanted_entries is None
-            or key.lower() in self.wanted_entries
-            or '*' in self.wanted_entries
-        )
+        return True
 
     def parse_bibliography(self):
         while True:
@@ -313,14 +307,13 @@ class Parser(BaseParser):
             macros=month_names,
             person_fields=Person.valid_roles,
             keyless_entries=False,
-            wanted_entries=None,
-        **kwargs):
-        BaseParser.__init__(self, encoding)
+            **kwargs
+        ):
+        BaseParser.__init__(self, encoding, **kwargs)
 
         self.macros = dict(macros)
         self.person_fields = person_fields
         self.keyless_entries = keyless_entries
-        self.wanted_entries = wanted_entries
 
     def process_entry(self, entry_type, key, fields):
         entry = Entry(entry_type)
@@ -357,8 +350,8 @@ class Parser(BaseParser):
         entry_iterator = BibTeXEntryIterator(
             text,
             keyless_entries=self.keyless_entries,
-            wanted_entries=self.wanted_entries,
             handle_error=self.handle_error,
+            want_entry=self.data.want_entry,
             filename=self.filename,
             macros=self.macros,
         )

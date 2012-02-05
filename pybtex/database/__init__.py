@@ -32,10 +32,15 @@ class BibliographyDataError(PybtexError):
 
 
 class BibliographyData(object):
-    def __init__(self, entries=None, preamble=None):
+    def __init__(self, entries=None, preamble=None, wanted_entries=None):
         self.entries = {}
         self.entry_keys = []
+        self.crossref_count = defaultdict(int)
         self._preamble = []
+        if wanted_entries is not None:
+            self.wanted_entries = set(key.lower() for key in wanted_entries)
+        else:
+            self.wanted_entries = None
         if entries:
             if isinstance(entries, Mapping):
                 entries = entries.iteritems()
@@ -63,6 +68,13 @@ class BibliographyData(object):
 
     def preamble(self):
         return ''.join(self._preamble)
+
+    def want_entry(self, key):
+        return (
+            self.wanted_entries is None
+            or key.lower() in self.wanted_entries
+            or '*' in self.wanted_entries
+        )
 
     def add_entry(self, key, entry):
         if key in self.entries:
