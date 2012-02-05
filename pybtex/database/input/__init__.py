@@ -35,9 +35,12 @@ class BaseParser(Plugin):
 
     unicode_io = False
 
-    def __init__(self, encoding=None, wanted_entries=None, **kwargs):
+    def __init__(self, encoding=None, wanted_entries=None, min_crossrefs=2, **kwargs):
         self.encoding = encoding or pybtex.io.get_default_encoding()
-        self.data = BibliographyData(wanted_entries=wanted_entries)
+        self.data = BibliographyData(
+            wanted_entries=wanted_entries,
+            min_crossrefs=min_crossrefs,
+        )
 
     def parse_file(self, filename, file_suffix=None):
         if file_suffix is not None:

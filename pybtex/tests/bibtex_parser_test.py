@@ -371,6 +371,20 @@ class WantedEntriesTest(ParserTest, TestCase):
     })
 
 
+class CrossrefTest(ParserTest, TestCase):
+    parser_options = {'wanted_entries': ['GSL', 'GSL2']}
+    input = u"""
+        @Article(gsl, crossref="the_journal")
+        @Article(gsl2, crossref="the_journal")
+        @Journal{the_journal,}
+    """
+    correct_result = BibliographyData(entries={
+        'gsl': Entry('article', {'crossref': 'the_journal'}),
+        'gsl2': Entry('article', {'crossref': 'the_journal'}),
+        'the_journal': Entry('journal'),
+    })
+
+
 class UnusedEntryTest(ParserTest, TestCase):
     parser_options = {'wanted_entries': []}
     input = u"""

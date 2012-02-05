@@ -32,10 +32,11 @@ class BibliographyDataError(PybtexError):
 
 
 class BibliographyData(object):
-    def __init__(self, entries=None, preamble=None, wanted_entries=None):
+    def __init__(self, entries=None, preamble=None, wanted_entries=None, min_crossrefs=2):
         self.entries = {}
         self.entry_keys = []
         self.crossref_count = defaultdict(int)
+        self.min_crossrefs = min_crossrefs
         self._preamble = []
         if wanted_entries is not None:
             self.wanted_entries = set(key.lower() for key in wanted_entries)
@@ -79,12 +80,23 @@ class BibliographyData(object):
     def add_entry(self, key, entry):
         if key in self.entries:
             raise BibliographyDataError('repeated bibliograhpy entry: %s' % key)
+        if not self.want_entry(key):
+            return
         entry.collection = self
         entry.original_key = key
         key = key.lower()
         entry.key = key
         self.entries[key] = entry
         self.entry_keys.append(key)
+        try:
+            crossref = entry.fields['crossref']
+        except KeyError:
+            pass
+        else:
+            self.crossref_count[crossref] += 1
+            if self.crossref_count[crossref] >= self.min_crossrefs:
+                if self.wanted_entries is not None:
+                    self.wanted_entries.add(crossref)
 
     def add_entries(self, entries):
         for key, entry in entries:
