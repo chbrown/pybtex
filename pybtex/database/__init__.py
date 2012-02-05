@@ -74,6 +74,8 @@ class BibliographyData(object):
         if key in self.entries:
             raise BibliographyDataError('repeated bibliograhpy entry: %s' % key)
         entry.collection = self
+        entry.original_key = key
+        key = key.lower()
         entry.key = key
         self.entries[key] = entry
         self.entry_keys.append(key)
@@ -146,9 +148,10 @@ class BibliographyData(object):
         for citation in citations:
             if citation == '*':
                 for key in self.entry_keys:
-                    if key not in citation_set:
-                        citation_set.add(key)
-                        yield key
+                    original_key = self.entries[key].original_key
+                    if original_key not in citation_set:
+                        citation_set.add(original_key)
+                        yield original_key
             else:
                 if citation not in citation_set:
                     citation_set.add(citation)

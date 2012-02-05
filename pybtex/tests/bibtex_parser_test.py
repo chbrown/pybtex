@@ -359,6 +359,18 @@ class MacrosTest(ParserTest, TestCase):
     ]
 
 
+class WantedEntriesTest(ParserTest, TestCase):
+    parser_options = {'wanted_entries': ['GSL']}
+    input = u"""
+        @Article(
+            gsl,
+        )
+    """
+    correct_result = BibliographyData(entries={
+        'gsl': Entry('article'),
+    })
+
+
 class UnusedEntryTest(ParserTest, TestCase):
     parser_options = {'wanted_entries': []}
     input = u"""

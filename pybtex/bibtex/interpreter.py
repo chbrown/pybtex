@@ -252,7 +252,7 @@ class Interpreter(object):
         f = self.vars[function]
         for key in citations:
             self.current_entry_key = key
-            self.current_entry = self.bib_data.entries[key]
+            self.current_entry = self.bib_data.entries[key.lower()]
             f.execute(self)
         self.currentEntry = None
 
@@ -280,7 +280,7 @@ class Interpreter(object):
 
     def remove_missing_citations(self, citations):
         for citation in citations:
-            if citation in self.bib_data.entries:
+            if citation.lower() in self.bib_data.entries:
                 yield citation
             else:
                 print_warning('missing database entry for "{0}"'.format(citation))

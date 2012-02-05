@@ -130,7 +130,10 @@ class BibTeXEntryIterator(Scanner):
     def __init__(self, text, keyless_entries=False, wanted_entries=None, macros=month_names, handle_error=None, filename=None):
         super(BibTeXEntryIterator, self).__init__(text, filename)
         self.keyless_entries = keyless_entries
-        self.wanted_entries = wanted_entries
+        if wanted_entries is not None:
+            self.wanted_entries = set(key.lower() for key in wanted_entries)
+        else:
+            self.wanted_entries = None
         self.macros = dict(macros)
         if handle_error:
             self.handle_error = handle_error
@@ -159,7 +162,7 @@ class BibTeXEntryIterator(Scanner):
     def want_entry(self, key):
         return (
             self.wanted_entries is None
-            or key in self.wanted_entries
+            or key.lower() in self.wanted_entries
             or '*' in self.wanted_entries
         )
 
@@ -217,7 +220,7 @@ class BibTeXEntryIterator(Scanner):
     def parse_entry_body(self, body_end):
         if not self.keyless_entries:
             key_pattern = self.KEY_PAREN if body_end == self.RPAREN else self.KEY_BRACE
-            self.current_entry_key = self.required([key_pattern]).value.lower()
+            self.current_entry_key = self.required([key_pattern]).value
             if not self.want_entry(self.current_entry_key):
                 raise SkipEntry
         self.parse_entry_fields()
