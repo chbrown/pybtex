@@ -48,6 +48,7 @@ class CaseInsensitiveDict(dict):
     passed
     >>> print d['Test']
     passed
+
     >>> d['Test'] = 'passed again'
     >>> print d['test']
     passed again
@@ -61,19 +62,28 @@ class CaseInsensitiveDict(dict):
     >>> for key, value in d.iteritems():
     ...     print key, value
     Test passed again
+    >>> bool(d)
+    True
     >>> len(d)
     1
+
     >>> del d['test']
     >>> len(d)
     0
+    >>> bool(d)
+    False
     >>> 'test' in d
     False
     >>> 'Test' in d
     False
 
+    >>> CaseInsensitiveDict(
+    ...     (key, value) for key, value in [('a', 'b')]
+    ... )
+    CaseInsensitiveDict({'a': 'b'})
+
     """
     def __init__(self, *args, **kwargs):
-        initial_data = dict(*args, **kwargs)
         super(CaseInsensitiveDict, self).__init__(*args, **kwargs)
         self._keys = dict((key.lower(), key) for key in self)
 
@@ -99,6 +109,12 @@ class CaseInsensitiveDict(dict):
         super(CaseInsensitiveDict, self).__delitem__(existing_key)
         del self._keys[key_lower]
 
+    def __deepcopy__(self, memo):
+        from copy import deepcopy
+        return CaseInsensitiveDict(
+            (key, deepcopy(value, memo)) for key, value in self.iteritems()
+        )
+
     def pop(self, key, default=None):
         raise NotImplementedError
     
@@ -123,10 +139,6 @@ class CaseInsensitiveDict(dict):
 
     def update(self, *args, **kwargs):
         raise NotImplementedError
-
-    def copy(self):
-        """Create a new caselessDict object that is a copy of this one."""
-        return CaseInsensitiveDict(self)
 
     def clear(self):
         """Clear this caselessDict."""
