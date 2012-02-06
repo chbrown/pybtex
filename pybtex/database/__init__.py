@@ -84,7 +84,7 @@ class BibliographyData(object):
         if not self.want_entry(key):
             return
         entry.collection = self
-        entry.original_key = key
+        entry.key = key
         entry.key = key
         self.entries[key] = entry
         self.entry_keys.append(key)
@@ -168,10 +168,9 @@ class BibliographyData(object):
         for citation in citations:
             if citation == '*':
                 for key in self.entry_keys:
-                    original_key = self.entries[key].original_key
-                    if original_key not in citation_set:
-                        citation_set.add(original_key)
-                        yield original_key
+                    if key not in citation_set:
+                        citation_set.add(key)
+                        yield key
             else:
                 if citation not in citation_set:
                     citation_set.add(citation)
