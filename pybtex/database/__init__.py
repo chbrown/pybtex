@@ -24,6 +24,7 @@ import re
 from collections import defaultdict, Mapping, Sequence
 
 from pybtex.exceptions import PybtexError
+from pybtex.utils import CaseInsensitiveDict
 from pybtex.bibtex.utils import split_tex_string
 
 
@@ -33,7 +34,7 @@ class BibliographyDataError(PybtexError):
 
 class BibliographyData(object):
     def __init__(self, entries=None, preamble=None, wanted_entries=None, min_crossrefs=2):
-        self.entries = {}
+        self.entries = CaseInsensitiveDict()
         self.entry_keys = []
         self.crossref_count = defaultdict(int)
         self.min_crossrefs = min_crossrefs
