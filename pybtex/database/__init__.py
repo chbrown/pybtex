@@ -85,7 +85,6 @@ class BibliographyData(object):
             return
         entry.collection = self
         entry.original_key = key
-        key = key.lower()
         entry.key = key
         self.entries[key] = entry
         self.entry_keys.append(key)
@@ -128,7 +127,7 @@ class BibliographyData(object):
         citation_set = set(citations)
         for citation in citations:
             try:
-                entry = self.entries[citation.lower()]
+                entry = self.entries[citation]
             except KeyError:
                 continue
             try:
@@ -235,7 +234,7 @@ class Entry(object):
 
     def get_crossref(self):
         # TODO should convert crossref to lower case during parsing?
-        return self.collection.entries[self.fields['crossref'].lower()]
+        return self.collection.entries[self.fields['crossref']]
 
     def add_person(self, person, role):
         self.persons.setdefault(role, []).append(person)

@@ -97,13 +97,13 @@ class EntryInStringTest(ParserTest, TestCase):
     """
     correct_result = BibliographyData(
         entries={
-            u'me2010': Entry(u'article',
+            u'Me2010': Entry(u'article',
                 fields={
                     u'title': u'An article @article{something, author={Name, Another}, title={not really an article}}'
                 },
                 persons={u'author': [Person(u'Brett, Matthew')]}
             ),
-            u'me2009': Entry(u'article',
+            u'Me2009': Entry(u'article',
                 fields={u'title': u'A short story'},
                 persons={u'author': [Person(u'Nom de Plume, My')]}
             )
@@ -125,9 +125,9 @@ class EntryInCommentTest(ParserTest, TestCase):
         @article{Me2011, }
     """
     correct_result = BibliographyData({
-        'me2011': Entry('article'),
-        'me2010': Entry('article', fields={'title': 'An article'}),
-        'me2009': Entry('article', fields={'title': 'A short story'}),
+        'Me2011': Entry('article'),
+        'Me2010': Entry('article', fields={'title': 'An article'}),
+        'Me2009': Entry('article', fields={'title': 'A short story'}),
     })
 
 
@@ -140,8 +140,8 @@ class AtTest(ParserTest, TestCase):
         @article{Me2009, title="A @tey short story"}
     """
     correct_result = BibliographyData({
-        'me2010': Entry('article', {'title': 'An @tey article'}),
-        'me2009': Entry('article', {'title': 'A @tey short story'}),
+        'Me2010': Entry('article', {'title': 'An @tey article'}),
+        'Me2009': Entry('article', {'title': 'A @tey short story'}),
     })
     errors = [
         "Syntax error in line 2: '(' or '{' expected",
@@ -236,12 +236,12 @@ class InlineCommentTest(ParserTest, TestCase):
         @article{Me2013,}
     """
     correct_result = BibliographyData({
-        'me2010': Entry('article'),
-        'me2011': Entry('article', persons={'author': [
+        'Me2010': Entry('article'),
+        'Me2011': Entry('article', persons={'author': [
             Person(first='Matthew', last='Brett-like'),
         ]}),
-        'me2012': Entry('article'),
-        'me2013': Entry('article'),
+        'Me2012': Entry('article'),
+        'Me2013': Entry('article'),
     })
     errors = [
         "Syntax error in line 10: '}' expected",
@@ -267,7 +267,7 @@ class SimpleEntryTest(ParserTest, TestCase):
         }
     """
     correct_result = BibliographyData({
-        'brett2002marsbar': Entry('article',
+        'Brett2002marsbar': Entry('article',
             fields={
                 'title': '{Region of interest analysis using an SPM toolbox}',
                 'journal': 'Neuroimage',
