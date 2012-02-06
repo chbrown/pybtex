@@ -58,10 +58,12 @@ class DatabaseIOTest(TestCase):
         self._test_input('bibtexml')
 
     def test_repr(self):
+        from pybtex.utils import CaseInsensitiveDict
         from pybtex.database import BibliographyData
         from pybtex.database import Entry, Person
         data_repr = repr(self.reference_data)
         data = eval(data_repr, {
+            'CaseInsensitiveDict': CaseInsensitiveDict,
             'BibliographyData': BibliographyData,
             'Entry': Entry,
             'Person': Person,
