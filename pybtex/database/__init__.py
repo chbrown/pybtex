@@ -28,6 +28,7 @@ from pybtex.utils import (
     OrderedCaseInsensitiveDict, CaseInsensitiveDefaultDict, CaseInsensitiveSet
 )
 from pybtex.bibtex.utils import split_tex_string
+from pybtex.errors import report_error
 
 
 class BibliographyDataError(PybtexError):
@@ -80,9 +81,10 @@ class BibliographyData(object):
         )
 
     def add_entry(self, key, entry):
-        if key in self.entries:
-            raise BibliographyDataError('repeated bibliograhpy entry: %s' % key)
         if not self.want_entry(key):
+            return
+        if key in self.entries:
+            report_error(BibliographyDataError('repeated bibliograhpy entry: %s' % key))
             return
         entry.collection = self
         entry.key = key
@@ -145,6 +147,14 @@ class BibliographyData(object):
                 entry = self.entries[citation]
                 crossref = entry.fields['crossref']
             except KeyError:
+                continue
+            if crossref not in self.entries:
+                report_error(BibliographyDataError(
+                    'bad cross-reference: entry "{key}" refers to '
+                    'entry "{crossref}" which does not exist.'.format(
+                        key=citation, crossref=crossref,
+                    )
+                ))
                 continue
             crossref_count[crossref] += 1
             if crossref_count[crossref] >= min_crossrefs and crossref not in citation_set:
