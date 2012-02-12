@@ -211,10 +211,9 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
             data = list(data)
         if isinstance(data, Sequence):
             self.order = [key for key, value in data]
-            super(OrderedCaseInsensitiveDict, self).__init__(data)
         else:
-            super(OrderedCaseInsensitiveDict, self).__init__(data)
-            self.order = self.keys()
+            self.order = data.keys()
+        super(OrderedCaseInsensitiveDict, self).__init__(data)
 
     def __setitem__(self, key, value):
         if key not in self:
@@ -226,6 +225,12 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
 
     def __iter__(self):
         return iter(self.order)
+
+    def __deepcopy__(self, memo):
+        from copy import deepcopy
+        return OrderedCaseInsensitiveDict(
+            (key, deepcopy(value, memo)) for key, value in self.iteritems()
+        )
 
     def iterkeys(self):
         return iter(self.order)
