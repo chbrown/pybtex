@@ -28,6 +28,7 @@ from functools import update_wrapper
 
 
 import pybtex.io
+from pybtex.errors import report_error
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.utils import memoize
 from pybtex.bibtex import utils
@@ -36,7 +37,7 @@ from pybtex.bibtex.names import format as format_bibtex_name
 
 
 def print_warning(msg):
-    print >>pybtex.io.stderr, 'Warning--' + msg
+    report_error(BibTeXError(msg))
 
 
 class Builtin(object):
