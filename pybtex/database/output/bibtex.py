@@ -55,9 +55,34 @@ class Writer(BaseWriter):
             return '{%s}' % s
 
     def check_braces(self, s):
-        end_brace_level = list(scan_bibtex_string(s))[-1][1]
-        if end_brace_level != 0:
-            raise BibTeXError('String has unmatched braces: %s' % s)
+        """
+        Raise an exception if the given string has unmatched braces.
+
+        >>> w = Writer()
+        >>> w.check_braces('Cat eats carrots.')
+        >>> w.check_braces('Cat eats {carrots}.')
+        >>> w.check_braces('Cat eats {carrots{}}.')
+        >>> w.check_braces('')
+        >>> w.check_braces('end}')
+        >>> try:
+        ...     w.check_braces('{')
+        ... except BibTeXError, error:
+        ...     print error
+        String has unmatched braces: {
+        >>> w.check_braces('{test}}')
+        >>> try:
+        ...     w.check_braces('{{test}')
+        ... except BibTeXError, error:
+        ...     print error
+        String has unmatched braces: {{test}
+
+        """
+
+        tokens = list(scan_bibtex_string(s))
+        if tokens:
+            end_brace_level = tokens[-1][1]
+            if end_brace_level != 0:
+                raise BibTeXError('String has unmatched braces: %s' % s)
 
     def write_stream(self, bib_data, stream):
         def write_field(type, value):
