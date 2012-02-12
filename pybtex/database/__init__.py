@@ -121,6 +121,16 @@ class BibliographyData(object):
         >>> list(data.get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
         []
 
+        >>> data2 = BibliographyData(data.entries, wanted_entries=data.entries.keys())
+        >>> list(data2.get_crossreferenced_citations([], min_crossrefs=1))
+        []
+        >>> list(data2.get_crossreferenced_citations(['main_article'], min_crossrefs=1))
+        ['xrefd_arcicle']
+        >>> list(data2.get_crossreferenced_citations(['main_article'], min_crossrefs=2))
+        []
+        >>> list(data2.get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
+        []
+
         """
 
         crossref_count = defaultdict(int)
