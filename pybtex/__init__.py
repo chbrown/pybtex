@@ -45,7 +45,11 @@ def make_bibliography(aux_filename,
 
     output_backend = find_plugin('pybtex.backends', output_backend)
     bib_parser = find_plugin('pybtex.database.input', bib_format)
-    bib_data = bib_parser(bib_encoding).parse_files(aux_data.data, bib_parser.get_default_suffix())
+    bib_data = bib_parser(
+        encoding=bib_encoding,
+        wanted_entries=aux_data.citations,
+        min_crossrefs=min_crossrefs,
+    ).parse_files(aux_data.data, bib_parser.get_default_suffix())
 
     style_cls = find_plugin('pybtex.style.formatting', aux_data.style)
     style = style_cls(
