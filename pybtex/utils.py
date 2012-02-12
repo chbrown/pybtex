@@ -150,3 +150,55 @@ class CaseInsensitiveDict(dict):
         return '{0}({1})'.format(
             type(self).__name__, super(CaseInsensitiveDict, self).__repr__()
         )
+
+
+class CaseInsensitiveSet(set):
+    """A very basic case-insensitive set.
+
+    >>> s = CaseInsensitiveSet()
+    >>> len(s)
+    0
+    >>> 'a' in s
+    False
+    >>> CaseInsensitiveSet(['aaa', 'Aaa', 'AAA'])
+    CaseInsensitiveSet(['aaa'])
+    >>> s = CaseInsensitiveSet(['Aaa', 'Bbb'])
+    >>> 'aaa' in s
+    True
+    >>> 'Aaa' in s
+    True
+    >>> 'AAA' in s
+    True
+    >>> 'bbb' in s
+    True
+    >>> 'Bbb' in s
+    True
+    >>> len(s)
+    2
+    >>> s.add('ccc')
+    >>> len(s)
+    3
+    >>> 'aaa' in s
+    True
+    >>> 'ccc' in s
+    True
+    >>> s.remove('AAA')
+    >>> len(s)
+    2
+    >>> 'aaa' in s
+    False
+
+    """
+
+    def __init__(self, *args, **kwargs):
+        initial_data = set(*args, **kwargs)
+        super(CaseInsensitiveSet, self).__init__(item.lower() for item in initial_data)
+
+    def __contains__(self, item):
+        return super(CaseInsensitiveSet, self).__contains__(item.lower())
+
+    def add(self, item):
+        super(CaseInsensitiveSet, self).add(item.lower())
+
+    def remove(self, item):
+        super(CaseInsensitiveSet, self).remove(item.lower())

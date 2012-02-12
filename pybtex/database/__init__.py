@@ -24,7 +24,7 @@ import re
 from collections import defaultdict, Mapping, Sequence
 
 from pybtex.exceptions import PybtexError
-from pybtex.utils import CaseInsensitiveDict
+from pybtex.utils import CaseInsensitiveDict, CaseInsensitiveSet
 from pybtex.bibtex.utils import split_tex_string
 
 
@@ -40,7 +40,7 @@ class BibliographyData(object):
         self.min_crossrefs = min_crossrefs
         self._preamble = []
         if wanted_entries is not None:
-            self.wanted_entries = set(key.lower() for key in wanted_entries)
+            self.wanted_entries = CaseInsensitiveSet(wanted_entries)
         else:
             self.wanted_entries = None
         if entries:
@@ -74,7 +74,7 @@ class BibliographyData(object):
     def want_entry(self, key):
         return (
             self.wanted_entries is None
-            or key.lower() in self.wanted_entries
+            or key in self.wanted_entries
             or '*' in self.wanted_entries
         )
 
@@ -116,6 +116,8 @@ class BibliographyData(object):
         []
         >>> list(data.get_crossreferenced_citations(['main_article'], min_crossrefs=1))
         ['xrefd_arcicle']
+        >>> list(data.get_crossreferenced_citations(['Main_article'], min_crossrefs=1))
+        ['xrefd_arcicle']
         >>> list(data.get_crossreferenced_citations(['main_article'], min_crossrefs=2))
         []
         >>> list(data.get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
@@ -126,7 +128,11 @@ class BibliographyData(object):
         []
         >>> list(data2.get_crossreferenced_citations(['main_article'], min_crossrefs=1))
         ['xrefd_arcicle']
+        >>> list(data2.get_crossreferenced_citations(['Main_article'], min_crossrefs=1))
+        ['xrefd_arcicle']
         >>> list(data2.get_crossreferenced_citations(['main_article'], min_crossrefs=2))
+        []
+        >>> list(data2.get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
         []
         >>> list(data2.get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
         []
@@ -134,13 +140,10 @@ class BibliographyData(object):
         """
 
         crossref_count = defaultdict(int)
-        citation_set = set(citations)
+        citation_set = CaseInsensitiveSet(citations)
         for citation in citations:
             try:
                 entry = self.entries[citation]
-            except KeyError:
-                continue
-            try:
                 crossref = entry.fields['crossref']
             except KeyError:
                 continue
@@ -171,10 +174,12 @@ class BibliographyData(object):
         ['dos', 'uno', 'tres', 'cuatro']
         >>> list(data.expand_wildcard_citations(['*', 'uno']))
         ['uno', 'dos', 'tres', 'cuatro']
+        >>> list(data.expand_wildcard_citations(['*', 'DOS']))
+        ['uno', 'dos', 'tres', 'cuatro']
 
         """
 
-        citation_set = set()
+        citation_set = CaseInsensitiveSet()
         for citation in citations:
             if citation == '*':
                 for key in self.entry_keys:
@@ -242,7 +247,6 @@ class Entry(object):
         )
 
     def get_crossref(self):
-        # TODO should convert crossref to lower case during parsing?
         return self.collection.entries[self.fields['crossref']]
 
     def add_person(self, person, role):
