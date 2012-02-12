@@ -24,6 +24,8 @@
 
 
 from functools import wraps
+from collections import Sequence
+from types import GeneratorType
 
 
 def memoize(f):
@@ -150,6 +152,69 @@ class CaseInsensitiveDict(dict):
         return '{0}({1})'.format(
             type(self).__name__, super(CaseInsensitiveDict, self).__repr__()
         )
+
+
+class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
+    """ An (incomplete) ordered case-insensitive dict.
+
+    >>> d = OrderedCaseInsensitiveDict([
+    ...     ('uno', 1),
+    ...     ('dos', 2),
+    ...     ('tres', 3),
+    ... ])
+    >>> d.keys()
+    ['uno', 'dos', 'tres']
+    >>> d.items()
+    [('uno', 1), ('dos', 2), ('tres', 3)]
+    >>> d['cuatro'] = 4
+    >>> d.keys()
+    ['uno', 'dos', 'tres', 'cuatro']
+    >>> d.items()
+    [('uno', 1), ('dos', 2), ('tres', 3), ('cuatro', 4)]
+    >>> list(d)
+    ['uno', 'dos', 'tres', 'cuatro']
+
+    """
+
+    def __init__(self, data=()):
+        if isinstance(data, GeneratorType):
+            data = list(data)
+        if isinstance(data, Sequence):
+            self.order = [key for key, value in data]
+            super(OrderedCaseInsensitiveDict, self).__init__(data)
+        else:
+            super(OrderedCaseInsensitiveDict, self).__init__(data)
+            self.order = self.keys()
+
+    def __setitem__(self, key, value):
+        if key not in self:
+            self.order.append(key)
+        super(OrderedCaseInsensitiveDict, self).__setitem__(key, value)
+
+    def __delitem__(self, key):
+        raise NotImplementedError
+
+    def __iter__(self):
+        return iter(self.order)
+
+    def iterkeys(self):
+        return iter(self.order)
+
+    def keys(self):
+        return self.order
+
+    def values(self):
+        raise NotImplementedError
+
+    def itervalues(self):
+        raise NotImplementedError
+
+    def iteritems(self):
+        for key in self.order:
+            yield key, self[key]
+
+    def items(self):
+        return [(key, self[key]) for key in self.order]
 
 
 class CaseInsensitiveSet(set):
