@@ -115,6 +115,19 @@ class Field(object):
             return MissingField(self.name)
 
 
+class Crossref(Field):
+    def __init__(self, interpreter):
+        super(Crossref, self).__init__(interpreter, 'crossref')
+
+    def value(self):
+        try:
+            value = self.interpreter.current_entry.fields[self.name]
+            crossref_entry = self.interpreter.bib_data.entries[value]
+        except KeyError:
+            return MissingField(self.name)
+        return crossref_entry.key
+
+
 class Identifier(Variable):
     value_type = basestring
     def execute(self, interpreter):
@@ -223,7 +236,7 @@ class Interpreter(object):
         for id in fields:
             name = id.value()
             self.add_variable(name, Field(self, name))
-        self.add_variable('crossref', Field(self, 'crossref'))
+        self.add_variable('crossref', Crossref(self))
         for id in ints:
             name = id.value()
             self.add_variable(name, EntryInteger(self, name))
