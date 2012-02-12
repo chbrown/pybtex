@@ -154,6 +154,36 @@ class CaseInsensitiveDict(dict):
         )
 
 
+class CaseInsensitiveDefaultDict(CaseInsensitiveDict):
+    """CaseInseisitiveDict with default factory, like collections.defaultdict
+    
+    >>> d = CaseInsensitiveDefaultDict(int)
+    >>> d['a']
+    0
+    >>> d['a'] += 1
+    >>> d['a']
+    1
+    >>> d['A']
+    1
+    >>> d['a'] = 3
+    >>> d['a']
+    3
+    >>> d['B'] += 10
+    >>> d['b']
+    10
+
+    """
+    def __init__(self, default_factory):
+        super(CaseInsensitiveDefaultDict, self).__init__()
+        self.default_factory = default_factory
+
+    def __getitem__(self, key):
+        try:
+            return super(CaseInsensitiveDefaultDict, self).__getitem__(key)
+        except KeyError:
+            return self.default_factory()
+
+
 class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     """ An (incomplete) ordered case-insensitive dict.
 

@@ -21,10 +21,12 @@
 
 import re
 
-from collections import defaultdict, Mapping, Sequence
+from collections import Mapping
 
 from pybtex.exceptions import PybtexError
-from pybtex.utils import OrderedCaseInsensitiveDict, CaseInsensitiveSet
+from pybtex.utils import (
+    OrderedCaseInsensitiveDict, CaseInsensitiveDefaultDict, CaseInsensitiveSet
+)
 from pybtex.bibtex.utils import split_tex_string
 
 
@@ -35,7 +37,7 @@ class BibliographyDataError(PybtexError):
 class BibliographyData(object):
     def __init__(self, entries=None, preamble=None, wanted_entries=None, min_crossrefs=2):
         self.entries = OrderedCaseInsensitiveDict()
-        self.crossref_count = defaultdict(int)
+        self.crossref_count = CaseInsensitiveDefaultDict(int)
         self.min_crossrefs = min_crossrefs
         self._preamble = []
         if wanted_entries is not None:
@@ -91,7 +93,6 @@ class BibliographyData(object):
         except KeyError:
             pass
         else:
-            crossref = crossref.lower()
             self.crossref_count[crossref] += 1
             if self.crossref_count[crossref] >= self.min_crossrefs:
                 if self.wanted_entries is not None:
@@ -137,7 +138,7 @@ class BibliographyData(object):
 
         """
 
-        crossref_count = defaultdict(int)
+        crossref_count = CaseInsensitiveDefaultDict(int)
         citation_set = CaseInsensitiveSet(citations)
         for citation in citations:
             try:
@@ -145,7 +146,6 @@ class BibliographyData(object):
                 crossref = entry.fields['crossref']
             except KeyError:
                 continue
-            crossref = crossref.lower()
             crossref_count[crossref] += 1
             if crossref_count[crossref] >= min_crossrefs and crossref not in citation_set:
                 citation_set.add(crossref)
