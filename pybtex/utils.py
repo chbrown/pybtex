@@ -225,9 +225,13 @@ class CaseInsensitiveSet(set):
     0
     >>> 'a' in s
     False
-    >>> CaseInsensitiveSet(['aaa', 'Aaa', 'AAA'])
-    CaseInsensitiveSet(['aaa'])
+
+    >>> list(CaseInsensitiveSet(['aaa', 'Aaa', 'AAA']))
+    ['aaa']
+
     >>> s = CaseInsensitiveSet(['Aaa', 'Bbb'])
+    >>> len(s)
+    2
     >>> 'aaa' in s
     True
     >>> 'Aaa' in s
@@ -238,8 +242,6 @@ class CaseInsensitiveSet(set):
     True
     >>> 'Bbb' in s
     True
-    >>> len(s)
-    2
     >>> s.add('ccc')
     >>> len(s)
     3
