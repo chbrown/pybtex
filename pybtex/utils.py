@@ -196,11 +196,15 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     ['uno', 'dos', 'tres']
     >>> d.items()
     [('uno', 1), ('dos', 2), ('tres', 3)]
+    >>> d.values()
+    [1, 2, 3]
     >>> d['cuatro'] = 4
     >>> d.keys()
     ['uno', 'dos', 'tres', 'cuatro']
     >>> d.items()
     [('uno', 1), ('dos', 2), ('tres', 3), ('cuatro', 4)]
+    >>> d.values()
+    [1, 2, 3, 4]
     >>> list(d)
     ['uno', 'dos', 'tres', 'cuatro']
 
@@ -238,11 +242,12 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     def keys(self):
         return self.order
 
-    def values(self):
-        raise NotImplementedError
-
     def itervalues(self):
-        raise NotImplementedError
+        for key in self.order:
+            yield self[key]
+
+    def values(self):
+        return [self[key] for key in self.order]
 
     def iteritems(self):
         for key in self.order:
