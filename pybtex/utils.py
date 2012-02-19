@@ -207,6 +207,12 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     [1, 2, 3, 4]
     >>> list(d)
     ['uno', 'dos', 'tres', 'cuatro']
+    >>> list(d.iterkeys()) == d.keys()
+    True
+    >>> list(d.itervalues()) == d.values()
+    True
+    >>> list(d.iteritems()) == d.items()
+    True
 
     """
 
