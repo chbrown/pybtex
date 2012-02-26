@@ -34,7 +34,7 @@ def copy_files(test_name):
         copy_resource('pybtex.tests.bibtex_engine_test', posixpath.join(test_name, filename))
 
 
-def bibtex_engine_test(test_name='xampl'):
+def check_make_bibliography(test_name):
     with cd_tempdir() as tempdir:
         copy_files(test_name)
         with errors.capture() as stderr:  # FIXME check error messages
@@ -43,3 +43,8 @@ def bibtex_engine_test(test_name='xampl'):
             result = result_file.read()
         correct_result = pkgutil.get_data('pybtex.tests.bibtex_engine_test', posixpath.join(test_name, 'result.bbl'))
         assert result == correct_result
+
+
+def test_bibtex_engine():
+    for test_name in 'xampl', 'cyrillic':
+        yield check_make_bibliography, test_name
