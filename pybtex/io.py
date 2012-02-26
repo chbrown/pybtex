@@ -26,7 +26,6 @@ from __future__ import absolute_import
 
 import io
 import sys
-import locale
 from os import path, environ
 
 from pybtex.exceptions import PybtexError
@@ -34,11 +33,7 @@ from pybtex.kpathsea import kpsewhich
 
 
 def get_default_encoding():
-    try:
-        locale_encoding = locale.getpreferredencoding()
-    except locale.Error:
-        locale_encoding = None
-    return locale_encoding or 'UTF-8'
+    return 'UTF-8'
 
     
 def get_stream_encoding(stream):
