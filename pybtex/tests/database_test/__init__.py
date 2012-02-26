@@ -62,7 +62,6 @@ class DatabaseIOTest(TestCase):
         from pybtex.database import BibliographyData
         from pybtex.database import Entry, Person
         data_repr = repr(self.reference_data)
-        print data_repr
         data = eval(data_repr, {
             'OrderedCaseInsensitiveDict': OrderedCaseInsensitiveDict,
             'BibliographyData': BibliographyData,
