@@ -19,6 +19,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from StringIO import StringIO
+from contextlib import contextmanager
 
 import pybtex.io
 from pybtex.textutils import capfirst, add_period
@@ -26,11 +28,23 @@ from pybtex.textutils import capfirst, add_period
 
 strict = False
 error_code = 0
+stderr = pybtex.io.stderr
 
 
 def enable_strict_mode(enable=True):
     global strict
     strict = enable
+
+
+@contextmanager
+def capture():
+    global stderr
+    orig_stderr = stderr
+    stderr = StringIO()
+    try:
+        yield stderr
+    finally:
+        stderr = orig_stderr
 
 
 def format_error(exception, prefix='ERROR: '):
@@ -49,7 +63,7 @@ def format_error(exception, prefix='ERROR: '):
 
 
 def print_error(exception, prefix='ERROR: '):
-    print >>pybtex.io.stderr, format_error(exception, prefix)
+    print >>stderr, format_error(exception, prefix)
 
 
 def report_error(exception):
