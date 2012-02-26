@@ -6,7 +6,8 @@ from shutil import rmtree
 from tempfile import mkdtemp
 
 
-from pybtex.bibtex import make_bibliography
+from pybtex import errors
+from pybtex import bibtex
 
 
 @contextmanager
@@ -36,7 +37,8 @@ def copy_files(test_name):
 def bibtex_engine_test(test_name='xampl'):
     with cd_tempdir() as tempdir:
         copy_files(test_name)
-        make_bibliography('test.aux')
+        with errors.capture() as stderr:  # FIXME check error messages
+            bibtex.make_bibliography('test.aux')
         with open('test.bbl', 'rb') as result_file:
             result = result_file.read()
         correct_result = pkgutil.get_data('pybtex.tests.bibtex_engine_test', posixpath.join(test_name, 'result.bbl'))
