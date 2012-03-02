@@ -3,8 +3,8 @@ include examples/cyrillic/cyrillic.aux examples/cyrillic/cyrillic.bib
 include examples/tugboat/tugboat.aux examples/tugboat/tugboat.bib examples/tugboat/README
 include COPYING CHANGES
 include pybtex/docgen/template.html
+include pybtex/tests/data *.bst *.bib *.bbl *.aux
 recursive-include docs/html *.html *.css
 recursive-include docs/rst *.rst *.css
 recursive-include docs/man1 *.1
-recursive-include pybtex/tests *.bst *.bib *.bbl *.aux
 recursive-include examples/sample_plugins *.py README
