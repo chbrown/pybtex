@@ -24,6 +24,7 @@ import re
 from pybtex.bibtex.exceptions import BibTeXError
 
 whitespace_re = re.compile('(\s)')
+purify_special_char_re = re.compile(r'^\\[A-Za-z]+')
 
 def wrap(string, width=79):
     def wrap_chunks(chunks, width, initial_indent='', subsequent_indent='  '):
@@ -307,18 +308,31 @@ def bibtex_purify(string):
     abc def
     >>> print bibtex_purify('a@#$@#$b@#$@#$c')
     abc
+    >>> print bibtex_purify(r'{\noopsort{1973b}}1973')
+    1973b1973
+    >>> print bibtex_purify(r'{sort{1973b}}1973')
+    sort1973b1973
+    >>> print bibtex_purify(r'{sort{\abc1973b}}1973')
+    sortabc1973b1973
+    >>> print bibtex_purify(r'{\noopsort{1973a}}{\switchargs{--90}{1968}}')
+    1973a901968
+    >>> print bibtex_purify(r'{\noopsort{1973a}}{\switchargs{--90}{1968}}')
     """
 
     # FIXME BibTeX treats some accented and foreign characterss specially
-    def purify_iter():
-        for char, brace_level in scan_bibtex_string(string):
-            if brace_level == 1 and char.startswith('\\'):
-                pass
-            elif char.isalnum():
-                yield char
-            elif char.isspace() or char in '-~':
-                yield ' '
-    return ''.join(purify_iter())
+    def purify_iter(string):
+        for token, brace_level in scan_bibtex_string(string):
+            if brace_level == 1 and token.startswith('\\'):
+                for char in purify_special_char_re.sub('', token):
+                    if char.isalnum():
+                        yield char
+            else:
+                if token.isalnum():
+                    yield token
+                elif token.isspace() or token in '-~':
+                    yield ' '
+
+    return ''.join(purify_iter(string))
 
 
 def scan_bibtex_string(string):
