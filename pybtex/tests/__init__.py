@@ -19,3 +19,9 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
+from difflib import unified_diff
+
+
+def diff(src, dst):
+    return '\n'.join(unified_diff(src.splitlines(), dst.splitlines()))

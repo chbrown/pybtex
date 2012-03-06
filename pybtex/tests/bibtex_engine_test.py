@@ -8,6 +8,7 @@ from tempfile import mkdtemp
 
 from pybtex import errors
 from pybtex import bibtex
+from pybtex.tests import diff
 
 
 @contextmanager
@@ -40,6 +41,7 @@ def write_aux(aux_name, bib_name, bst_name):
         aux_file.write('\\bibstyle{{{0}}}\n'.format(bst_name))
         aux_file.write('\\bibdata{{{0}}}\n'.format(bib_name))
 
+
 def check_make_bibliography(bib_name, bst_name):
     with cd_tempdir() as tempdir:
         copy_files(bib_name, bst_name)
@@ -50,7 +52,7 @@ def check_make_bibliography(bib_name, bst_name):
             result = result_file.read()
         correct_result_name = '{0}_{1}.bbl'.format(bib_name, bst_name)
         correct_result = pkgutil.get_data('pybtex.tests.data', correct_result_name)
-        assert result == correct_result
+        assert result == correct_result, diff(correct_result, result)
 
 
 def test_bibtex_engine():
