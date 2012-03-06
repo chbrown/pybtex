@@ -316,7 +316,6 @@ def bibtex_purify(string):
     sortabc1973b1973
     >>> print bibtex_purify(r'{\noopsort{1973a}}{\switchargs{--90}{1968}}')
     1973a901968
-    >>> print bibtex_purify(r'{\noopsort{1973a}}{\switchargs{--90}{1968}}')
     """
 
     # FIXME BibTeX treats some accented and foreign characterss specially
