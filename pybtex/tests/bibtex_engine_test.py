@@ -58,6 +58,7 @@ def check_make_bibliography(bib_name, bst_name):
 def test_bibtex_engine():
     for bib_name, bst_name in [
         ('xampl', 'unsrt'),
+        ('xampl', 'plain'),
         ('cyrillic', 'unsrt'),
     ]:
         yield check_make_bibliography, bib_name, bst_name
