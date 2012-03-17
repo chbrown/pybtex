@@ -7,4 +7,4 @@ latex xampl
 latex xampl
 
 echo
-echo "Examine foo.dvi to see what you have just got."
+echo "Examine xampl.dvi to see what you have just got."
