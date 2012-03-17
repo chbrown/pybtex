@@ -1,5 +1,6 @@
 include examples/xampl.bib examples/xampl.bibtexml examples/xampl.yaml examples/xampl.tex
 include examples/tugboat/tugboat.aux examples/tugboat/tugboat.bib examples/tugboat/README
+include examples/make.sh
 include COPYING CHANGES
 include pybtex/docgen/template.html
 recursive-include pybtex/tests/data *.bst *.bib *.bbl *.aux
