@@ -10,13 +10,24 @@ Version 0.16
 
 - Unused entries in ``.bib`` files are now skipped, like in BibTeX.
 
+- The case of entry keys is now preserved (in previous versions they were
+  converted to lowercase).
+
 - Pythonic style engine now supports sorting.
 
 - Pythonic style engine: fixed nested optional() blocks.
 
 - Fixed parsing of some names with a Last part but no von part.
 
+- Fixed processing of brace-level-one "special characters" in ``purify$`` BibTeX
+  built-in function.
+
 - Added proper error messages on encoding errors in .bib files.
+
+- The default encoding is now UTF-8 on all platforms.
+
+- ``pybtex-convert`` now preserves the order of entries in BibTeX and BibTeXML
+  files.
 
 
 The following changes were contributed by Matthias C. M. Troffaes:
