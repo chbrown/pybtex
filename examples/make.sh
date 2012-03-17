@@ -1,10 +1,10 @@
 #!/bin/sh
 
 export PYTHONPATH=..
-latex foo
-../scripts/pybtex foo --bibtex-encoding=utf8 --latex-encoding=utf8
-latex foo
-latex foo
+latex xampl
+../scripts/pybtex xampl
+latex xampl
+latex xampl
 
 echo
 echo "Examine foo.dvi to see what you have just got."
