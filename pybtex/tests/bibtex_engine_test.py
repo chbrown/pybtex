@@ -6,6 +6,7 @@ from shutil import rmtree
 from tempfile import mkdtemp
 
 
+from pybtex import io
 from pybtex import errors
 from pybtex import bibtex
 from pybtex.tests import diff
@@ -25,8 +26,8 @@ def cd_tempdir():
 
 def copy_resource(package, resource):
     filename = posixpath.basename(resource)
-    data = pkgutil.get_data(package, resource)
-    with open(filename, 'wb') as data_file:
+    data = pkgutil.get_data(package, resource).decode(io.get_default_encoding())
+    with io.open_unicode(filename, 'w') as data_file:
         data_file.write(data)
 
 
@@ -36,10 +37,10 @@ def copy_files(bib_name, bst_name):
 
 
 def write_aux(aux_name, bib_name, bst_name):
-    with open(aux_name, 'wb') as aux_file:
-        aux_file.write('\\citation{*}\n')
-        aux_file.write('\\bibstyle{{{0}}}\n'.format(bst_name))
-        aux_file.write('\\bibdata{{{0}}}\n'.format(bib_name))
+    with io.open_unicode(aux_name, 'w') as aux_file:
+        aux_file.write(u'\\citation{*}\n')
+        aux_file.write(u'\\bibstyle{{{0}}}\n'.format(bst_name))
+        aux_file.write(u'\\bibdata{{{0}}}\n'.format(bib_name))
 
 
 def check_make_bibliography(bib_name, bst_name):
@@ -48,10 +49,10 @@ def check_make_bibliography(bib_name, bst_name):
         write_aux('test.aux', bib_name, bst_name)
         with errors.capture() as stderr:  # FIXME check error messages
             bibtex.make_bibliography('test.aux')
-        with open('test.bbl', 'rb') as result_file:
+        with io.open_unicode('test.bbl', 'r') as result_file:
             result = result_file.read()
         correct_result_name = '{0}_{1}.bbl'.format(bib_name, bst_name)
-        correct_result = pkgutil.get_data('pybtex.tests.data', correct_result_name)
+        correct_result = pkgutil.get_data('pybtex.tests.data', correct_result_name).decode(io.get_default_encoding())
         assert result == correct_result, diff(correct_result, result)
 
 
