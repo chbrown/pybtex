@@ -1,6 +1,6 @@
 Version 0.16
 ------------
-(not released yet)
+(released on March 17, 2012)
 
 - BibTeX ``.bib`` and ``.bst`` parsers were completely rewritten. They are now
   much faster and more BibTeX-compatible.
