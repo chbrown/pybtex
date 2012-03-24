@@ -50,6 +50,10 @@ class CaseInsensitiveDict(dict):
     passed
     >>> print d['Test']
     passed
+    >>> print d.get('test')
+    passed
+    >>> print d.get('Test')
+    passed
 
     >>> d['Test'] = 'passed again'
     >>> print d['test']
@@ -78,6 +82,12 @@ class CaseInsensitiveDict(dict):
     False
     >>> 'Test' in d
     False
+    >>> print d.get('test')
+    None
+    >>> print d.get('Test')
+    None
+    >>> print d.get('Test', 'failed')
+    failed
 
     >>> CaseInsensitiveDict(
     ...     (key, value) for key, value in [('a', 'b')]
@@ -132,7 +142,7 @@ class CaseInsensitiveDict(dict):
     def setdefault(self, key, default=None):
         raise NotImplementedError
     
-    def get(self, item, default=None):
+    def get(self, key, default=None):
         """A case insensitive get."""
         try:
             return self[self._keys[key.lower()]]
