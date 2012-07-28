@@ -115,8 +115,7 @@ class Writer(BaseWriter):
         write_preamble(bib_data.preamble())
         for key, entry in bib_data.entries.iteritems():
             stream.write(u'@%s' % entry.type)
-            stream.write(u'{\n')
-            stream.write(u'    %s' % key)
+            stream.write(u'{%s' % key)
 #            for role in ('author', 'editor'):
             for role, persons in entry.persons.iteritems():
                 write_persons(persons, role)
