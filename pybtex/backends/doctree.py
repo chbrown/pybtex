@@ -30,6 +30,11 @@ class Backend(BaseBackend):
             node.children.append(text)
             return node
 
+    def format_href(self, url, text):
+        node = docutils.nodes.reference(refuri=url)
+        node += text
+        return node
+
     def write_entry(self, key, label, text):
         raise NotImplementedError("use Backend.citation() instead")
 

@@ -48,6 +48,13 @@ class BaseBackend(Plugin):
 
         raise NotImplementedError
 
+    def format_href(self, url, text):
+        """Format a hyperlink with some text inside.
+
+        Text is already formatted with format_text."""
+
+        raise NotImplementedError
+
     def render_sequence(self, text):
         """Render a sequence of rendered text objects."""
         return "".join(text)
