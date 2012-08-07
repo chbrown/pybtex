@@ -24,7 +24,7 @@ import re
 from pybtex.style.formatting import BaseStyle, toplevel
 from pybtex.style.template import (
     join, words, field, optional, first_of,
-    names, sentence, tag, optional_field
+    names, sentence, tag, optional_field, href
 )
 from pybtex.richtext import Text, Symbol
 
@@ -67,6 +67,7 @@ class Style(BaseStyle):
                 optional[ volume_and_pages ],
                 date],
             sentence(capfirst=False) [ optional_field('note') ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
 
@@ -212,6 +213,7 @@ class Style(BaseStyle):
                 date
             ],
             sentence(capfirst=False) [ optional_field('note') ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
 
@@ -224,7 +226,8 @@ class Style(BaseStyle):
                 optional_field('address'),
                 date,
                 optional_field('note'),
-            ]
+            ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
 
@@ -244,7 +247,8 @@ class Style(BaseStyle):
                 ],
                 date,
                 optional_field('note'),
-            ]
+            ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
 
@@ -267,6 +271,7 @@ class Style(BaseStyle):
                 self.format_edition(e),
                 date,
             ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
 
@@ -285,6 +290,7 @@ class Style(BaseStyle):
                 self.format_address_organization_publisher_date(e),
             ],
             sentence(capfirst=False) [ optional_field('note') ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
 
@@ -301,6 +307,7 @@ class Style(BaseStyle):
                 optional[ date ],
             ],
             sentence(capfirst=False) [ optional_field('note') ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
 
@@ -315,6 +322,7 @@ class Style(BaseStyle):
                 date,
             ],
             sentence(capfirst=False) [ optional_field('note') ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
 
@@ -327,6 +335,7 @@ class Style(BaseStyle):
                 optional[ date ],
             ],
             sentence(capfirst=False) [ optional_field('note') ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
 
@@ -341,6 +350,7 @@ class Style(BaseStyle):
                 date,
             ],
             sentence(capfirst=False) [ optional_field('note') ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
 
@@ -368,6 +378,7 @@ class Style(BaseStyle):
                 ],
             ],
             sentence(capfirst=False) [ optional_field('note') ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
 
@@ -388,6 +399,7 @@ class Style(BaseStyle):
                 date,
             ],
             sentence(capfirst=False) [ optional_field('note') ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
 
@@ -399,5 +411,64 @@ class Style(BaseStyle):
                 field('note'),
                 optional[ date ]
             ],
+            self.format_web_refs(e),
         ]
         return template.format_data(e)
+
+    def format_web_refs(self, e):
+        # based on urlbst output.web.refs
+        return sentence(capfirst=False) [
+            optional [ self.format_url(e) ],
+            optional [ self.format_eprint(e) ],
+            optional [ self.format_pubmed(e) ],
+            optional [ self.format_doi(e) ],
+            ]
+
+    def format_url(self, e):
+        # based on urlbst format.url
+        return href [
+            field('url'),
+            join(' ') [
+                'URL:',
+                field('url')
+                ]
+            ]
+
+    def format_pubmed(self, e):
+        # based on urlbst format.pubmed
+        return href [
+            join [
+                'http://www.ncbi.nlm.nih.gov/pubmed/',
+                field('pubmed')
+                ],
+            join [
+                'PMID:',
+                field('pubmed')
+                ]
+            ]
+
+    def format_doi(self, e):
+        # based on urlbst format.doi
+        return href [
+            join [
+                'http://dx.doi.org/',
+                field('doi')
+                ],
+            join [
+                'doi:',
+                field('doi')
+                ]
+            ]
+
+    def format_eprint(self, e):
+        # based on urlbst format.eprint
+        return href [
+            join [
+                'http://arxiv.org/abs/',
+                field('eprint')
+                ],
+            join [
+                'arXiv:',
+                field('eprint')
+                ]
+            ]

@@ -31,7 +31,11 @@ class Backend(BaseBackend):
             return node
 
     def format_href(self, url, text):
-        node = docutils.nodes.reference(refuri=url)
+        if isinstance(url, basestring):
+            refuri = url
+        else: # isinstance(url, pybtex.richtext.Text)
+            refuri = url.plaintext()
+        node = docutils.nodes.reference(refuri=refuri)
         node += text
         return node
 
@@ -44,7 +48,7 @@ class Backend(BaseBackend):
         """
         if len(text) != 1:
             node = docutils.nodes.inline('', '')
-            node.children.extend(text)
+            node += text
             return node
         else:
             return text[0]
