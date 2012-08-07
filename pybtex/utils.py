@@ -24,7 +24,7 @@
 
 
 from functools import wraps
-from collections import Sequence
+from collections import Sequence, MutableMapping
 from types import GeneratorType
 
 
@@ -38,7 +38,7 @@ def memoize(f):
     return new_f
 
 
-class CaseInsensitiveDict(dict):
+class CaseInsensitiveDict(MutableMapping):
     """A dict with case-insensitive lookup.
 
     >>> d = CaseInsensitiveDict(TesT='passed')
@@ -95,9 +95,16 @@ class CaseInsensitiveDict(dict):
     CaseInsensitiveDict({'a': 'b'})
 
     """
+
     def __init__(self, *args, **kwargs):
-        super(CaseInsensitiveDict, self).__init__(*args, **kwargs)
+        self._dict = dict(*args, **kwargs)
         self._keys = dict((key.lower(), key) for key in self)
+
+    def __len__(self):
+        return len(self._dict)
+
+    def __iter__(self):
+        return iter(self._dict)
 
     def __setitem__(self, key, value):
         """To implement lowercase keys."""
@@ -107,18 +114,18 @@ class CaseInsensitiveDict(dict):
         except KeyError:
             pass
         else:
-            super(CaseInsensitiveDict, self).__delitem__(existing_key)
-        super(CaseInsensitiveDict, self).__setitem__(key, value)
+            del self._dict[existing_key]
+        self._dict[key] = value
         self._keys[key_lower] = key
 
     def __getitem__(self, key):
         existing_key = self._keys[key.lower()]
-        return super(CaseInsensitiveDict, self).__getitem__(existing_key)
+        return self._dict[existing_key]
 
     def __delitem__(self, key):
         key_lower = key.lower()
         existing_key = self._keys[key_lower]
-        super(CaseInsensitiveDict, self).__delitem__(existing_key)
+        del self._dict[existing_key]
         del self._keys[key_lower]
 
     def __deepcopy__(self, memo):
@@ -127,40 +134,13 @@ class CaseInsensitiveDict(dict):
             (key, deepcopy(value, memo)) for key, value in self.iteritems()
         )
 
-    def pop(self, key, default=None):
-        raise NotImplementedError
-    
-    def popitem(self):
-        raise NotImplementedError
-    
-    def has_key(self, key):
-        raise NotImplementedError
-        
     def __contains__(self, key):
         return key.lower() in self._keys
-
-    def setdefault(self, key, default=None):
-        raise NotImplementedError
-    
-    def get(self, key, default=None):
-        """A case insensitive get."""
-        try:
-            return self[self._keys[key.lower()]]
-        except KeyError:
-            return default
-
-    def update(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def clear(self):
-        """Clear this caselessDict."""
-        super(CaseInsensitiveDict, self).clear()
-        self._keydict = {}
 
     def __repr__(self):
         """A caselessDict version of __repr__ """
         return '{0}({1})'.format(
-            type(self).__name__, super(CaseInsensitiveDict, self).__repr__()
+            type(self).__name__, self._dict.__repr__()
         )
 
 

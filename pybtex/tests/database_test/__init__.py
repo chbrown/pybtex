@@ -22,6 +22,7 @@
 from copy import deepcopy
 from unittest import TestCase
 from io import BytesIO, TextIOWrapper, BufferedWriter
+import pickle
 
 from .data import reference_data
 
@@ -45,6 +46,9 @@ class DatabaseIOTest(TestCase):
         parser.parse_stream(parser_stream)
         loaded_data = parser.data
         self.assertEqual(loaded_data, self.reference_data)
+        self.assertEqual(pickle.loads(pickle.dumps(loaded_data, 0)), self.reference_data)
+        self.assertEqual(pickle.loads(pickle.dumps(loaded_data, 1)), self.reference_data)
+        self.assertEqual(pickle.loads(pickle.dumps(loaded_data, 2)), self.reference_data)
 
     def test_bibtex_input(self):
         self._test_input('bibtex')
