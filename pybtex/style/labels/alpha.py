@@ -46,7 +46,7 @@ class LabelStyle(BaseLabelStyle):
         count = Counter(labels)
         counted = Counter()
         for label in labels:
-            if count(label) == 1:
+            if count[label] == 1:
                 yield label
             else:
                 yield label + chr(ord('a') + counted[label])
@@ -148,12 +148,14 @@ class LabelStyle(BaseLabelStyle):
                 else:
                     result += _strip_nonalnum(
                         person.prelast(abbr=True) + person.last(abbr=True))
-                namesptr += 1
+                nameptr += 1
                 namesleft -= 1
             if numnames > 4:
                 result += "+"
         else:
+            person = persons[0]
             result = _strip_nonalnum(
                 person.prelast(abbr=True) + person.last(abbr=True))
             if len(result) < 2:
                 result = _strip_nonalnum(person.last(abbr=False))[:3]
+        return result
