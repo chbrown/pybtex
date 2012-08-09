@@ -40,7 +40,7 @@ class LabelStyle(BaseLabelStyle):
     name = 'alpha'
 
     def format_labels(self, sorted_entries):
-        labels = [self.format_label(entry) for entry in entries]
+        labels = [self.format_label(entry) for entry in sorted_entries]
         count = Counter(labels)
         counted = Counter()
         for label in labels:
@@ -68,6 +68,17 @@ class LabelStyle(BaseLabelStyle):
         else:
             return label
         # bst additionally sets sort.label
+
+    def author_key_label(self, entry):
+        # see alpha.bst author.key.label
+        if not "author" in entry.persons:
+            if not "key" in entry.fields:
+                return entry.key[:3] # entry.key is bst cite$
+            else:
+                # for entry.key, bst actually uses text.prefix$
+                return entry.fields["key"][:3]
+        else:
+            return self.format_lab_names(entry.persons["author"])
 
     def author_editor_key_label(self, entry):
         # see alpha.bst author.editor.key.label
