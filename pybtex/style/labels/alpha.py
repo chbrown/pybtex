@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Copyright (c) 2010, 2011, 2012  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -26,15 +28,15 @@ import string
 
 from pybtex.style.labels import BaseLabelStyle
 
-_nonalnum_pattern = re.compile('[\W_]+')
+_nonalnum_pattern = re.compile('[^A-Za-z0-9]+', re.UNICODE)
 
-def _strip_nonalnum(s):
-    """Strip all non-alphanumerical characters.
+def _strip_nonalnum(parts):
+    """Strip all non-alphanumerical characters from a list of strings.
 
-    >>> _strip_nonalnum("A. B. Testing +}[.@~_")
-    'ABTesting'
+    >>> _strip_nonalnum([u"A. B. Testing 12+}[.@~_", u"£ 3%"])
+    u'ABTesting123'
     """
-    return _nonalnum_pattern.sub('', s)
+    return _nonalnum_pattern.sub(u'', u''.join(parts))
 
 class LabelStyle(BaseLabelStyle):
     name = 'alpha'
