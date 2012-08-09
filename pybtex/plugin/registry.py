@@ -25,7 +25,9 @@ plugin_registry = {
         "default_plugin": "unsrt", 
         "plugins": [
             "plain", 
-            "unsrt"
+            "unsrt",
+            "alpha",
+            "unsrtalpha",
         ]
     }, 
     "pybtex.style.labels": {
@@ -34,7 +36,8 @@ plugin_registry = {
         "aliases": {}, 
         "default_plugin": "number", 
         "plugins": [
-            "number"
+            "number",
+            "alpha",
         ]
     }, 
     "pybtex.backends": {
