@@ -21,7 +21,7 @@
 
 from pybtex.plugin import Plugin
 
-available_plugins = ('number',)
+available_plugins = ('number', 'alpha')
 
 
 class BaseLabelStyle(Plugin):
@@ -31,5 +31,5 @@ class BaseLabelStyle(Plugin):
         #FIXME: determine label width proprely
         return max(formatted_entries, key=lambda entry: len(entry.label)).label
 
-    def format(self, entry):
+    def format_labels(self, sorted_entries):
         raise NotImplementedError

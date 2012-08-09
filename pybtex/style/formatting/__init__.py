@@ -41,19 +41,18 @@ class BaseStyle(Plugin):
         self.label_style = find_plugin('pybtex.style.labels', label_style or self.default_label_style)()
         self.sorting_style = find_plugin('pybtex.style.sorting', sorting_style or self.default_sorting_style)()
         self.format_name = self.name_style.format
-        self.format_label = self.label_style.format
+        self.format_labels = self.label_style.format_labels
         self.sort = self.sorting_style.sort
         self.abbreviate_names = abbreviate_names
 
     def format_entries(self, entries):
         sorted_entries = self.sort(entries)
-        for number, entry in enumerate(sorted_entries):
-            entry.number = number + 1
+        labels = self.format_labels(sorted_entries)
+        for label, entry in zip(labels, sorted_entries):
             for persons in entry.persons.itervalues():
                 for person in persons:
                     person.text = self.format_name(person, self.abbreviate_names)
 
             f = getattr(self, "format_" + entry.type)
             text = f(entry)
-            label = self.format_label(entry)
             yield FormattedEntry(entry.key, text, label)
