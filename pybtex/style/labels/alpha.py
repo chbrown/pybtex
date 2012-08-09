@@ -25,18 +25,25 @@
 from collections import Counter
 import re
 import string
+import unicodedata
 
 from pybtex.style.labels import BaseLabelStyle
 
 _nonalnum_pattern = re.compile('[^A-Za-z0-9]+', re.UNICODE)
 
+def _strip_accents(s):
+   return u''.join(
+       (c for c in unicodedata.normalize('NFD', s)
+        if not unicodedata.combining(c)))
+
 def _strip_nonalnum(parts):
     """Strip all non-alphanumerical characters from a list of strings.
 
-    >>> _strip_nonalnum([u"A. B. Testing 12+}[.@~_", u"£ 3%"])
-    u'ABTesting123'
+    >>> _strip_nonalnum([u"ÅA. B. Testing 12+}[.@~_", u" 3%"])
+    u'AABTesting123'
     """
-    return _nonalnum_pattern.sub(u'', u''.join(parts))
+    s = u''.join(parts)
+    return _nonalnum_pattern.sub(u'', _strip_accents(s))
 
 class LabelStyle(BaseLabelStyle):
     name = 'alpha'
