@@ -30,6 +30,15 @@ class Backend(BaseBackend):
             node.children.append(text)
             return node
 
+    def format_href(self, url, text):
+        if isinstance(url, basestring):
+            refuri = url
+        else: # isinstance(url, pybtex.richtext.Text)
+            refuri = url.plaintext()
+        node = docutils.nodes.reference(refuri=refuri)
+        node += text
+        return node
+
     def write_entry(self, key, label, text):
         raise NotImplementedError("use Backend.citation() instead")
 
@@ -39,7 +48,7 @@ class Backend(BaseBackend):
         """
         if len(text) != 1:
             node = docutils.nodes.inline('', '')
-            node.children.extend(text)
+            node += text
             return node
         else:
             return text[0]

@@ -35,6 +35,9 @@ class Backend(BaseBackend):
     
     def format_tag(self, tag_name, text):
         return ur'\%s{%s}' % (tag_name, text)
+
+    def format_href(self, url, text):
+        return ur'\href{%s}{%s}' % (url, text)
     
     def write_prologue(self):
         longest_label = self.formatted_bibliography.get_longest_label()

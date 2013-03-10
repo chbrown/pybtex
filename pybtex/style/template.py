@@ -309,6 +309,19 @@ def tag(children, data, name):
     parts = _format_list(children, data)
     return richtext.Tag(name, *_format_list(children, data))
 
+@node
+def href(children, data):
+    """Wrap text into a href.
+
+    >>> import pybtex.backends.html
+    >>> html = pybtex.backends.html.Backend()
+    >>> print href ['www.test.org', 'important'].format().render(html)
+    <href url="www.test.org">important</href>
+    >>> print sentence ['ready', 'set', href ['www.test.org', 'go']].format().render(html)
+    Ready, set, <href url="www.test.org">go</href>.
+    """
+    parts = _format_list(children, data)
+    return richtext.HRef(*parts)
 
 @node
 def first_of(children, data):

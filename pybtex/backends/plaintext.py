@@ -36,6 +36,9 @@ class Backend(BaseBackend):
     
     def format_tag(self, tag_name, text):
         return text
+
+    def format_href(self, url, text):
+        return text
     
     def write_entry(self, key, label, text):
         self.output(u"[%s] " % label)
