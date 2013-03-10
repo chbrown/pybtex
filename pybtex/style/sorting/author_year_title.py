@@ -28,8 +28,10 @@ class SortingStyle(BaseSortingStyle):
     def sorting_key(self, entry):
         if entry.type in ('book', 'inbook'):
             author_key = self.author_editor_key(entry)
-        else:
+        elif 'author' in entry.persons:
             author_key = self.persons_key(entry.persons['author'])
+        else:
+            author_key = None
         return (author_key, entry.fields.get('year', ''), entry.fields.get('title', ''))
 
     def persons_key(self, persons):
