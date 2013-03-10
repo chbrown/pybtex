@@ -1,4 +1,4 @@
-# Copyright (c) 2010, 2011, 2012  Andrey Golovizin
+# Copyright (c) 2006, 2007, 2008, 2009, 2010, 2011, 2012  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,13 +19,10 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from pybtex.style.formatting.unsrt import Style as UnsrtStyle
 
-from pybtex.style.labels import BaseLabelStyle
 
-
-class LabelStyle(BaseLabelStyle):
-    name = 'number'
-
-    def format_labels(self, sorted_entries):
-        for number in xrange(1, len(sorted_entries) + 1):
-            yield unicode(number)
+class Style(UnsrtStyle):
+    name = 'alpha'
+    default_sorting_style = 'author_year_title'
+    default_label_style = 'alpha'
