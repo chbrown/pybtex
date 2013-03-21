@@ -21,3 +21,6 @@ pybtex/.ropeproject
 .ropeproject
 .coverage
 __pycache__
+
+# Keep empty directories:
+!*/.git*
